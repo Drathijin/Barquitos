@@ -1,0 +1,12 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/src/test.cc
+iostream
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/src/iostream
+

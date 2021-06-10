@@ -1,0 +1,16 @@
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/bin/Debug/net5.0/server
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/bin/Debug/net5.0/server.deps.json
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/bin/Debug/net5.0/server.runtimeconfig.json
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/bin/Debug/net5.0/server.runtimeconfig.dev.json
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/bin/Debug/net5.0/server.dll
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/bin/Debug/net5.0/ref/server.dll
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/bin/Debug/net5.0/server.pdb
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/obj/Debug/net5.0/server.csproj.AssemblyReference.cache
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/obj/Debug/net5.0/server.GeneratedMSBuildEditorConfig.editorconfig
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/obj/Debug/net5.0/server.AssemblyInfoInputs.cache
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/obj/Debug/net5.0/server.AssemblyInfo.cs
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/obj/Debug/net5.0/server.csproj.CoreCompileInputs.cache
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/obj/Debug/net5.0/server.dll
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/obj/Debug/net5.0/ref/server.dll
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/obj/Debug/net5.0/server.pdb
+/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/BarquitosServidor/server/obj/Debug/net5.0/server.genruntimeconfig.cache
