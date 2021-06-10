@@ -8,7 +8,7 @@ public class BattleShip : MonoBehaviour
     [SerializeField]
     int size = 2;
 
-    bool grabbed = false, horizontal = true;
+    public bool grabbed = false, horizontal = true;
 
     Vector3 startPosition_;
 
@@ -50,6 +50,8 @@ public class BattleShip : MonoBehaviour
     public void ResetPosition()
     {
         transform.position = startPosition_;
+        if (!horizontal)
+            RotateShip();
     }
 
     public void SelectBattleShip()
@@ -61,5 +63,10 @@ public class BattleShip : MonoBehaviour
             grabbed = true;
             img_.raycastTarget = false;
         }
+    }
+
+    public int GetSize()
+    {
+        return size;
     }
 }

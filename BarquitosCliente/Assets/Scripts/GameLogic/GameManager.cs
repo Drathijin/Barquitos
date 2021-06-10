@@ -18,8 +18,6 @@ public class GameManager : MonoBehaviour
 
     private PlayerManager playerMng_;
 
-    private GridSetter playerGrid_, enemyGrid_;
-
     private void Awake()
     {
         if (instace_)
@@ -55,13 +53,5 @@ public class GameManager : MonoBehaviour
     public PlayerManager PlayerManager()
     {
         return playerMng_;
-    }
-
-    public void SetGrid(GridSetter grid)
-    {
-        if (grid.type == GridSetter.GridType.ENEMY)
-            enemyGrid_ = grid;
-        else
-            playerGrid_ = grid;
     }
 }

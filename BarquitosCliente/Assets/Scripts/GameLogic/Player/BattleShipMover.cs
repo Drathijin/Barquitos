@@ -8,6 +8,8 @@ public class BattleShipMover : MonoBehaviour
 
     PlayerGridPosition currentPosition_;
 
+    PlayerManager plMng;
+
     private void Update()
     {
         if (!selectedBts_)
@@ -29,10 +31,36 @@ public class BattleShipMover : MonoBehaviour
         if (selectedBts_ != ship)
             return;
         if (currentPosition_)
-            selectedBts_.transform.position = currentPosition_.transform.position;
+        {
+            for (int i = 0; i < ship.GetSize(); i++)
+            {
+                GridObject p = plMng.GetGrid().GetPos(
+                    currentPosition_.Data().GetX() + i * (ship.horizontal ? 1 : 0),
+                    currentPosition_.Data().GetY() + i * (ship.horizontal ? 0 : 1));
+                if (!p || p.Data().Boat())
+                {
+                    selectedBts_.ResetPosition();
+                    selectedBts_ = null;
+                    return;
+                }
+            }
+            SetShipPosition();
+        }
         else
             selectedBts_.ResetPosition();
         selectedBts_ = null;
+    }
+
+    private void SetShipPosition()
+    {
+        for (int i = 0; i < selectedBts_.GetSize(); i++)
+        {
+            GridObject p = plMng.GetGrid().GetPos(
+                currentPosition_.Data().GetX() + i * (selectedBts_.horizontal ? 1 : 0),
+                currentPosition_.Data().GetY() + i * (selectedBts_.horizontal ? 0 : 1));
+            p.SetBoat(true);
+        }
+        selectedBts_.transform.position = currentPosition_.transform.position;
     }
 
     public void OnGridHover(PlayerGridPosition pos)
@@ -47,5 +75,10 @@ public class BattleShipMover : MonoBehaviour
         if (pos != currentPosition_)
             return;
         currentPosition_ = null;
+    }
+
+    public void SetPlayer(PlayerManager manager)
+    {
+        plMng = manager;
     }
 }
