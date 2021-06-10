@@ -43,29 +43,25 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  if(EXISTS "$ENV{DESTDIR}/usr/local/lib/libsocket.so" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/usr/local/lib/libsocket.so")
+  if(EXISTS "$ENV{DESTDIR}/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/../BarquitosServidor/server/bin/Debug/net5.0/libsocket.so" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/../BarquitosServidor/server/bin/Debug/net5.0/libsocket.so")
     file(RPATH_CHECK
-         FILE "$ENV{DESTDIR}/usr/local/lib/libsocket.so"
-         RPATH "/usr/local/lib")
+         FILE "$ENV{DESTDIR}/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/../BarquitosServidor/server/bin/Debug/net5.0/libsocket.so"
+         RPATH "")
   endif()
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/usr/local/lib/libsocket.so")
+   "/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/../BarquitosServidor/server/bin/Debug/net5.0/libsocket.so")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/usr/local/lib" TYPE SHARED_LIBRARY FILES "/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/build/libsocket.so")
-  if(EXISTS "$ENV{DESTDIR}/usr/local/lib/libsocket.so" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/usr/local/lib/libsocket.so")
-    file(RPATH_CHANGE
-         FILE "$ENV{DESTDIR}/usr/local/lib/libsocket.so"
-         OLD_RPATH "::::::::::::::"
-         NEW_RPATH "/usr/local/lib")
+file(INSTALL DESTINATION "/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/../BarquitosServidor/server/bin/Debug/net5.0" TYPE SHARED_LIBRARY FILES "/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/build/libsocket.so")
+  if(EXISTS "$ENV{DESTDIR}/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/../BarquitosServidor/server/bin/Debug/net5.0/libsocket.so" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/../BarquitosServidor/server/bin/Debug/net5.0/libsocket.so")
     if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}/usr/local/lib/libsocket.so")
+      execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/../BarquitosServidor/server/bin/Debug/net5.0/libsocket.so")
     endif()
   endif()
 endif()
