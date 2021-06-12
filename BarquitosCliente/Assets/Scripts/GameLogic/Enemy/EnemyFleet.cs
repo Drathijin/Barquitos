@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class EnemyFleet : MonoBehaviour
+public class EnemyFleet : MonoBehaviour
 {
-    [SerializeField]
     Transform positions_;
 
     Grid grid_;
@@ -13,10 +12,7 @@ public abstract class EnemyFleet : MonoBehaviour
 
     private void Awake()
     {
-        grid_ = new Grid(positions_.GetComponentsInChildren<GridObject>());
-
-        if (GameManager.Instance())
-            GameManager.Instance().AddEnemyFleet(this);
+        grid_ = new Grid(GetComponentsInChildren<GridObject>());
     }
 
     public Grid GetGrid()
@@ -24,6 +20,16 @@ public abstract class EnemyFleet : MonoBehaviour
         return grid_;
     }
 
-    public abstract void Attack(int x , int y);
-    public abstract void ManageTurn();
+    public void Attack(int x, int y)    // Recivir el ataque de alguien, devolver resultado
+    {                                       
+
+    }         
+
+    //public abstract void ManageTurn();                  // Tomar la decision de ataque en el turno y guardarla para el ResolveTurn
+    //public abstract void ResolveTurn();                 // Ejecutar la decisión de ataque tomada en el ManageTurn
+
+    public void SetId(string id)
+    {
+        enemyName_ = id;
+    }
 }
