@@ -56,7 +56,9 @@ public class GameManager : MonoBehaviour
 
     public void AddEnemyFleet(EnemyFleet mng)
     {
+				Debug.Log("AAAAAAAAAAHHHHHH");
         enemyFleets_.Add(mng);
+				currentEnemyFleet_ = mng;
     }
 
     public EnemyFleet CurrentEnemyFleet()
