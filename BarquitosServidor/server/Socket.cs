@@ -18,6 +18,11 @@ namespace server
 
 		[DllImport("socket")]
 		private static extern int destroy_socket(IntPtr sock);
+
+		[DllImport("socket", CallingConvention = CallingConvention.Cdecl)]
+		private static extern int send_socket(IntPtr sock, String buff, int size, IntPtr other);
+
+
 		private IntPtr internal_socket;
 
 		public Socket(String addr, String port)
@@ -33,6 +38,10 @@ namespace server
 		public int Test()
 		{
 				return test_socket(internal_socket);
+		}
+		public int Send(String s, IntPtr other)
+		{
+			return send_socket(internal_socket, s, s.Length+1, (other==IntPtr.Zero) ? internal_socket : other);
 		}
 	} 
 }

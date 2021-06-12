@@ -6,7 +6,7 @@
 
 
 extern "C" void test(int a, int b){
-	printf("Test from caaaaaa++ %d + %d = %d\n",a,b,a+b);
+	printf("Test from c++ %d + %d = %d\n",a,b,a+b);
 }
 
 void handleGAIError(const char* s,int)
@@ -108,5 +108,9 @@ extern "C"
 	}
 	void SOCKET_API destroy_socket(void* sock){
 		delete (Socket*)sock;
+	}
+
+	int SOCKET_API send_socket(void* sock,char* buff, int size, void* other){
+	return ((Socket*)sock)->send(buff,size,(const Socket &)(*(Socket*)other));
 	}
 }

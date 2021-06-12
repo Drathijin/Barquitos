@@ -13,11 +13,14 @@ namespace server
 		static void Main(string[] args)
 		{
 				test(1,1);
-				using(Socket sock = new Socket("127.0.0.0", "49671")){
+				using(Socket sock = new Socket("127.0.0.1", "49671")){
 					Console.Write(sock.Test());
 					Console.Write(sock.Test());
 					Console.Write(sock.Test() + 4);
-					Console.Write(sock.Test());
+					Console.Write(args[0]);
+
+					foreach(string s in args)
+						Console.WriteLine(sock.Send(s+"\n", IntPtr.Zero));
 				}
 		}
 	} 
