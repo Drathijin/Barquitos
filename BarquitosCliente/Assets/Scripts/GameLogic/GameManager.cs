@@ -18,6 +18,10 @@ public class GameManager : MonoBehaviour
 
     private PlayerManager playerMng_;
 
+    private List<EnemyFleet> enemyFleets_;
+
+    private EnemyFleet currentEnemyFleet_;
+
     private void Awake()
     {
         if (instace_)
@@ -48,6 +52,16 @@ public class GameManager : MonoBehaviour
     public void SetPlayerManager(PlayerManager mng)
     {
         playerMng_ = mng;
+    }
+
+    public void AddEnemyFleet(EnemyFleet mng)
+    {
+        enemyFleets_.Add(mng);
+    }
+
+    public EnemyFleet CurrentEnemyFleet()
+    {
+        return currentEnemyFleet_;
     }
 
     public PlayerManager PlayerManager()

@@ -17,10 +17,13 @@ public class BattleShip : MonoBehaviour
 
     RectTransform tr_;
 
+    Vector2Int placedPosition_;
+
     private void Start()
     {
         tr_ = GetComponent<RectTransform>();
         startPosition_ = transform.position;
+        placedPosition_ = new Vector2Int(-1, -1);
     }
 
     private void Update()
@@ -50,6 +53,7 @@ public class BattleShip : MonoBehaviour
     public void ResetPosition()
     {
         transform.position = startPosition_;
+        placedPosition_ = new Vector2Int(-1, -1);
         if (!horizontal)
             RotateShip();
     }
@@ -63,6 +67,17 @@ public class BattleShip : MonoBehaviour
             grabbed = true;
             img_.raycastTarget = false;
         }
+    }
+
+    public Vector2Int PlacedPosition()
+    {
+        return placedPosition_;
+    }
+
+    public void SetPlacedPosition(int x, int y)
+    {
+        if (placedPosition_.x != x || placedPosition_.y != y)
+            placedPosition_ = new Vector2Int(x, y);
     }
 
     public int GetSize()

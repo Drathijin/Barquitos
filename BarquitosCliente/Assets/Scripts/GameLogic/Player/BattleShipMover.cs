@@ -12,6 +12,9 @@ public class BattleShipMover : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+            PrintGrid();
+
         if (!selectedBts_)
             return;
 
@@ -23,6 +26,11 @@ public class BattleShipMover : MonoBehaviour
         if (selectedBts_)
             return false;
         selectedBts_ = ship;
+        if(selectedBts_.PlacedPosition().x != -1)
+        {
+            currentPosition_ = plMng.GetGrid().GetPos(ship.PlacedPosition().x, ship.PlacedPosition().y) as PlayerGridPosition;
+            SetShipPosition(false);
+        }
         return true;
     }
 
@@ -44,21 +52,37 @@ public class BattleShipMover : MonoBehaviour
                     return;
                 }
             }
-            SetShipPosition();
+            ship.SetPlacedPosition(currentPosition_.Data().GetX(), currentPosition_.Data().GetY());
+            SetShipPosition(true);
         }
         else
             selectedBts_.ResetPosition();
         selectedBts_ = null;
     }
 
-    private void SetShipPosition()
+    private void PrintGrid()
+    {
+        Grid g = plMng.GetGrid();
+
+        for(int i = 0; i < 10; i++)
+        {
+            string outGrid = "";
+            for (int j = 0; j < 10; j++) {
+                outGrid += g.GetPos(j, i).Data().Boat() + " | ";
+            }
+
+            Debug.Log(outGrid);
+        }
+    }
+
+    private void SetShipPosition(bool set)
     {
         for (int i = 0; i < selectedBts_.GetSize(); i++)
         {
             GridObject p = plMng.GetGrid().GetPos(
                 currentPosition_.Data().GetX() + i * (selectedBts_.horizontal ? 1 : 0),
                 currentPosition_.Data().GetY() + i * (selectedBts_.horizontal ? 0 : 1));
-            p.SetBoat(true);
+            p.SetBoat(set);
         }
         selectedBts_.transform.position = currentPosition_.transform.position;
     }

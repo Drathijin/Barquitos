@@ -10,6 +10,8 @@ public class PlayerManager : MonoBehaviour
     BattleShipMover btsMover_;
     Grid grid_;
 
+    string playerName_;
+
     private void Start()
     {
         btsMover_ = GetComponent<BattleShipMover>();
