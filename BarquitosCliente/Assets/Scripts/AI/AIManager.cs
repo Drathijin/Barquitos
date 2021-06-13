@@ -6,8 +6,11 @@ public class AIManager : MonoBehaviour
 {
 
     List<AttackData> attacks_;
-
-    void Start()
+		
+		[SerializeField]
+		private IABehaviour behaviour_;
+    
+		void Start()
     {
         attacks_ = new List<AttackData>();
         GameManager.Instance().SetAIManager(this);
@@ -17,8 +20,8 @@ public class AIManager : MonoBehaviour
     {
         attacks_.Clear();
     }
-    public void ResolveTurn()   // Ejecutar la decisión de ataque tomada en el ManageTurn
+    public void ResolveTurn()   // Ejecutar la decisiï¿½n de ataque tomada en el ManageTurn
     {
-
+			
     }
 }

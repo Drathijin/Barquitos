@@ -76,10 +76,16 @@ public class GameManager : MonoBehaviour
         GameObject g = Instantiate(buttonsPrefabs_, enemyWater_);
 
         EnemyFleet fleet = g.AddComponent<EnemyFleet>();
-
         enemyFleets_.Add(fleet);
-
         currentEnemyFleet_ = fleet;
+
+				//Asumimos or ahora easyAI
+				if(ai)
+				{
+					EasyBehaviour eb = g.AddComponent<EasyBehaviour>();
+					eb.Setup(fleet);
+				}
+
     }
 
     public void SetAIManager(AIManager ai)

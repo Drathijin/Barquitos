@@ -9,14 +9,19 @@ public class EnemyFleet : MonoBehaviour
     Grid grid_;
 
     string enemyName_;
+		bool awaken = false;
 
     private void Awake()
     {
         grid_ = new Grid(GetComponentsInChildren<GridObject>());
+				awaken = true;
     }
 
     public Grid GetGrid()
     {
+			Debug.Log(grid_);
+				if(!awaken)
+					Debug.LogError("No me gusta esto de instanciar :D");
         return grid_;
     }
 
@@ -26,7 +31,7 @@ public class EnemyFleet : MonoBehaviour
     }         
 
     //public abstract void ManageTurn();                  // Tomar la decision de ataque en el turno y guardarla para el ResolveTurn
-    //public abstract void ResolveTurn();                 // Ejecutar la decisión de ataque tomada en el ManageTurn
+    //public abstract void ResolveTurn();                 // Ejecutar la decisiï¿½n de ataque tomada en el ManageTurn
 
     public void SetId(string id)
     {

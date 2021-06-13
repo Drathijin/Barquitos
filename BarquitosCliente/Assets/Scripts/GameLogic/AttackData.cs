@@ -1,4 +1,4 @@
-struct AttackData
+public struct AttackData
 {
     public AttackData(int x, int y , string id)
     {
