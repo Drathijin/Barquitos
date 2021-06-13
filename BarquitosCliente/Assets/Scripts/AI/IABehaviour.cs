@@ -7,6 +7,11 @@ public class IABehaviour : MonoBehaviour
 	public EnemyFleet fleet_; //Grid of buttons
 	private CellData[,] data_;
 
+	//Values between 1 or 0
+	double centerPriority;
+	double horizontalPriority;
+	double closerPriority;
+
 	public void Setup(EnemyFleet enemyFleet) {
 		fleet_ = enemyFleet;
 		data_ = new CellData[10,10];

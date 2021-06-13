@@ -22,14 +22,14 @@ public class AIManager : MonoBehaviour
 
 		}
 
-		void addBehaviour(string id, IABehaviour ia)
+		public void addBehaviour(string id, IABehaviour ia)
 		{
 			behaviours_[id] = ia;
 		}
 
     public void ManageTurn()    // Tomar la decision de ataque en el turno y guardarla para el ResolveTurn
     {
-        attacks_.Clear();
+        nextAttacks_.Clear();
 				foreach (var item in behaviours_)
 				{
 					nextAttacks_[item.Key] = item.Value.Attack();

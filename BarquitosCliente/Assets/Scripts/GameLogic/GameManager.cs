@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -85,7 +86,7 @@ public class GameManager : MonoBehaviour
 					EasyBehaviour eb = g.AddComponent<EasyBehaviour>();
 					eb.Setup(fleet);
 					if(aiManager_)
-						aiManager_.addBehaviour(id, eb);
+						aiManager_.addBehaviour(id, (IABehaviour)eb);
 				}
 
     }
@@ -96,7 +97,7 @@ public class GameManager : MonoBehaviour
 		}
 		public List<string> GetPlayerList()
 		{
-			List<string> list = fleets_.Keys;
+			List<string> list = fleets_.Keys.ToList<string>();
 			return list;
 		}
 
