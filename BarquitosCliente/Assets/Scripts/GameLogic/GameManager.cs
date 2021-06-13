@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     private AIManager aiManager_;
 
-    private List<EnemyFleet> enemyFleets_;
+    private Dictionary<string, EnemyFleet> fleets_;
 
     private EnemyFleet currentEnemyFleet_;
 
@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        enemyFleets_ = new List<EnemyFleet>();
+        fleets_ = new Dictionary<string, EnemyFleet>();
         AddEnemyFleet("pepepopo", true);
     }
 
@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
         GameObject g = Instantiate(buttonsPrefabs_, enemyWater_);
 
         EnemyFleet fleet = g.AddComponent<EnemyFleet>();
-        enemyFleets_.Add(fleet);
+        fleets_[id] = fleet;
         currentEnemyFleet_ = fleet;
 
 				//Asumimos or ahora easyAI
@@ -84,9 +84,21 @@ public class GameManager : MonoBehaviour
 				{
 					EasyBehaviour eb = g.AddComponent<EasyBehaviour>();
 					eb.Setup(fleet);
+					if(aiManager_)
+						aiManager_.addBehaviour(id, eb);
 				}
 
     }
+
+		public EnemyFleet GetFleet(string id)
+		{
+			return fleets_[id];
+		}
+		public List<string> GetPlayerList()
+		{
+			List<string> list = fleets_.Keys;
+			return list;
+		}
 
     public void SetAIManager(AIManager ai)
     {
