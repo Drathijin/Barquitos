@@ -10,12 +10,13 @@ public class GridObject : MonoBehaviour
 
     protected Image img_;
 
-    protected CellData data_;
+    protected CellData data_ = new CellData();
+
+    private Fleet fleet_;
 
     private void Awake()
     {
         img_ = GetComponent<Image>();
-        data_ = new CellData();
         SetState(CellData.CellState.UNKNOWN);
     }
 
@@ -62,6 +63,16 @@ public class GridObject : MonoBehaviour
     public CellData Data()
     {
         return data_;
+    }
+
+    public void SetFleet(Fleet fleet)
+    {
+        fleet_ = fleet;
+    }
+
+    public Fleet Fleet()
+    {
+        return fleet_;
     }
 
     protected void EmptyState() {
