@@ -9,11 +9,29 @@ public class MediumBehaviour : IABehaviour
 	List<int> positions_;
 
 	Vector2Int hit_;
-
+	Vector2Int[] directions_;
+	Dictionary<Vector2Int, List<Vector2Int>> possibleBoats_;
+	List<Vector2Int> hitHistory_;
+	bool found_;
 	private void Start() {
 		generator_ = new System.Random();
 		positions_ = new List<int>();
+		directions_ = new Vector2Int[4];
+		directions_[0] = new Vector2Int(1,0);
+		directions_[1] = new Vector2Int(-1,0);
+		directions_[2] = new Vector2Int(0,-1);
+		directions_[3] = new Vector2Int(0,1);
 		
+		CheckerBoardPositionSet();
+	}
+
+	private bool checkHit()
+	{
+		return fleet_.GetGrid().GetPos(hit_.x,hit_.y).Data().State() == CellData.CellState.HIT;
+	}
+	//Saves board positions in a checkerboard pattern
+		private void CheckerBoardPositionSet()
+	{
 		//Add all even numbers
 		Debug.Log("|| POSITIONS ||");
 		var str= new char[10];
@@ -38,13 +56,6 @@ public class MediumBehaviour : IABehaviour
 				count++;
 		}
 		Debug.Log("|| ENDPOSITIONS ||");
-
-
-		hit_= new Vector2Int(-1,-1);
-	}
-	private bool checkHit()
-	{
-		return hit_.x != -1 && hit_.y != -1;
 	}
 	private void resetHit()
 	{
@@ -54,19 +65,40 @@ public class MediumBehaviour : IABehaviour
 
 	private bool seek()
 	{
-		int position = generator_.Next(0,positions_.Count);
-		// positions_[position];
+		if(possibleBoats_[hit].Count == 0)
+		{
+			found_ = false;
+			int position = generator_.Next(0,positions_.Count);
+			position = positions_[position];	
+			hit_.x = position %10;
+			hit_.y = position /10;
+			return true;
+		}
 		return false;
 	}
-	private bool destroy()
+	private void destroy()
 	{
-		return false;
+		found_ = true;
+		//We landed a hit, add all other posible cells to de possible list
+		if(checkHit())
+		{
+			hitHistory_.Add(hit_);
+			foreach (var dir in directions_)
+			{
+				if(hit_.x+dir.x >= 0 && dir.x +hit_.x < 10 && hit_.y+dir.y >= 0 && dir.y +hit_.y < 10 && !hitHistory_.Contains(hit_+dir))
+					possibleBoats_.Add(hit_+dir);
+			}
+		}
+		//Pick one from the possible list
+		int position = generator_.Next(0,possibleBoats_.Count);
+		position = possibleBoats_[position];	
+		hit_.x = position %10;
+		hit_.y = position /10;
 	}
 	public override AttackData Attack(){
-		int random = generator_.Next(0, positions_.Count);
-		int pos = positions_[random];
-		positions_.RemoveAt(random);
-		return new AttackData(pos%10,pos/10,"pepepopo");
+			if(!seek())
+				destroy();
+		return new AttackData(hit_.x,hit_.y,"pepepopo");
 	}
 
 }
