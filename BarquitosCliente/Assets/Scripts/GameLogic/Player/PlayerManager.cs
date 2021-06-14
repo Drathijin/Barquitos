@@ -99,8 +99,8 @@ public class PlayerManager : MonoBehaviour
             return;
         int x = currentAttackButton_.Data().GetX();
         int y = currentAttackButton_.Data().GetY();
-        //currentAttackButton_.Fleet().Attack(x, y);
-        fleet_.Attack(x, y);
+        currentAttackButton_.Fleet().Attack(x, y);
+        // fleet_.Attack(x, y);
 
         // LIMPIAR ICONO
         currentAttackButton_ = null;
