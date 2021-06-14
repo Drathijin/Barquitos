@@ -213,6 +213,10 @@ public class GameManager : MonoBehaviour
         return playerMng_;
     }
 
+    public void Exit() {
+        Application.Quit();
+    }
+
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
