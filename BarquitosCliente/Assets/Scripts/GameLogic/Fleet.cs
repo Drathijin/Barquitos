@@ -31,5 +31,10 @@ public class Fleet : MonoBehaviour
     public string Name()
     {
         return name_;
-    } 
+    }
+    
+    public bool IsDestroyed()
+    {
+        return grid_.IsDestroyed();
+    }
 }

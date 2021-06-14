@@ -31,6 +31,12 @@ public class ButtonEnemyField : GridObject
         img_.sprite = selected ? selected_ : default_;
     }
 
+    protected override void HitState()
+    {
+        btn_.enabled = false;
+        img_.sprite = hit_;
+    }
+
     protected override void MissedState()
     {
         btn_.enabled = false;

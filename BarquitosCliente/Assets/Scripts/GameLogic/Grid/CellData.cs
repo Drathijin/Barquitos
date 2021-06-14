@@ -12,14 +12,14 @@ public class CellData
 
     private CellState state_;
 
-    private bool boat_ = false;
+    private bool ship_ = false;
 
     public CellData()
     {
         x_ = -1;
         y_ = -1;
         state_ = CellState.MISSED;
-        boat_ = false;
+        ship_ = false;
     }
 
     public int GetX()
@@ -38,14 +38,14 @@ public class CellData
         y_ = y;
     }
 
-    public bool Boat()
+    public bool Ship()
     {
-        return boat_;
+        return ship_;
     }
 
-    public void SetBoat(bool boat)
+    public void SetShip(bool boat)
     {
-        boat_ = boat;
+        ship_ = boat;
     }
 
     public CellState State()
@@ -56,5 +56,7 @@ public class CellData
     public void SetState(CellState state)
     {
         state_ = state;
+        if (state == CellState.HIT)
+            ship_ = false;
     }
 }

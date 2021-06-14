@@ -75,17 +75,25 @@ public class PlayerManager : MonoBehaviour
             case GameManager.GameState.PREPARING:
                 break;
             case GameManager.GameState.SELECTING:
-
+                ManageTurn();
                 break;
             case GameManager.GameState.ATTACKING:
                 ResolveTurn();
+                break;
+            case GameManager.GameState.END:
                 break;
             default:
                 break;
         }
     }
 
-    public void ResolveTurn()
+    void ManageTurn()
+    {
+        if (fleet_.IsDestroyed())
+            GameManager.Instance().PlayerLost();
+    }
+
+    void ResolveTurn()
     {
         if (!currentAttackButton_)
             return;

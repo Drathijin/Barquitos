@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviour
         MENU,
         PREPARING,
         SELECTING,
-        ATTACKING
+        ATTACKING,
+        END
     }
 
     public enum GameType
@@ -211,6 +212,13 @@ public class GameManager : MonoBehaviour
     public PlayerManager PlayerManager()
     {
         return playerMng_;
+    }
+
+    public void PlayerLost()
+    {
+        Debug.Log("Game END");
+        Debug.Log("YOU LOSE");
+        ChangeState(GameState.END);
     }
 
     public void Exit() {

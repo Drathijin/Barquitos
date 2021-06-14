@@ -7,13 +7,13 @@ public class GridObject : MonoBehaviour
 {
     [SerializeField]
     protected Sprite hit_;
-		[SerializeField]
+    [SerializeField]
     protected Sprite miss_;
-    
-		[SerializeField]
+
+    [SerializeField]
     protected Sprite default_;
-    
-		[SerializeField]
+
+    [SerializeField]
     protected Sprite selected_;
 
     protected Image img_;
@@ -33,15 +33,12 @@ public class GridObject : MonoBehaviour
         data_.SetPosition(x, y);
     }
 
-    public bool Attack()
+    public void Attack()
     {
-        if (data_.Boat())
-        {
+        if (data_.Ship())
             SetState(CellData.CellState.HIT);
-            return true;
-        }
-        SetState(CellData.CellState.MISSED);
-        return false;
+        else
+            SetState(CellData.CellState.MISSED);
     }
 
     void SetState(CellData.CellState state)
@@ -63,9 +60,9 @@ public class GridObject : MonoBehaviour
         }
     }
 
-    public void SetBoat(bool boat)
+    public void SetShip(bool boat)
     {
-        data_.SetBoat(boat);
+        data_.SetShip(boat);
     }
 
     public CellData Data()
@@ -83,9 +80,10 @@ public class GridObject : MonoBehaviour
         return fleet_;
     }
 
-    virtual protected void HitState() {
+    virtual protected void HitState()
+    {
         img_.sprite = hit_;
     }
 
-    virtual protected void MissedState() { img_.sprite =  miss_;}
+    virtual protected void MissedState() { img_.sprite = miss_; }
 }
