@@ -49,16 +49,16 @@ public class GridObject : MonoBehaviour
         if (data_.State() == state)
             return;
 
+        data_.SetState(state);
         switch (state)
         {
-            case CellData.CellState.UNKNOWN:
-                EmptyState();
-                break;
             case CellData.CellState.HIT:
                 HitState();
                 break;
             case CellData.CellState.MISSED:
                 MissedState();
+                break;
+            default:
                 break;
         }
     }
@@ -83,14 +83,9 @@ public class GridObject : MonoBehaviour
         return fleet_;
     }
 
-    protected void EmptyState() {
-        HitState();
-    }
-    protected void HitState() {
+    virtual protected void HitState() {
         img_.sprite = hit_;
     }
-		public void setSelected(){img_.sprite = selected_;}
-		public void setDeselected(){if(img_.sprite == selected_)img_.sprite = default_;}
-		public void setHit(){HitState();}
-    protected void MissedState() { img_.sprite =  miss_;}
+
+    virtual protected void MissedState() { img_.sprite =  miss_;}
 }

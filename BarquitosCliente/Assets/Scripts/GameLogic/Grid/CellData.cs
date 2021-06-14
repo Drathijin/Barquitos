@@ -10,7 +10,7 @@ public class CellData
 
     private int x_, y_;
 
-    private CellState state_ = CellState.MISSED;
+    private CellState state_;
 
     private bool boat_ = false;
 
@@ -18,7 +18,7 @@ public class CellData
     {
         x_ = -1;
         y_ = -1;
-        state_ = CellState.UNKNOWN;
+        state_ = CellState.MISSED;
         boat_ = false;
     }
 

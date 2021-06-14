@@ -149,3 +149,4 @@ MonoBehaviour:
   miss_: {fileID: 21300000, guid: 85d7e71f11be1af628ec71b4ef951275, type: 3}
   default_: {fileID: 21300000, guid: bcd4fbd8f479122ad98231287d66a6af, type: 3}
   selected_: {fileID: 21300000, guid: 44dbccd8d58d9f32fbd43b830a8c6419, type: 3}
+  selectedSpr: {fileID: 21300000, guid: b1390a8ebff62cd41ac6da12a52ee212, type: 3}

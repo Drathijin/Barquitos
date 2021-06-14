@@ -10,12 +10,14 @@ public class AIManager : MonoBehaviour
     private Dictionary<string, IABehaviour> behaviours_;
     private Dictionary<string, AttackData> nextAttacks_;
 
-    void Start()
+    public void Setup(int nFleets)
     {
         behaviours_ = new Dictionary<string, IABehaviour>();
         nextAttacks_ = new Dictionary<string, AttackData>();
         GameManager.Instance().SetAIManager(this);
-        GameManager.Instance().AddEnemyFleet("pepepopo", true);
+
+        for (int i = 0; i < nFleets; i++)
+            GameManager.Instance().AddEnemyFleet("AIFleet" + i, true);
     }
 
     void SetupFleet()
@@ -30,16 +32,16 @@ public class AIManager : MonoBehaviour
 
     public void OnStateChanged(GameManager.GameState state)
     {
-        switch(state)
+        switch (state)
         {
             case GameManager.GameState.PREPARING:
                 break;
             case GameManager.GameState.SELECTING:
                 ManageTurn();
-            break;
+                break;
             case GameManager.GameState.ATTACKING:
                 ResolveTurn();
-            break;
+                break;
             default:
                 break;
         }
@@ -58,8 +60,11 @@ public class AIManager : MonoBehaviour
         var list = GameManager.Instance().GetPlayerList();
         foreach (var attack in nextAttacks_)
         {
-          Debug.Log("Attacking "+ attack.Value.enemyId +" at x: " + attack.Value.x+" y: "+attack.Value.y);
-          GameManager.Instance().GetFleet(attack.Value.enemyId).Attack(attack.Value.x,attack.Value.y);
+            Debug.Log("Attacking " + attack.Value.enemyId + " at x: " + attack.Value.x + " y: " + attack.Value.y);
+            Fleet fl = GameManager.Instance().GetFleet(attack.Value.enemyId);
+            int x = attack.Value.x;
+            int y = attack.Value.y;
+            fl.Attack(x, y);
         }
     }
 }
