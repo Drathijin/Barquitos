@@ -4,16 +4,9 @@ using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public NetworkManager(string playerName)
     {
-        GameManager.Instance().SetNetworkManager(this);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // MANDAR EL PLAYER AL SERVER O ALGO ----- MIRALO LUEGO
     }
 
     public void OnStateChanged(GameManager.GameState state)

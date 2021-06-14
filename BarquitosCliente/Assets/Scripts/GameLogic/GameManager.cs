@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,17 +11,25 @@ public class GameManager : MonoBehaviour
         MENU,
         PREPARING,
         SELECTING,
-        ATTACKING
+        ATTACKING,
+        END
+    }
+
+    public enum GameType
+    {
+        SPAI,
+        BRAI,
+        ONLINE
     }
 
     private static GameManager instace_;
 
     [SerializeField]
     private GameObject buttonsPrefabs_;
-    [SerializeField]
+
     private Transform enemyWater_;
 
-    private GameState state_;
+    private GameState state_ = GameState.PREPARING;
 
     private PlayerManager playerMng_;
 
@@ -34,26 +43,69 @@ public class GameManager : MonoBehaviour
 
     private Fleet currentEnemyFleet_;
 
+    private GameType gameType = GameType.SPAI;
+
     private void Awake()
     {
-      if (instace_)
-      {
-        Destroy(gameObject);
-        return;
-      }
-      instace_ = this;
-      DontDestroyOnLoad(gameObject);
-      state_ = GameState.PREPARING;
-    }
-
-    private void Start()
-    {
-      AddEnemyFleet("pepepopo", true);
+        if (instace_)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instace_ = this;
+        DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     public static GameManager Instance()
     {
         return instace_;
+    }
+
+    public void LoadLevel(string level)
+    {
+        SceneManager.LoadScene(level);
+    }
+
+    public void SetGameType(GameType type)
+    {
+        gameType = type;
+    }
+
+    public void SetGameType(int type)
+    {
+        if (type >= 3)
+        {
+            Debug.LogWarning("Wrong index of GameType " + type);
+            return;
+        }
+        SetGameType((GameType)type);
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "Menu")
+            state_ = GameState.MENU;
+        else
+        {
+            enemyWater_ = GameObject.Find("WaterOponent").transform;
+            state_ = GameState.PREPARING;
+            GameObject manager = new GameObject("EnemyManager");
+            switch (gameType)
+            {
+                case GameType.SPAI:
+                case GameType.BRAI:
+                    {
+                        AIManager ai = manager.AddComponent<AIManager>();
+                        ai.Setup(gameType == GameType.SPAI ? 1 : 10);
+                        break;
+                    }
+                case GameType.ONLINE:
+                    {
+                        break;
+                    }
+            }
+        }
     }
 
     public GameState State()
@@ -85,7 +137,7 @@ public class GameManager : MonoBehaviour
 
     public void OnReadyClick()
     {
-        if(state_ == GameState.PREPARING)
+        if (state_ == GameState.PREPARING)
             ChangeState(GameState.SELECTING);
         else if (state_ == GameState.SELECTING)
             ChangeState(GameState.ATTACKING);
@@ -103,6 +155,11 @@ public class GameManager : MonoBehaviour
 
     public void AddEnemyFleet(string name, bool ai)
     {
+        if (!enemyWater_)
+        {
+            Debug.LogError("No enemyWater found");
+            return;
+        }
         GameObject g = Instantiate(buttonsPrefabs_, enemyWater_);
 
         Fleet fleet = g.AddComponent<Fleet>();
@@ -111,14 +168,14 @@ public class GameManager : MonoBehaviour
         currentEnemyFleet_ = fleet;
 
         //Asumimos or ahora easyAI
-        if(ai)
+        if (ai)
         {
           MediumBehaviour eb = g.AddComponent<MediumBehaviour>();
           eb.Setup(GetFleet("Player"));
           if(aiManager_)
             aiManager_.addBehaviour(name, (IABehaviour)eb);
         }
-		}
+    }
 
     public Fleet GetFleet(string id)
     {
@@ -155,5 +212,21 @@ public class GameManager : MonoBehaviour
     public PlayerManager PlayerManager()
     {
         return playerMng_;
+    }
+
+    public void PlayerLost()
+    {
+        Debug.Log("Game END");
+        Debug.Log("YOU LOSE");
+        ChangeState(GameState.END);
+    }
+
+    public void Exit() {
+        Application.Quit();
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }

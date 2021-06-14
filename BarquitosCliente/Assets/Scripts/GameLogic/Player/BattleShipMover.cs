@@ -40,7 +40,7 @@ public class BattleShipMover : MonoBehaviour
                 GridObject p = plMng.GetGrid().GetPos(
                     currentPosition_.Data().GetX() + i * (ship.horizontal ? 1 : 0),
                     currentPosition_.Data().GetY() + i * (ship.horizontal ? 0 : 1));
-                if (!p || p.Data().Boat())
+                if (!p || p.Data().Ship())
                 {
                     selectedBts_.ResetPosition();
                     selectedBts_ = null;
@@ -64,7 +64,7 @@ public class BattleShipMover : MonoBehaviour
             string outGrid = "";
             for (int j = 0; j < 10; j++)
             {
-                outGrid += g.GetPos(j, i).Data().Boat() + " | ";
+                outGrid += g.GetPos(j, i).Data().Ship() + " | ";
             }
 
             Debug.Log(outGrid);
@@ -78,7 +78,7 @@ public class BattleShipMover : MonoBehaviour
             GridObject p = plMng.GetGrid().GetPos(
                 currentPosition_.Data().GetX() + i * (selectedBts_.horizontal ? 1 : 0),
                 currentPosition_.Data().GetY() + i * (selectedBts_.horizontal ? 0 : 1));
-            p.SetBoat(set);
+            p.SetShip(set);
         }
         selectedBts_.transform.position = currentPosition_.transform.position;
     }

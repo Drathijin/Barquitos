@@ -75,23 +75,32 @@ public class PlayerManager : MonoBehaviour
             case GameManager.GameState.PREPARING:
                 break;
             case GameManager.GameState.SELECTING:
-                
+                ManageTurn();
                 break;
             case GameManager.GameState.ATTACKING:
                 ResolveTurn();
+                break;
+            case GameManager.GameState.END:
                 break;
             default:
                 break;
         }
     }
 
-    public void ResolveTurn()
+    void ManageTurn()
+    {
+        if (fleet_.IsDestroyed())
+            GameManager.Instance().PlayerLost();
+    }
+
+    void ResolveTurn()
     {
         if (!currentAttackButton_)
             return;
         int x = currentAttackButton_.Data().GetX();
         int y = currentAttackButton_.Data().GetY();
-        currentAttackButton_.Fleet().Attack(x, y);
+        //currentAttackButton_.Fleet().Attack(x, y);
+        fleet_.Attack(x, y);
 
         // LIMPIAR ICONO
         currentAttackButton_ = null;
@@ -100,8 +109,8 @@ public class PlayerManager : MonoBehaviour
     public void SetAttackButton(ButtonEnemyField b)
     {
         if (currentAttackButton_)    // LIMPIAR ICONO
-            currentAttackButton_.setDeselected();
+            currentAttackButton_.Selected(false);
         currentAttackButton_ = b;
-				currentAttackButton_.setSelected();
+        b.Selected(true);
     }
 }
