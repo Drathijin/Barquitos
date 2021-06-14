@@ -16,6 +16,28 @@ public class NetworkManager : MonoBehaviour
         
     }
 
-    //public abstract void ManageTurn();                  // Tomar la decision de ataque en el turno y guardarla para el ResolveTurn
-    //public abstract void ResolveTurn();                 // Ejecutar la decisión de ataque tomada en el ManageTurn
+    public void OnStateChanged(GameManager.GameState state)
+    {
+        switch (state)
+        {
+            case GameManager.GameState.PREPARING:
+                break;
+            case GameManager.GameState.SELECTING:
+                ManageTurn();
+                break;
+            case GameManager.GameState.ATTACKING:
+                ResolveTurn();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void ManageTurn()    // Escuchar al servidor para saber cuando le han dado a listo
+    {
+
+    }
+    public void ResolveTurn() {     // Ejecutar la decisión de ataque tomada en el ManageTurn
+        
+    }                
 }

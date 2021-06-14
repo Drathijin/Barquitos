@@ -8,20 +8,22 @@ public class PlayerManager : MonoBehaviour
     Transform positions_;
 
     BattleShipMover btsMover_;
-    Grid grid_;
+    Fleet fleet_;
 
-    string playerName_;
+    ButtonEnemyField currentAttackButton_;
 
     private void Start()
     {
         btsMover_ = GetComponent<BattleShipMover>();
         btsMover_.SetPlayer(this);
+        fleet_ = GetComponentInChildren<Fleet>();
 
-        grid_ = new Grid(positions_.GetComponentsInChildren<GridObject>());
+        fleet_.SetName("Player");                       // BORRAR EN SU MOMENTO
 
         if (GameManager.Instance())
         {
             GameManager.Instance().SetPlayerManager(this);
+            GameManager.Instance().AddExistingFleet(fleet_);
             if (GameManager.Instance().State() != GameManager.GameState.PREPARING)
                 btsMover_.enabled = false;
         }
@@ -57,6 +59,47 @@ public class PlayerManager : MonoBehaviour
 
     public Grid GetGrid()
     {
-        return grid_;
+        return fleet_.GetGrid();
+    }
+
+    public Fleet GetFleet()
+    {
+        return fleet_;
+    }
+
+    public void OnStateChanged(GameManager.GameState state)
+    {
+        switch (state)
+        {
+            case GameManager.GameState.PREPARING:
+                break;
+            case GameManager.GameState.SELECTING:
+                
+                break;
+            case GameManager.GameState.ATTACKING:
+                ResolveTurn();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void ResolveTurn()
+    {
+        if (!currentAttackButton_)
+            return;
+        int x = currentAttackButton_.Data().GetX();
+        int y = currentAttackButton_.Data().GetY();
+        currentAttackButton_.Fleet().Attack(x, y);
+
+        // LIMPIAR ICONO
+        currentAttackButton_ = null;
+    }
+
+    public void SetAttackButton(ButtonEnemyField b)
+    {
+        if (currentAttackButton_)    // LIMPIAR ICONO
+            ;
+        currentAttackButton_ = b;
     }
 }

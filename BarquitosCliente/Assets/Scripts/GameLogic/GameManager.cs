@@ -28,9 +28,11 @@ public class GameManager : MonoBehaviour
 
     private AIManager aiManager_;
 
-    private Dictionary<string, EnemyFleet> fleets_;
+    private ReadyButton button_;
 
-    private EnemyFleet currentEnemyFleet_;
+    private Dictionary<string, Fleet> fleets_ = new Dictionary<string, Fleet>();
+
+    private Fleet currentEnemyFleet_;
 
     private void Awake()
     {
@@ -46,7 +48,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-      fleets_ = new Dictionary<string, EnemyFleet>();
+      fleets_ = new Dictionary<string, Fleet>(); 
       AddEnemyFleet("pepepopo", true);
     }
 
@@ -63,6 +65,36 @@ public class GameManager : MonoBehaviour
     public void ChangeState(GameState state)
     {
         state_ = state;
+
+        playerMng_.OnStateChanged(state);
+
+        if (aiManager_)
+            aiManager_.OnStateChanged(state);
+        else if (netManager_)
+            netManager_.OnStateChanged(state);
+
+        button_.OnStateChanged(state);
+
+        if (state == GameState.ATTACKING)
+            Invoke("DelayBorrar", 2f);
+    }
+
+    public void DelayBorrar()
+    {
+        ChangeState(GameState.SELECTING);
+    }
+
+    public void OnReadyClick()
+    {
+        if(state_ == GameState.PREPARING)
+            ChangeState(GameState.SELECTING);
+        else if (state_ == GameState.SELECTING)
+            ChangeState(GameState.ATTACKING);
+
+    }
+    public void SetReadyButton(ReadyButton b)
+    {
+        button_ = b;
     }
 
     public void SetPlayerManager(PlayerManager mng)
@@ -70,14 +102,13 @@ public class GameManager : MonoBehaviour
         playerMng_ = mng;
     }
 
-    public void AddEnemyFleet(string id, bool ai)
+    public void AddEnemyFleet(string name, bool ai)
     {
-        Debug.Log("AAAAAAAAAAHHHHHH");
-
         GameObject g = Instantiate(buttonsPrefabs_, enemyWater_);
 
-        EnemyFleet fleet = g.AddComponent<EnemyFleet>();
-        fleets_[id] = fleet;
+        Fleet fleet = g.AddComponent<Fleet>();
+        fleet.SetName(name);
+        fleets_[name] = fleet;
         currentEnemyFleet_ = fleet;
 
         //Asumimos or ahora easyAI
@@ -86,19 +117,23 @@ public class GameManager : MonoBehaviour
           MediumBehaviour eb = g.AddComponent<MediumBehaviour>();
           eb.Setup(fleet);
           if(aiManager_)
-            aiManager_.addBehaviour(id, (IABehaviour)eb);
+            aiManager_.addBehaviour(name, (IABehaviour)eb);
         }
+		}
 
-    }
-
-    public EnemyFleet GetFleet(string id)
+    public Fleet GetFleet(string id)
     {
-      return fleets_[id];
+        return fleets_[id];
     }
     public List<string> GetPlayerList()
     {
-      List<string> list = fleets_.Keys.ToList<string>();
-      return list;
+        List<string> list = fleets_.Keys.ToList<string>();
+        return list;
+    }
+
+    public void AddExistingFleet(Fleet fleet)
+    {
+        fleets_[fleet.Name()] = fleet;
     }
 
     public void SetAIManager(AIManager ai)
@@ -113,7 +148,7 @@ public class GameManager : MonoBehaviour
             netManager_ = net;
     }
 
-    public EnemyFleet CurrentEnemyFleet()
+    public Fleet CurrentEnemyFleet()
     {
         return currentEnemyFleet_;
     }

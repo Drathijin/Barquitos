@@ -4,7 +4,7 @@ public class Grid
 {
     private GridObject[,] grid;
 
-    public Grid(GridObject[] objs)
+    public Grid(GridObject[] objs, Fleet fleet)
     {
         grid = new GridObject[10, 10];
 
@@ -14,6 +14,7 @@ public class Grid
             int x = i % 10;
             int y = i / 10;
             g.SetPosition(x, y);
+            g.SetFleet(fleet);
             grid[x, y] = g;
             i++;
         }

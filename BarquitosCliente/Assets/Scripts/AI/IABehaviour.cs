@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class IABehaviour : MonoBehaviour
 {
-	public EnemyFleet fleet_; //Grid of buttons
+	public Fleet fleet_; //Grid of buttons
 	private CellData[,] data_;
 
 	//Values between 1 or 0
@@ -12,7 +12,7 @@ public class IABehaviour : MonoBehaviour
 	double horizontalPriority;
 	double closerPriority;
 
-	public void Setup(EnemyFleet enemyFleet) {
+	public void Setup(Fleet enemyFleet) {
 		fleet_ = enemyFleet;
 		data_ = new CellData[10,10];
 		

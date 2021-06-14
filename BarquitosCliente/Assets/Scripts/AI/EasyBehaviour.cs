@@ -15,7 +15,7 @@ public class EasyBehaviour : IABehaviour
 			positions_.Add(i);
 	}
 	public override AttackData Attack(){
-		int random = generator_.Next(0, positions_.Capacity);
+		int random = generator_.Next(0, positions_.Count);
 		int pos = positions_[random];
 		positions_.RemoveAt(random);
 		return new AttackData(pos%10,pos/10,"pepepopo");

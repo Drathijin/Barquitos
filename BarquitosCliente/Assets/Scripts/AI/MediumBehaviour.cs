@@ -10,43 +10,35 @@ public class MediumBehaviour : IABehaviour
 
 	Vector2Int hit_;
 
-	private void Awake() {
+	private void Start() {
 		generator_ = new System.Random();
 		positions_ = new List<int>();
 		
 		//Add all even numbers
-		for(int i = 0;i < 100; i++)
-		{
-			if((i/10)%2 == 0) //Even row
-			{
-				if(i%2 == 0)
-				{
-					positions_.Add(i);
-				}
-			}
-			else //Odd row
-			{
-				if(i%2 == 1)
-				{
-					positions_.Add(i);
-				}
-			}
-		}
-		string str ="";
 		Debug.Log("|| POSITIONS ||");
+		var str= new char[10];
+		int count = 0;
+		int parity = 0;
 		for(int i = 0;i < 100; i++)
 		{
-			if(positions_.Find((int a)=>{return a==i;})!=0 || i == 0)
-				str+="#";
-			else
-				str+="-";
-			if(i%10==0)
+			if(i%2 == parity)
 			{
-				Debug.Log(str);
-				str="";
+				positions_.Add(i);
+				str[i%10]='#';
 			}
+			else
+				str[i%10]='-';
+			if(count==9)
+			{
+				Debug.Log(new string(str));
+				count= 0;
+				parity = parity == 0 ? 1 :0;
+			}
+			else
+				count++;
 		}
 		Debug.Log("|| ENDPOSITIONS ||");
+
 
 		hit_= new Vector2Int(-1,-1);
 	}

@@ -12,13 +12,8 @@ public class BattleShipMover : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-            PrintGrid();
-
-        if (!selectedBts_)
-            return;
-
-        selectedBts_.transform.position = Input.mousePosition + new Vector3(-30, 30, 0);
+        if (selectedBts_)
+            selectedBts_.transform.position = Input.mousePosition + new Vector3(-30, 30, 0);
     }
 
     public bool SelectBattleShip(BattleShip ship)
@@ -26,7 +21,7 @@ public class BattleShipMover : MonoBehaviour
         if (selectedBts_)
             return false;
         selectedBts_ = ship;
-        if(selectedBts_.PlacedPosition().x != -1)
+        if (selectedBts_.PlacedPosition().x != -1)
         {
             currentPosition_ = plMng.GetGrid().GetPos(ship.PlacedPosition().x, ship.PlacedPosition().y) as PlayerGridPosition;
             SetShipPosition(false);
@@ -64,10 +59,11 @@ public class BattleShipMover : MonoBehaviour
     {
         Grid g = plMng.GetGrid();
 
-        for(int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
         {
             string outGrid = "";
-            for (int j = 0; j < 10; j++) {
+            for (int j = 0; j < 10; j++)
+            {
                 outGrid += g.GetPos(j, i).Data().Boat() + " | ";
             }
 

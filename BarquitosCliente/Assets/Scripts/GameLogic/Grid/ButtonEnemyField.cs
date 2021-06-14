@@ -14,12 +14,12 @@ public class ButtonEnemyField : GridObject
 
     public void OnClick()
     {
+        if (GameManager.Instance().State() != GameManager.GameState.SELECTING)
+            return;
         Debug.Log("X: " + (data_.GetX() + 1) + " Y: " + (data_.GetY() + 1));
 
         var gm = GameManager.Instance();
-        var ce = gm.CurrentEnemyFleet();
-        ce.Attack(data_.GetX(), data_.GetY());
-
-        btn_.enabled = false;
+        var ce = gm.PlayerManager();
+        ce.SetAttackButton(this);
     }
 }
