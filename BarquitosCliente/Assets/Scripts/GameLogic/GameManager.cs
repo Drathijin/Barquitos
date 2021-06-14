@@ -85,11 +85,10 @@ public class GameManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name == "Menu")
-            state_ = GameState.MENU;
+            ChangeState(GameState.MENU);
         else
         {
             enemyWater_ = GameObject.Find("WaterOponent").transform;
-            state_ = GameState.PREPARING;
             GameObject manager = new GameObject("EnemyManager");
             switch (gameType)
             {
@@ -109,6 +108,7 @@ public class GameManager : MonoBehaviour
                         break;
                     }
             }
+					ChangeState(GameState.PREPARING);
         }
     }
 
@@ -121,14 +121,16 @@ public class GameManager : MonoBehaviour
     {
         state_ = state;
 
-        playerMng_.OnStateChanged(state);
+				if(playerMng_)
+        	playerMng_.OnStateChanged(state);
 
         if (aiManager_)
             aiManager_.OnStateChanged(state);
         else if (netManager_)
             netManager_.OnStateChanged(state);
 
-        button_.OnStateChanged(state);
+        if(button_)
+					button_.OnStateChanged(state);
 
         if (state == GameState.ATTACKING)
             Invoke("DelayBorrar", 2f);

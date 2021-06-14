@@ -5,11 +5,9 @@ using UnityEngine;
 
 public class EasyBehaviour : IABehaviour
 {
-	System.Random generator_;
 	List<int> positions_;
 
-	private void Awake() {
-		generator_ = new System.Random();
+	private void Start() {
 		positions_ = new List<int>();
 		for(int i = 0;i < 100; i++)
 			positions_.Add(i);

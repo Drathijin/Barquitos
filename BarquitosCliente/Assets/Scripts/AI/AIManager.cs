@@ -22,13 +22,16 @@ public class AIManager : MonoBehaviour
 
     void SetupFleet()
     {
-
+			foreach (var item in behaviours_)
+			{
+				Debug.LogError(item.Key);
+				item.Value.Setup(GameManager.Instance().GetFleet(item.Key));
+			}
     }
 
     public void addBehaviour(string id, IABehaviour ia)
     {
-			Debug.Log("Adding: "+id+" AI: "+ia);
-        behaviours_[id] = ia;
+			behaviours_[id] = ia;
     }
 
     public void OnStateChanged(GameManager.GameState state)
@@ -36,6 +39,7 @@ public class AIManager : MonoBehaviour
         switch (state)
         {
             case GameManager.GameState.PREPARING:
+								SetupFleet();
                 break;
             case GameManager.GameState.SELECTING:
                 ManageTurn();

@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class MediumBehaviour : IABehaviour
 {
-	System.Random generator_;
 	List<int> positions_;
 
 	Vector2Int hit_;
@@ -14,7 +13,6 @@ public class MediumBehaviour : IABehaviour
 	bool[,] hitHistory_;
 
 	private void Start() {
-		generator_ = new System.Random();
 		positions_ = new List<int>();
 		directions_ = new Vector2Int[4];
 		directions_[0] = new Vector2Int(1,0);
