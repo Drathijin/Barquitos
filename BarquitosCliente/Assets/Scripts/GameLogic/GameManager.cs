@@ -240,14 +240,19 @@ public class GameManager : MonoBehaviour
 
     public void PlayerLost()
     {
-        Debug.Log("Game END");
         Debug.Log("YOU LOSE");
-        ChangeState(GameState.END);
+				FleetLost(playerMng_.GetFleet().Name());
     }
 
     public void FleetLost(string fleet)
     {
         fleets_.Remove(fleet);
+				if(fleets_.Count == 1)
+				{
+					Debug.Log("GAME END");
+        	Debug.Log(fleets_.First().Key+" WINS");
+        	ChangeState(GameState.END);
+				}
     }
 
     public void Exit()

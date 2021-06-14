@@ -20,25 +20,12 @@ public class IABehaviour : MonoBehaviour
   }
   protected virtual Fleet SelectTarget(){return new Fleet();}
   
-  private bool checkPos(Fleet myFleet, int x, int y, int length, bool horizontal)
+  private bool checkPos(Fleet myFleet, int x, int y, BattleShip bs)
   {
-    int i=0;
-    int hx = horizontal ? 1 :0;
-    int hy = !horizontal ? 1 :0;
-    while(i<length)
-    {
-      int nx, ny;
-      nx = x+ (length-i)*hx;
-      ny = y+ (length-i)*hy;
-      if(nx < 0 && nx>=10)
-        return false;
-      if(ny < 0 && ny>=10)
-        return false;
-      // if(myFleet.GetGrid().GetPos(nx,ny).Data().Ship())
-      //   return false;
-        i++;
-    }
-    return true;
+    // bool ret = myFleet.AddBattleShip(bs, x,y);
+    // if(ret)
+    //   myFleet.RemoveBattleShip(bs);
+    return myFleet.IsFree(bs, x,y);
   }
   private void lookForPosition(ref int x, ref int y, int length,Fleet myFleet, bool close, bool horizontal, bool center)
   {
@@ -63,7 +50,9 @@ public class IABehaviour : MonoBehaviour
       for(int j = 0; j<10; j++)
       {
         int actual = Mathf.Abs(targetX-j)+Mathf.Abs(targetY-i);
-        if(checkPos(myFleet, i,j,length,horizontal) && actual<actualBest)
+        BattleShip bs = new BattleShip(length);
+        bs.horizontal = horizontal;
+        if(checkPos(myFleet,j,i,bs) && actual<actualBest)
         {
           bestX = j;
           bestY = i;
@@ -90,8 +79,10 @@ public class IABehaviour : MonoBehaviour
       horizontal  = generator_.NextDouble()<=horizontalPriority;
       close       = generator_.NextDouble()<=closerPriority;
       lookForPosition(ref lastX, ref lastY, shipLength, myFleet,close,horizontal, center);
-      for(int i=0;i<shipLength;i++)
-        myFleet.GetGrid().GetPos(lastX+(i*(horizontal?1:0)), lastY+(i*(horizontal?0:1))).SetShip(true);
+      BattleShip bs = new BattleShip(shipLength);
+      bs.horizontal = horizontal;
+      myFleet.AddBattleShip(bs, lastX, lastY);
+      Debug.LogError("x: "+lastX +" y: "+lastY+" horizontal: "+horizontal + " - "+shipLength);
     }
   }
 

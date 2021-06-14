@@ -35,11 +35,10 @@ public class Fleet : MonoBehaviour
         return name_;
     }
 
-    public bool AddBattleShip(BattleShip ship, int x, int y)
-    {
-        if (!((x <= 9 && x >= 0) && (y <= 9 && y >= 0)))
-            return false;
-
+		public bool IsFree(BattleShip ship, int x, int y)
+		{
+				if (!((x <= 9 && x >= 0) && (y <= 9 && y >= 0)))
+					return false;
         for (int i = 0; i < ship.GetSize(); i++)
         {
             GridObject p = grid_.GetPos(
@@ -48,7 +47,13 @@ public class Fleet : MonoBehaviour
             if (!p || p.Data().Ship() != null)
                 return false;
         }
+				return true;
+		}
 
+    public bool AddBattleShip(BattleShip ship, int x, int y)
+    {
+				if(!IsFree(ship,x,y))
+						return false;
         ships_.Add(ship);
         SetShipPosition(ship, x, y);
         return true;

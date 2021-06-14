@@ -60,6 +60,9 @@ public class AIManager : MonoBehaviour
         {
 						Debug.Log(item.Key);
             nextAttacks_[item.Key] = item.Value.Attack();
+						var fleet = GameManager.Instance().GetFleet(item.Key);
+						if(fleet.IsDestroyed())
+							GameManager.Instance().FleetLost(item.Key);
         }
     }
     public void ResolveTurn()   // Ejecutar la decisi�n de ataque tomada en el ManageTurn
