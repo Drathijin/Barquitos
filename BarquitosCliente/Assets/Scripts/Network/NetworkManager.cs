@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
 {
-    public NetworkManager(string playerName)
+    public void Setup(string playerName)
     {
         // MANDAR EL PLAYER AL SERVER O ALGO ----- MIRALO LUEGO
     }

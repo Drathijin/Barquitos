@@ -98,10 +98,14 @@ public class GameManager : MonoBehaviour
                     {
                         AIManager ai = manager.AddComponent<AIManager>();
                         ai.Setup(gameType == GameType.SPAI ? 1 : 10);
+                        aiManager_ = ai;
                         break;
                     }
                 case GameType.ONLINE:
                     {
+                        NetworkManager net = manager.AddComponent<NetworkManager>();
+                        net.Setup(playerMng_.GetFleet().Name());
+                        netManager_ = net;
                         break;
                     }
             }
