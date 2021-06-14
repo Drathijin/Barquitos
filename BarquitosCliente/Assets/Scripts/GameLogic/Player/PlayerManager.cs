@@ -22,6 +22,7 @@ public class PlayerManager : MonoBehaviour
 
         if (GameManager.Instance())
         {
+						Debug.Log("Adding fleet to GM");
             GameManager.Instance().SetPlayerManager(this);
             GameManager.Instance().AddExistingFleet(fleet_);
             if (GameManager.Instance().State() != GameManager.GameState.PREPARING)
@@ -99,7 +100,8 @@ public class PlayerManager : MonoBehaviour
     public void SetAttackButton(ButtonEnemyField b)
     {
         if (currentAttackButton_)    // LIMPIAR ICONO
-            ;
+            currentAttackButton_.setDeselected();
         currentAttackButton_ = b;
+				currentAttackButton_.setSelected();
     }
 }

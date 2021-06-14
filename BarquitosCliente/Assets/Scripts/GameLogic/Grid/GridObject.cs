@@ -7,6 +7,14 @@ public class GridObject : MonoBehaviour
 {
     [SerializeField]
     protected Sprite hit_;
+		[SerializeField]
+    protected Sprite miss_;
+    
+		[SerializeField]
+    protected Sprite default_;
+    
+		[SerializeField]
+    protected Sprite selected_;
 
     protected Image img_;
 
@@ -80,8 +88,9 @@ public class GridObject : MonoBehaviour
     }
     protected void HitState() {
         img_.sprite = hit_;
-        img_.color = Color.white;
-        img_.type = Image.Type.Simple;
     }
-    protected void MissedState() { }
+		public void setSelected(){img_.sprite = selected_;}
+		public void setDeselected(){if(img_.sprite == selected_)img_.sprite = default_;}
+		public void setHit(){HitState();}
+    protected void MissedState() { img_.sprite =  miss_;}
 }

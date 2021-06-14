@@ -18,7 +18,7 @@ public class EasyBehaviour : IABehaviour
 		int random = generator_.Next(0, positions_.Count);
 		int pos = positions_[random];
 		positions_.RemoveAt(random);
-		return new AttackData(pos%10,pos/10,"pepepopo");
+		return new AttackData(pos%10,pos/10,"Player");
 	}
 
 }

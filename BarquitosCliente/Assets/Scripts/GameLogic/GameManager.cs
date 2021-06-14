@@ -48,7 +48,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-      fleets_ = new Dictionary<string, Fleet>(); 
       AddEnemyFleet("pepepopo", true);
     }
 

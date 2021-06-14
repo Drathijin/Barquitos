@@ -56,9 +56,10 @@ public class AIManager : MonoBehaviour
     public void ResolveTurn()   // Ejecutar la decisi�n de ataque tomada en el ManageTurn
     {
         var list = GameManager.Instance().GetPlayerList();
-        foreach (var item in nextAttacks_)
+        foreach (var attack in nextAttacks_)
         {
-
+          Debug.Log("Attacking "+ attack.Value.enemyId +" at x: " + attack.Value.x+" y: "+attack.Value.y);
+          GameManager.Instance().GetFleet(attack.Value.enemyId).Attack(attack.Value.x,attack.Value.y);
         }
     }
 }

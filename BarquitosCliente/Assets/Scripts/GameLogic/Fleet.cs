@@ -20,7 +20,7 @@ public class Fleet : MonoBehaviour
 
     public void Attack(int x, int y)    // Recivir el ataque de alguien, devolver resultado
     {
-
+			grid_.Attack(x,y);
     }
 
     public void SetName(string name)

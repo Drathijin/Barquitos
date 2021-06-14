@@ -98,8 +98,7 @@ public class MediumBehaviour : IABehaviour
 	public override AttackData Attack(){
 			if(!seek())
 				destroy();
-		Debug.Log("IA Attacks at: "+hit_.x + " "+hit_.y);
-		return new AttackData(hit_.x,hit_.y,"pepepopo");
+		return new AttackData(hit_.x,hit_.y,"Player");
 	}
 
 }
