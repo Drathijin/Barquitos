@@ -12,7 +12,6 @@ public class MediumBehaviour : IABehaviour
 	Vector2Int[] directions_;
 	Dictionary<Vector2Int, List<Vector2Int>> possibleBoats_;
 	List<Vector2Int> hitHistory_;
-	bool found_;
 	private void Start() {
 		generator_ = new System.Random();
 		positions_ = new List<int>();
@@ -21,7 +20,7 @@ public class MediumBehaviour : IABehaviour
 		directions_[1] = new Vector2Int(-1,0);
 		directions_[2] = new Vector2Int(0,-1);
 		directions_[3] = new Vector2Int(0,1);
-		
+		possibleBoats_ = new Dictionary<Vector2Int, List<Vector2Int>>();
 		CheckerBoardPositionSet();
 	}
 
@@ -65,9 +64,8 @@ public class MediumBehaviour : IABehaviour
 
 	private bool seek()
 	{
-		if(possibleBoats_[hit].Count == 0)
+		if(!possibleBoats_.ContainsKey(hit_)||(possibleBoats_.ContainsKey(hit_) && possibleBoats_[hit_].Count == 0))
 		{
-			found_ = false;
 			int position = generator_.Next(0,positions_.Count);
 			position = positions_[position];	
 			hit_.x = position %10;
@@ -78,26 +76,29 @@ public class MediumBehaviour : IABehaviour
 	}
 	private void destroy()
 	{
-		found_ = true;
 		//We landed a hit, add all other posible cells to de possible list
 		if(checkHit())
 		{
+			Debug.Log("HIT");
 			hitHistory_.Add(hit_);
 			foreach (var dir in directions_)
 			{
 				if(hit_.x+dir.x >= 0 && dir.x +hit_.x < 10 && hit_.y+dir.y >= 0 && dir.y +hit_.y < 10 && !hitHistory_.Contains(hit_+dir))
-					possibleBoats_.Add(hit_+dir);
+					possibleBoats_[hit_].Add(hit_+dir);
 			}
 		}
+		if(!possibleBoats_.ContainsKey(hit_))
+			possibleBoats_[hit_] = new List<Vector2Int>();
 		//Pick one from the possible list
-		int position = generator_.Next(0,possibleBoats_.Count);
-		position = possibleBoats_[position];	
-		hit_.x = position %10;
-		hit_.y = position /10;
+		int position = generator_.Next(0,possibleBoats_[hit_].Count);
+		Vector2Int vPosition = possibleBoats_[hit_][position];	
+		hit_.x = vPosition.x;
+		hit_.y = vPosition.y;
 	}
 	public override AttackData Attack(){
 			if(!seek())
 				destroy();
+		Debug.Log("IA Attacks at: "+hit_.x + " "+hit_.y);
 		return new AttackData(hit_.x,hit_.y,"pepepopo");
 	}
 
