@@ -120,8 +120,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2809488665213289083}
-        m_TargetAssemblyTypeName: BattleShip, Assembly-CSharp
+      - m_Target: {fileID: 105695083469353405}
+        m_TargetAssemblyTypeName: BattleShipViewer, Assembly-CSharp
         m_MethodName: SelectBattleShip
         m_Mode: 1
         m_Arguments:
@@ -143,7 +143,7 @@ GameObject:
   - component: {fileID: 2809488665213289081}
   - component: {fileID: 2809488665213289077}
   - component: {fileID: 2809488665213289082}
-  - component: {fileID: 2809488665213289083}
+  - component: {fileID: 105695083469353405}
   m_Layer: 5
   m_Name: BattleShip
   m_TagString: Untagged
@@ -209,7 +209,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2809488665213289083
+--- !u!114 &105695083469353405
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -218,10 +218,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2809488665213289086}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7aa6f4f41b6967468d4a3e5c040bf17, type: 3}
+  m_Script: {fileID: 11500000, guid: 4289c5f5fdb67fa4fbec32aadf91edfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   size: 2
   grabbed: 0
-  horizontal: 1
   img_: {fileID: 2809488664327099997}

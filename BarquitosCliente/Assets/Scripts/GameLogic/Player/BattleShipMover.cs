@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BattleShipMover : MonoBehaviour
 {
-    BattleShip selectedBts_;
+    BattleShipViewer selectedBts_;
 
     PlayerGridPosition currentPosition_;
 
@@ -16,39 +16,33 @@ public class BattleShipMover : MonoBehaviour
             selectedBts_.transform.position = Input.mousePosition + new Vector3(-30, 30, 0);
     }
 
-    public bool SelectBattleShip(BattleShip ship)
+    public bool SelectBattleShip(BattleShipViewer ship)
     {
         if (selectedBts_)
             return false;
         selectedBts_ = ship;
-        if (selectedBts_.PlacedPosition().x != -1)
-        {
-            currentPosition_ = plMng.GetGrid().GetPos(ship.PlacedPosition().x, ship.PlacedPosition().y) as PlayerGridPosition;
-            SetShipPosition(false);
-        }
+        if (selectedBts_.BattleShip().PlacedPositions().Count != 0)
+            plMng.GetFleet().RemoveBattleShip(ship.BattleShip());
         return true;
     }
 
-    public void ReleaseBattleShip(BattleShip ship)
+    public void ReleaseBattleShip(BattleShipViewer ship)
     {
         if (selectedBts_ != ship)
             return;
         if (currentPosition_)
         {
-            for (int i = 0; i < ship.GetSize(); i++)
+            if (plMng.GetFleet().AddBattleShip(ship.BattleShip(),
+                currentPosition_.Data().GetX(),
+                currentPosition_.Data().GetY()))
             {
-                GridObject p = plMng.GetGrid().GetPos(
-                    currentPosition_.Data().GetX() + i * (ship.horizontal ? 1 : 0),
-                    currentPosition_.Data().GetY() + i * (ship.horizontal ? 0 : 1));
-                if (!p || p.Data().Ship())
-                {
-                    selectedBts_.ResetPosition();
-                    selectedBts_ = null;
-                    return;
-                }
+                selectedBts_.transform.position = currentPosition_.transform.position;
             }
-            ship.SetPlacedPosition(currentPosition_.Data().GetX(), currentPosition_.Data().GetY());
-            SetShipPosition(true);
+            else
+            {
+                selectedBts_.ResetPosition();
+                selectedBts_ = null;
+            }
         }
         else
             selectedBts_.ResetPosition();
@@ -69,18 +63,6 @@ public class BattleShipMover : MonoBehaviour
 
             Debug.Log(outGrid);
         }
-    }
-
-    private void SetShipPosition(bool set)
-    {
-        for (int i = 0; i < selectedBts_.GetSize(); i++)
-        {
-            GridObject p = plMng.GetGrid().GetPos(
-                currentPosition_.Data().GetX() + i * (selectedBts_.horizontal ? 1 : 0),
-                currentPosition_.Data().GetY() + i * (selectedBts_.horizontal ? 0 : 1));
-            p.SetShip(set);
-        }
-        selectedBts_.transform.position = currentPosition_.transform.position;
     }
 
     public void OnGridHover(PlayerGridPosition pos)

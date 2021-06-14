@@ -41,7 +41,9 @@ public class GameManager : MonoBehaviour
 
     private Dictionary<string, Fleet> fleets_ = new Dictionary<string, Fleet>();
 
-    private Fleet currentEnemyFleet_;
+    private List<Fleet> enemyFleets_ = new List<Fleet>();
+
+    private int currentEnemyFleet_ = -1;
 
     private GameType gameType = GameType.SPAI;
 
@@ -133,7 +135,7 @@ public class GameManager : MonoBehaviour
 					button_.OnStateChanged(state);
 
         if (state == GameState.ATTACKING)
-            Invoke("DelayBorrar", 2f);
+            Invoke("DelayBorrar", 0f);
     }
 
     public void DelayBorrar()
@@ -171,13 +173,17 @@ public class GameManager : MonoBehaviour
         Fleet fleet = g.AddComponent<Fleet>();
         fleet.SetName(name);
         fleets_[name] = fleet;
-        currentEnemyFleet_ = fleet;
+        enemyFleets_.Add(fleet);
+        if (currentEnemyFleet_ == -1)
+            currentEnemyFleet_ = 0;
+        else
+            g.SetActive(false);
 
         //Asumimos or ahora easyAI
         if (ai)
         {
-          MediumBehaviour eb = g.AddComponent<MediumBehaviour>();
-					aiManager_.addBehaviour(name, (IABehaviour)eb);
+            MediumBehaviour eb = g.AddComponent<MediumBehaviour>();
+            aiManager_.addBehaviour(name, (IABehaviour)eb);
         }
     }
 
@@ -185,6 +191,20 @@ public class GameManager : MonoBehaviour
     {
         return fleets_[id];
     }
+
+    public void NextFleet() {
+        enemyFleets_[currentEnemyFleet_].gameObject.SetActive(false);
+        currentEnemyFleet_ = ++currentEnemyFleet_ % enemyFleets_.Count;
+        enemyFleets_[currentEnemyFleet_].gameObject.SetActive(true);
+    }
+
+    public void PreviousFleet()
+    {
+        enemyFleets_[currentEnemyFleet_].gameObject.SetActive(false);
+        currentEnemyFleet_ = --currentEnemyFleet_ == -1 ? enemyFleets_.Count - 1 : currentEnemyFleet_;
+        enemyFleets_[currentEnemyFleet_].gameObject.SetActive(true);
+    }
+
     public List<string> GetPlayerList()
     {
         List<string> list = fleets_.Keys.ToList<string>();
@@ -210,7 +230,7 @@ public class GameManager : MonoBehaviour
 
     public Fleet CurrentEnemyFleet()
     {
-        return currentEnemyFleet_;
+        return enemyFleets_[currentEnemyFleet_];
     }
 
     public PlayerManager PlayerManager()
@@ -225,7 +245,13 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.END);
     }
 
-    public void Exit() {
+    public void FleetLost(string fleet)
+    {
+        fleets_.Remove(fleet);
+    }
+
+    public void Exit()
+    {
         Application.Quit();
     }
 

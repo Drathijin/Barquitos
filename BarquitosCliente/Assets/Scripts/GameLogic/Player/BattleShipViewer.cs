@@ -3,27 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BattleShip : MonoBehaviour
+public class BattleShipViewer : MonoBehaviour
 {
     [SerializeField]
     int size = 2;
 
-    public bool grabbed = false, horizontal = true;
+    public bool grabbed = false;
 
     Vector3 startPosition_;
-
     [SerializeField]
     Image img_;
 
     RectTransform tr_;
 
-    Vector2Int placedPosition_;
+    BattleShip btShip_;
 
     private void Start()
     {
         tr_ = GetComponent<RectTransform>();
         startPosition_ = transform.position;
-        placedPosition_ = new Vector2Int(-1, -1);
+        btShip_ = new BattleShip(size);
     }
 
     private void Update()
@@ -43,18 +42,23 @@ public class BattleShip : MonoBehaviour
 
     private void RotateShip()
     {
-        horizontal = !horizontal;
+        btShip_.horizontal = !btShip_.horizontal;
 
-        tr_.pivot = new Vector2(0, horizontal ? 1 : 0);
+        tr_.pivot = new Vector2(0, btShip_.horizontal ? 1 : 0);
 
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, horizontal ? 0 : -90));
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, btShip_.horizontal ? 0 : -90));
+    }
+
+    public BattleShip BattleShip()
+    {
+        return btShip_;
     }
 
     public void ResetPosition()
     {
         transform.position = startPosition_;
-        placedPosition_ = new Vector2Int(-1, -1);
-        if (!horizontal)
+        btShip_.PlacedPositions().Clear();
+        if (!btShip_.horizontal)
             RotateShip();
     }
 
@@ -67,21 +71,5 @@ public class BattleShip : MonoBehaviour
             grabbed = true;
             img_.raycastTarget = false;
         }
-    }
-
-    public Vector2Int PlacedPosition()
-    {
-        return placedPosition_;
-    }
-
-    public void SetPlacedPosition(int x, int y)
-    {
-        if (placedPosition_.x != x || placedPosition_.y != y)
-            placedPosition_ = new Vector2Int(x, y);
-    }
-
-    public int GetSize()
-    {
-        return size;
     }
 }
