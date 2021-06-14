@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IABehaviour : MonoBehaviour
+public abstract class IABehaviour : MonoBehaviour
 {
 	public Fleet fleet_; //Grid of buttons
 
@@ -11,10 +11,8 @@ public class IABehaviour : MonoBehaviour
     double horizontalPriority;
     double closerPriority;
 
-	public void Setup(Fleet enemyFleet) {
-		fleet_ = enemyFleet;
-	}
 	public virtual AttackData Attack() {
 		return new AttackData();
 	}
+	protected abstract Fleet SelectTarget();
 }

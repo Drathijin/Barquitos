@@ -27,6 +27,7 @@ public class AIManager : MonoBehaviour
 
     public void addBehaviour(string id, IABehaviour ia)
     {
+			Debug.Log("Adding: "+id+" AI: "+ia);
         behaviours_[id] = ia;
     }
 
@@ -49,6 +50,7 @@ public class AIManager : MonoBehaviour
 
     public void ManageTurn()    // Tomar la decision de ataque en el turno y guardarla para el ResolveTurn
     {
+				Debug.Log("ManageTurn");
         nextAttacks_.Clear();
         foreach (var item in behaviours_)
         {
@@ -58,6 +60,7 @@ public class AIManager : MonoBehaviour
     }
     public void ResolveTurn()   // Ejecutar la decisi�n de ataque tomada en el ManageTurn
     {
+				Debug.Log("ResolveTurn");
         var list = GameManager.Instance().GetPlayerList();
         foreach (var attack in nextAttacks_)
         {

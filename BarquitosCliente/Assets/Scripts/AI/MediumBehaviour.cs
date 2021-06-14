@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-public class MediumBehaviour : IABehaviour
+public abstract class MediumBehaviour : IABehaviour
 {
 	System.Random generator_;
 	List<int> positions_;
@@ -97,10 +97,14 @@ public class MediumBehaviour : IABehaviour
 		hit_.y = vPosition.y;
 	}
 	public override AttackData Attack(){
+		fleet_ = SelectTarget();
 		if(!seek())
 			destroy();
 
 		return new AttackData(hit_.x,hit_.y,"Player");
 	}
-
+	protected override Fleet SelectTarget()
+	{
+		return GameManager.Instance().GetFleet("Player");
+	}
 }
