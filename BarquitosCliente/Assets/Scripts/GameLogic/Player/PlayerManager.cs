@@ -30,14 +30,14 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public bool SelectBattleShip(BattleShip ship)
+    public bool SelectBattleShip(BattleShipViewer ship)
     {
         if (GameManager.Instance().State() != GameManager.GameState.PREPARING)
             return false;
         return btsMover_.SelectBattleShip(ship);
     }
 
-    public void ReleaseBattleShip(BattleShip ship)
+    public void ReleaseBattleShip(BattleShipViewer ship)
     {
         if (GameManager.Instance().State() != GameManager.GameState.PREPARING)
             return;

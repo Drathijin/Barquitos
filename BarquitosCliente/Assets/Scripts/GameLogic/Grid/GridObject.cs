@@ -33,12 +33,20 @@ public class GridObject : MonoBehaviour
         data_.SetPosition(x, y);
     }
 
-    public void Attack()
+    public bool Attack()
     {
-        if (data_.Ship())
+        if (data_.Ship() != null)
+        {
             SetState(CellData.CellState.HIT);
+            if (data_.Ship().CheckAttack(data_.GetX(), data_.GetY()))
+            {
+                Debug.Log("Destroy");
+                return true;
+            }
+        }
         else
             SetState(CellData.CellState.MISSED);
+        return false;
     }
 
     void SetState(CellData.CellState state)
@@ -60,7 +68,7 @@ public class GridObject : MonoBehaviour
         }
     }
 
-    public void SetShip(bool boat)
+    public void SetShip(BattleShip boat)
     {
         data_.SetShip(boat);
     }

@@ -20,9 +20,9 @@ public class Grid
         }
     }
 
-    public void Attack(int x, int y)
+    public bool Attack(int x, int y)
     {
-        grid[x, y].Attack();
+        return grid[x, y].Attack();
     }
 
     public GridObject GetPos(int x , int y)
@@ -30,15 +30,5 @@ public class Grid
         if (x >= 10 || y >= 10)
             return null;
         return grid[x, y];
-    }
-
-    public bool IsDestroyed()
-    {
-        bool destroyed = true;
-
-        foreach (GridObject g in grid)
-            destroyed &= !g.Data().Ship();
-
-        return destroyed;
     }
 }
