@@ -50,6 +50,7 @@ public class AIManager : MonoBehaviour
         nextAttacks_.Clear();
         foreach (var item in behaviours_)
         {
+						Debug.Log(item.Key);
             nextAttacks_[item.Key] = item.Value.Attack();
         }
     }

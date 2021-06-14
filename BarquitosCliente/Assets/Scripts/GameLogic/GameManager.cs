@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour
         if(ai)
         {
           MediumBehaviour eb = g.AddComponent<MediumBehaviour>();
-          eb.Setup(fleet);
+          eb.Setup(GetFleet("Player"));
           if(aiManager_)
             aiManager_.addBehaviour(name, (IABehaviour)eb);
         }
