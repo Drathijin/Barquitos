@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-public abstract class MediumBehaviour : IABehaviour
+public class MediumBehaviour : IABehaviour
 {
 	System.Random generator_;
 	List<int> positions_;

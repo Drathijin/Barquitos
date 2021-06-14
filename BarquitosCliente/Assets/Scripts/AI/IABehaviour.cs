@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class IABehaviour : MonoBehaviour
+public class IABehaviour : MonoBehaviour
 {
 	public Fleet fleet_; //Grid of buttons
 
@@ -14,5 +14,5 @@ public abstract class IABehaviour : MonoBehaviour
 	public virtual AttackData Attack() {
 		return new AttackData();
 	}
-	protected abstract Fleet SelectTarget();
+	protected virtual Fleet SelectTarget(){return new Fleet();}
 }

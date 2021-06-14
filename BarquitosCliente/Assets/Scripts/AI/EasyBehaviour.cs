@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-public abstract class EasyBehaviour : IABehaviour
+public class EasyBehaviour : IABehaviour
 {
 	System.Random generator_;
 	List<int> positions_;
