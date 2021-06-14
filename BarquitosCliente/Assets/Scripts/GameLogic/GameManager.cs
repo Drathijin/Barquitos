@@ -34,20 +34,20 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instace_)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        instace_ = this;
-        DontDestroyOnLoad(gameObject);
-        state_ = GameState.PREPARING;
+      if (instace_)
+      {
+        Destroy(gameObject);
+        return;
+      }
+      instace_ = this;
+      DontDestroyOnLoad(gameObject);
+      state_ = GameState.PREPARING;
     }
 
     private void Start()
     {
-        fleets_ = new Dictionary<string, EnemyFleet>();
-        AddEnemyFleet("pepepopo", true);
+      fleets_ = new Dictionary<string, EnemyFleet>();
+      AddEnemyFleet("pepepopo", true);
     }
 
     public static GameManager Instance()
@@ -80,26 +80,26 @@ public class GameManager : MonoBehaviour
         fleets_[id] = fleet;
         currentEnemyFleet_ = fleet;
 
-				//Asumimos or ahora easyAI
-				if(ai)
-				{
-					EasyBehaviour eb = g.AddComponent<EasyBehaviour>();
-					eb.Setup(fleet);
-					if(aiManager_)
-						aiManager_.addBehaviour(id, (IABehaviour)eb);
-				}
+        //Asumimos or ahora easyAI
+        if(ai)
+        {
+          MediumBehaviour eb = g.AddComponent<MediumBehaviour>();
+          eb.Setup(fleet);
+          if(aiManager_)
+            aiManager_.addBehaviour(id, (IABehaviour)eb);
+        }
 
     }
 
-		public EnemyFleet GetFleet(string id)
-		{
-			return fleets_[id];
-		}
-		public List<string> GetPlayerList()
-		{
-			List<string> list = fleets_.Keys.ToList<string>();
-			return list;
-		}
+    public EnemyFleet GetFleet(string id)
+    {
+      return fleets_[id];
+    }
+    public List<string> GetPlayerList()
+    {
+      List<string> list = fleets_.Keys.ToList<string>();
+      return list;
+    }
 
     public void SetAIManager(AIManager ai)
     {

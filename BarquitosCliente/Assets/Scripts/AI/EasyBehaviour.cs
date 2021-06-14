@@ -10,9 +10,9 @@ public class EasyBehaviour : IABehaviour
 
 	private void Awake() {
 		generator_ = new System.Random();
-		positions_ = new List<int>(100);
+		positions_ = new List<int>();
 		for(int i = 0;i < 100; i++)
-			positions_[i]=i;
+			positions_.Add(i);
 	}
 	public override AttackData Attack(){
 		int random = generator_.Next(0, positions_.Capacity);
