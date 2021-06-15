@@ -26,7 +26,7 @@ La IA en esta dificultad es la más sencilla de derrotar pues su comportamiento 
 ### Dificultad intermedia
 La IA en esta dificultad es bastante más difícil de derrotar comparada con la anterior. Una propiedad del tablero, que aprovechamos con esta estrategia, es que la nave más pequeña ocupa dos casillas y que solo pueden colocarse en horizontal o vertical.  
 Gracias a esto podemos ahorrarnos la mitad de las posibilidades a la hora de buscar casillas con naves enemigas. Una forma fácil de hacerse a la idea es imaginar un tablero de damas o ajedrez.  
-![tablero de damas](https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/10x10_checkered_board_transparent.svg/500px-10x10_checkered_board_transparent.svg.png)  
+![tablero de damas](http://wordaligned.org/images/chessboard-magick.png)  
 _Toda posible posición de naves tiene al menos una casilla blanca y negra ocupada._
 
 La estrategia queda dividida en dos fases _buscar_ y _destruir_.  
