@@ -10,9 +10,9 @@ Para nuestra simulación hemos usado las siguientes naves:
 - Crusero: 2 casillas
 
 ## Preparación  
-Para la fase de preparación nuestras IAs poseen tres factores que controlan la posición de las naves en el campo de batalla.  
-* **Centralidad**: Probabilidad de que las naves intenten centrarse lo máximo posible.
-* **Cercanía**: Probabilidad de que las naves intenten estar juntas.
+Para la fase de preparación nuestras IAs poseen tres factores que controlan la posición de sus naves aliadas en el campo de batalla.  
+* **Centralidad**: Probabilidad se centren lo máximo posible.
+* **Cercanía**: Probabilidad estén juntas.
 * **Horizontalidad**: Probabilidad de que las naves estén en posición horizontal.
 
 Estos factores son controlables desde el menu principal al seleccionar la opción de combatir contra la IA.
@@ -31,7 +31,8 @@ _Toda posible posición de naves tiene al menos una casilla blanca y negra ocupa
 
 La estrategia queda dividida en dos fases _buscar_ y _destruir_.  
 Durante la fase de _buscar_ se atacarán aleatoriamente casillas de entre las 50 posiciones (casillas negras por ejemplo). Cuando una casilla acierta y da a una nave enemiga se pasa a la fase de _destruir_.  
-Durante _destruir_ la IA atacará a las casillas verticales y horizontales con respecto a la nave enemiga que provocó el cambio de fase. Cuando se destruya la nave enemiga se volverá a la fase de _buscar_ hasta que se acaben todas las naves.
+
+Durante _destruir_ la IA guarda una lista de las casillas potenciales. Que son las que se encuentran horizontales y verticales con respecto a las que acierta atacando. Ataca aleatoriamente a las casillas de la lista y la actualiza respectivamente hasta probarlas todas. 
 
 ### Dificultad máxima
 La IA en dificultad máxima utiliza una estrategia basada en probabilidades por lo tanto, si sabes como funciona, se puede aprovechar bastante de ésta debilidad.  
