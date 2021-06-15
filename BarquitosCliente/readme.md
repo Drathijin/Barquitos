@@ -21,7 +21,7 @@ Estos factores son controlables desde el menu principal al seleccionar la opció
 Hay varias estrategias para resolver el problema de acabar con la flota enemiga y buscar las zonas más probables para el ataque. Buscando información en distintas fuentes acabamos decidiendo crear tres estrategias de ataque distintas variando en efectividad. Cada una la utilizará la IA en función de la dificultad que selecciones en el menú principal.
 
 ### Dificultad fácil
-La IA en esta dificultad es la más sencilla de derrotar pues su comportamiento es bastante simple. En la dificultad fácil la IA eligirá celdas aleatorias del campo enemigo evitando repetir celdas atacadas previamente. De media esta estrategia toma 75 turnos en ganar.
+La IA en esta dificultad es la más sencilla de derrotar pues su comportamiento es bastante simple. En la dificultad fácil la IA eligirá celdas aleatorias del campo enemigo evitando repetir celdas atacadas previamente. De media esta estrategia toma 78 turnos en ganar.
 
 ### Dificultad intermedia
 La IA en esta dificultad es bastante más difícil de derrotar comparada con la anterior. Una propiedad del tablero, que aprovechamos con esta estrategia, es que la nave más pequeña ocupa dos casillas y que solo pueden colocarse en horizontal o vertical.  
@@ -56,3 +56,7 @@ La forma de aprovecharse de la dificultad máxima es colocando las naves en los 
 ### Ejemplo colocación aleatoria
 
 ### Comparación de resultados
+
+## Recursos y bibliografía
+- [Blog de datagenetics](https://datagenetics.com/blog/december32011/index.)
+- [VSauce2 video](https://youtu.be/LbALFZoRrw8)
