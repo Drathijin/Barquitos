@@ -32,7 +32,7 @@ public class IABehaviour : MonoBehaviour
     private void lookForPosition(ref int x, ref int y, int length, Fleet myFleet, bool close, bool horizontal, bool center)
     {
         int targetX, targetY;
-        if (close && center || center)
+        if (center)
         {
             targetX = 4;
             targetY = 4;
