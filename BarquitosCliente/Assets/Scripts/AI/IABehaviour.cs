@@ -11,11 +11,6 @@ public class IABehaviour : MonoBehaviour
     double closerPriority = 0.5;
     double horizontalPriority = 0.5;
 
-    private void Awake()
-    {
-        generator_ = new System.Random();
-    }
-
     public virtual AttackData Attack()
     {
         return new AttackData();
@@ -66,6 +61,7 @@ public class IABehaviour : MonoBehaviour
     }
     public void Setup(Fleet myFleet)
     {
+        generator_ = new System.Random();
         int lastX = -1, lastY = -1;
         List<int> ships = new List<int>();
         ships.Add(2);
@@ -81,9 +77,14 @@ public class IABehaviour : MonoBehaviour
             horizontal = generator_.NextDouble() <= horizontalPriority;
             close = generator_.NextDouble() <= closerPriority;
             lookForPosition(ref lastX, ref lastY, shipLength, myFleet, close, horizontal, center);
+            //BattleShipViewer bsVw = Instantiate(GameManager.Instance().battleshipPrefab_, GameManager.Instance().enemyWater_).GetComponent<BattleShipViewer>();
+            //bsVw.SetSize(shipLength);
+            //BattleShip bs = bsVw.BattleShip();
             BattleShip bs = new BattleShip(shipLength);
             bs.horizontal = horizontal;
             myFleet.AddBattleShip(bs, lastX, lastY);
+            //bsVw.transform.position = myFleet.GetGrid().GetPos(lastX, lastY).transform.position;
+            //bsVw.gameObject.SetActive(false);
             Debug.LogError("x: " + lastX + " y: " + lastY + " horizontal: " + horizontal + " - " + shipLength);
         }
     }

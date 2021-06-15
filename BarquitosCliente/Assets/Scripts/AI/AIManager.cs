@@ -37,6 +37,7 @@ public class AIManager : MonoBehaviour
         eb.SetPriorities(aiData.centerPriority, aiData.closerPriority, aiData.horizontalPriority);
 
         addBehaviour(name, eb);
+        g.SetActive(true);
     }
 
     void SetupFleet()
@@ -65,6 +66,10 @@ public class AIManager : MonoBehaviour
                 break;
             case GameManager.GameState.ATTACKING:
                 ResolveTurn();
+                break;
+            case GameManager.GameState.END:
+                behaviours_.Clear();
+                nextAttacks_.Clear();
                 break;
             default:
                 break;

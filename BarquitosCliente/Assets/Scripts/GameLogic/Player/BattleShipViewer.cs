@@ -13,6 +13,7 @@ public class BattleShipViewer : MonoBehaviour
     Vector3 startPosition_;
     [SerializeField]
     Image img_;
+    Image imgCmp_;
 
     RectTransform tr_;
 
@@ -22,7 +23,14 @@ public class BattleShipViewer : MonoBehaviour
     {
         tr_ = GetComponent<RectTransform>();
         startPosition_ = transform.position;
-        btShip_ = new BattleShip(size);
+        SetSize(size);
+        imgCmp_ = GetComponent<Image>();
+    }
+
+    private void OnEnable()
+    {
+        if (imgCmp_)
+            imgCmp_.enabled = true;
     }
 
     private void Update()
@@ -38,6 +46,15 @@ public class BattleShipViewer : MonoBehaviour
             else if (Input.GetMouseButtonDown(1))
                 RotateShip();
         }
+    }
+
+    public void SetSize(int size)
+    {
+        if(!tr_)
+            tr_ = GetComponent<RectTransform>();
+        this.size = size;
+        tr_.rect.Set(tr_.rect.x, tr_.rect.y, 60 * size, 60);
+        btShip_ = new BattleShip(size);
     }
 
     private void RotateShip()
@@ -71,5 +88,12 @@ public class BattleShipViewer : MonoBehaviour
             grabbed = true;
             img_.raycastTarget = false;
         }
+    }
+
+    private void OnDisable()
+    {
+        if(!imgCmp_)
+            imgCmp_ = GetComponent<Image>(); ;
+        imgCmp_.enabled = false;
     }
 }

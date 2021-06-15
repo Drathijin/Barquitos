@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject buttonsPrefabs_;
 
-    private Transform enemyWater_;
+    public Transform enemyWater_;
 
     private GameState state_ = GameState.PREPARING;
 
@@ -47,6 +47,12 @@ public class GameManager : MonoBehaviour
     private GameType gameType_ = GameType.AI;
 
     private AIData aiSetup_ = new AIData();
+
+    private WInnerText winText_;
+
+    private ResultText resultText_;
+
+    public GameObject battleshipPrefab_;
 
     private void Awake()
     {
@@ -115,7 +121,7 @@ public class GameManager : MonoBehaviour
                         break;
                     }
             }
-					ChangeState(GameState.PREPARING);
+            ChangeState(GameState.PREPARING);
         }
     }
 
@@ -128,16 +134,17 @@ public class GameManager : MonoBehaviour
     {
         state_ = state;
 
-				if(playerMng_)
-        	playerMng_.OnStateChanged(state);
+
+        if (button_)
+            button_.OnStateChanged(state);
+
+        if (playerMng_)
+            playerMng_.OnStateChanged(state);
 
         if (aiManager_)
             aiManager_.OnStateChanged(state);
         else if (netManager_)
             netManager_.OnStateChanged(state);
-
-        if(button_)
-					button_.OnStateChanged(state);
 
         if (state == GameState.ATTACKING)
             Invoke("DelayBorrar", 0f);
@@ -150,10 +157,20 @@ public class GameManager : MonoBehaviour
 
     public void OnReadyClick()
     {
-        if (state_ == GameState.PREPARING)
-            ChangeState(GameState.SELECTING);
-        else if (state_ == GameState.SELECTING)
-            ChangeState(GameState.ATTACKING);
+        switch (state_)
+        {
+            case GameState.PREPARING:
+                ChangeState(GameState.SELECTING);
+                break;
+            case GameState.SELECTING:
+                ChangeState(GameState.ATTACKING);
+                break;
+            case GameState.END:
+                LoadLevel("Menu");
+                break;
+            default:
+                break;
+        }
 
     }
     public void SetReadyButton(ReadyButton b)
@@ -192,7 +209,8 @@ public class GameManager : MonoBehaviour
         return fleets_[id];
     }
 
-    public void NextFleet() {
+    public void NextFleet()
+    {
         enemyFleets_[currentEnemyFleet_].gameObject.SetActive(false);
         currentEnemyFleet_ = ++currentEnemyFleet_ % enemyFleets_.Count;
         enemyFleets_[currentEnemyFleet_].gameObject.SetActive(true);
@@ -241,18 +259,20 @@ public class GameManager : MonoBehaviour
     public void PlayerLost()
     {
         Debug.Log("YOU LOSE");
-				FleetLost(playerMng_.GetFleet().Name());
+        FleetLost(playerMng_.GetFleet().Name());
     }
 
     public void FleetLost(string fleet)
     {
         fleets_.Remove(fleet);
-				if(fleets_.Count == 1)
-				{
-					Debug.Log("GAME END");
-        	Debug.Log(fleets_.First().Key+" WINS");
-        	ChangeState(GameState.END);
-				}
+        if (fleets_.Count == 1)
+        {
+            Debug.Log("GAME END");
+            Debug.Log(fleets_.First().Key + " WINS");
+            winText_.OnEnd(fleets_.First().Key);
+            resultText_.OnEnd(fleets_.First().Key == playerMng_.GetFleet().Name());
+            ChangeState(GameState.END);
+        }
     }
 
     public void FleetLost(Fleet fleet)
@@ -263,6 +283,18 @@ public class GameManager : MonoBehaviour
     public void SetAISetup(AIData data)
     {
         aiSetup_ = data;
+    }
+
+    public void SetResultText(ResultText text)
+    {
+        resultText_ = text;
+        text.gameObject.SetActive(false);
+    }
+
+    public void SetWinnerText(WInnerText text)
+    {
+        winText_ = text;
+        text.gameObject.SetActive(false);
     }
 
     public void Exit()

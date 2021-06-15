@@ -42,6 +42,9 @@ public class ReadyButton : MonoBehaviour
                 text_.text = "ATTACKING";
                 button_.interactable = false;
                 break;
+            case GameManager.GameState.END:
+                text_.text = "return";
+                break;
             default:
                 break;
         }

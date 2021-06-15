@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonsPrefabs_: {fileID: 7299291772615314326, guid: 9d7d3c18b4ab2d245afab9ae6901c45d, type: 3}
-  enemyWater_: {fileID: 0}
+  battleshipPrefab_: {fileID: 2809488665213289086, guid: c40d90e3d7b936e40af81e2120cd04fe, type: 3}
