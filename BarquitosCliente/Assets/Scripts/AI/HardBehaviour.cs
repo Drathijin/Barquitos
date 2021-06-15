@@ -10,7 +10,8 @@ public class HardBehaviour : IABehaviour
 	List<int> sizes_ = new List<int>();
 	Vector2Int hit_;
 	Vector2Int[] directions_;
-	List<Vector2Int> possibleBoats_;
+	Queue<Vector2Int> possibleBoats_;
+	Queue<Vector2Int> probableBoats_;
 	bool[,] hitHistory_;
 	bool[,] tries_;
 
@@ -29,7 +30,8 @@ public class HardBehaviour : IABehaviour
 		directions_[2] = new Vector2Int(0,-1);
 		directions_[3] = new Vector2Int(0,1);
 		
-		possibleBoats_ = new List<Vector2Int>();
+		possibleBoats_ = new Queue<Vector2Int>();
+		probableBoats_ = new Queue<Vector2Int>();
 		
 		hitHistory_ = new bool[10,10];
 		tries_ = new bool[10,10];
@@ -125,11 +127,6 @@ public class HardBehaviour : IABehaviour
 		hit_.y=maxY;
 		Debug.Log(max+" "+maxX+" "+maxY);
 	}
-	private void resetHit()
-	{
-		hit_.x = -1;
-		hit_.y = -1;
-	}
 
 	private bool seek()
 	{
@@ -143,9 +140,8 @@ public class HardBehaviour : IABehaviour
 	private void destroy()
 	{
 		//Pick one from the possible list
-		int position = generator_.Next(0,possibleBoats_.Count);
-		Vector2Int vPosition = possibleBoats_[position];
-		possibleBoats_.RemoveAt(position);
+		
+		Vector2Int vPosition = (probableBoats_.Count > 0) ? probableBoats_.Dequeue() : possibleBoats_.Dequeue();
 		hit_.x = vPosition.x;
 		hit_.y = vPosition.y;
 	}
@@ -154,15 +150,34 @@ public class HardBehaviour : IABehaviour
 		//We landed a hit, add all other posible cells to de possible list
 		if(checkHit())
 		{
-			foreach (var dir in directions_)
+			if(fleet_.GetGrid().GetPos(hit_.x,hit_.y).Data().Ship().Destroyed())
 			{
-				Vector2Int res = hit_+dir;
-				if((res.x >= 0 && res.x < 10 && res.y >= 0 && res.y < 10)&&
-					!hitHistory_[res.x,res.y])
-					{
-						Debug.Log("Adding: "+res.x+" "+res.y);
-						possibleBoats_.Add(hit_+dir);
-					}
+				possibleBoats_.Clear();
+			}
+			else
+			{
+				foreach (var dir in directions_)
+				{
+					Vector2Int res = hit_+dir;
+					if((res.x >= 0 && res.x < 10 && res.y >= 0 && res.y < 10))
+						{
+							Debug.Log("Adding: "+res.x+" "+res.y);
+							if(!hitHistory_[res.x,res.y])
+							{
+								int i=0;
+								while((res+dir*i).x <10 && (res+dir*i).y<10 && (res+dir*i).x>=0 &&(res+dir*i).y>=0
+											 && hitHistory_[(res+dir*i).x,(res+dir*i).y]){i++;}
+								if(((res+dir*i).x <10 && (res+dir*i).y<10 && (res+dir*i).x>=0 &&(res+dir*i).y>=0)&&!probableBoats_.Contains(res+dir*i))
+									probableBoats_.Enqueue(res+dir*i);
+
+								if(((hit_-dir).x <10 && (hit_-dir).y<10 && (hit_-dir).x>=0 &&(hit_-dir).y>=0)&&!probableBoats_.Contains(hit_-dir)
+								&&!hitHistory_[(hit_-dir).x,(hit_-dir).y])
+									probableBoats_.Enqueue(hit_- dir);
+							}
+							else if(!probableBoats_.Contains(res) && !possibleBoats_.Contains(res))
+								possibleBoats_.Enqueue(res);
+						}
+				}
 			}
 		}
 	}

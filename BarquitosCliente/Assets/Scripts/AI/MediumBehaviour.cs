@@ -94,15 +94,22 @@ public class MediumBehaviour : IABehaviour
 		//We landed a hit, add all other posible cells to de possible list
 		if(checkHit())
 		{
-			foreach (var dir in directions_)
+			if(fleet_.GetGrid().GetPos(hit_.x,hit_.y).Data().Ship().Destroyed())
 			{
-				Vector2Int res = hit_+dir;
-				if((res.x >= 0 && res.x < 10 && res.y >= 0 && res.y < 10)&&
-					!hitHistory_[res.x,res.y])
-					{
-						Debug.Log("Adding: "+res.x+" "+res.y);
-						possibleBoats_.Add(hit_+dir);
-					}
+				possibleBoats_.Clear();
+			}
+			else
+			{
+				foreach (var dir in directions_)
+				{
+					Vector2Int res = hit_+dir;
+					if((res.x >= 0 && res.x < 10 && res.y >= 0 && res.y < 10)&&
+						!hitHistory_[res.x,res.y])
+						{
+							Debug.Log("Adding: "+res.x+" "+res.y);
+							possibleBoats_.Add(hit_+dir);
+						}
+				}
 			}
 		}
 	}

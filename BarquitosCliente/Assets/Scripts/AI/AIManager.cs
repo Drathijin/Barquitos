@@ -4,34 +4,53 @@ using UnityEngine;
 
 public class AIManager : MonoBehaviour
 {
-
-
     [SerializeField]
     private Dictionary<string, IABehaviour> behaviours_;
     private Dictionary<string, AttackData> nextAttacks_;
 
-    public void Setup(int nFleets)
+    public void Setup(AIData aiData)
     {
         behaviours_ = new Dictionary<string, IABehaviour>();
         nextAttacks_ = new Dictionary<string, AttackData>();
         GameManager.Instance().SetAIManager(this);
+        string name = "AIFleet";
+        GameObject g = GameManager.Instance().AddEnemyFleet(name, true);
+        IABehaviour eb;
 
-        for (int i = 0; i < nFleets; i++)
-            GameManager.Instance().AddEnemyFleet("AIFleet" + i, true);
+        switch (aiData.diff)
+        {
+            case Difficulty.EASY:
+                eb = g.AddComponent<EasyBehaviour>();
+                break;
+
+            case Difficulty.MEDIUM:
+                eb = g.AddComponent<MediumBehaviour>();
+                break;
+
+            case Difficulty.HARD:
+                eb = g.AddComponent<HardBehaviour>();
+                break;
+            default:
+                eb = g.AddComponent<EasyBehaviour>();
+                break;
+        }
+        eb.SetPriorities(aiData.centerPriority, aiData.closerPriority, aiData.horizontalPriority);
+
+        addBehaviour(name, eb);
     }
 
     void SetupFleet()
     {
-			foreach (var item in behaviours_)
-			{
-				Debug.LogError(item.Key);
-				item.Value.Setup(GameManager.Instance().GetFleet(item.Key));
-			}
+        foreach (var item in behaviours_)
+        {
+            Debug.LogError(item.Key);
+            item.Value.Setup(GameManager.Instance().GetFleet(item.Key));
+        }
     }
 
     public void addBehaviour(string id, IABehaviour ia)
     {
-			behaviours_[id] = ia;
+        behaviours_[id] = ia;
     }
 
     public void OnStateChanged(GameManager.GameState state)
@@ -39,7 +58,7 @@ public class AIManager : MonoBehaviour
         switch (state)
         {
             case GameManager.GameState.PREPARING:
-								SetupFleet();
+                SetupFleet();
                 break;
             case GameManager.GameState.SELECTING:
                 ManageTurn();
@@ -54,20 +73,20 @@ public class AIManager : MonoBehaviour
 
     public void ManageTurn()    // Tomar la decision de ataque en el turno y guardarla para el ResolveTurn
     {
-				Debug.Log("ManageTurn");
+        Debug.Log("ManageTurn");
         nextAttacks_.Clear();
         foreach (var item in behaviours_)
         {
-						Debug.Log(item.Key);
+            Debug.Log(item.Key);
             nextAttacks_[item.Key] = item.Value.Attack();
-						var fleet = GameManager.Instance().GetFleet(item.Key);
-						if(fleet.IsDestroyed())
-							GameManager.Instance().FleetLost(item.Key);
+            var fleet = GameManager.Instance().GetFleet(item.Key);
+            if (fleet.IsDestroyed())
+                GameManager.Instance().FleetLost(fleet);
         }
     }
     public void ResolveTurn()   // Ejecutar la decisi�n de ataque tomada en el ManageTurn
     {
-				Debug.Log("ResolveTurn");
+        Debug.Log("ResolveTurn");
         var list = GameManager.Instance().GetPlayerList();
         foreach (var attack in nextAttacks_)
         {
