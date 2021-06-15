@@ -5,8 +5,9 @@ using UnityEngine;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField]
-    GameObject mainGroup, aiGroup, onlineGroup;
-
+    GameObject mainGroup, onlineGroup, aiGroup;
+    [SerializeField]
+    AIDataGroup dataGroup_;
 
     public void Start()
     {
@@ -16,8 +17,8 @@ public class MenuManager : MonoBehaviour
     public void Back()
     {
         mainGroup.SetActive(true);
-        aiGroup.SetActive(false);
         onlineGroup.SetActive(false);
+        aiGroup.SetActive(false);
     }
 
     public void AI()
@@ -32,9 +33,10 @@ public class MenuManager : MonoBehaviour
         onlineGroup.SetActive(true);
     }
 
-    public void LoadAILevel(bool br)
+    public void LoadAILevel()
     {
-        GameManager.Instance().SetGameType(br ? GameManager.GameType.BRAI : GameManager.GameType.SPAI);
+        GameManager.Instance().SetGameType(GameManager.GameType.AI);
+        GameManager.Instance().SetAISetup(dataGroup_.data_);
         GameManager.Instance().LoadLevel("Game");
     }
 

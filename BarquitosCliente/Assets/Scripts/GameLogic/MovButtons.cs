@@ -10,6 +10,8 @@ public class MovButtons : MonoBehaviour
 
     void Start()
     {
+        if (GameManager.Instance().GetGameType() == GameManager.GameType.AI)
+            gameObject.SetActive(false);
         Button b = GetComponent<Button>();
         b.onClick.AddListener(OnClick);
     }

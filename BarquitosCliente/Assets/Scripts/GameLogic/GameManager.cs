@@ -17,8 +17,7 @@ public class GameManager : MonoBehaviour
 
     public enum GameType
     {
-        SPAI,
-        BRAI,
+        AI,
         ONLINE
     }
 
@@ -45,7 +44,9 @@ public class GameManager : MonoBehaviour
 
     private int currentEnemyFleet_ = -1;
 
-    private GameType gameType = GameType.SPAI;
+    private GameType gameType_ = GameType.AI;
+
+    private AIData aiSetup_ = new AIData();
 
     private void Awake()
     {
@@ -71,7 +72,12 @@ public class GameManager : MonoBehaviour
 
     public void SetGameType(GameType type)
     {
-        gameType = type;
+        gameType_ = type;
+    }
+
+    public GameType GetGameType()
+    {
+        return gameType_;
     }
 
     public void SetGameType(int type)
@@ -92,13 +98,12 @@ public class GameManager : MonoBehaviour
         {
             enemyWater_ = GameObject.Find("WaterOponent").transform;
             GameObject manager = new GameObject("EnemyManager");
-            switch (gameType)
+            switch (gameType_)
             {
-                case GameType.SPAI:
-                case GameType.BRAI:
+                case GameType.AI:
                     {
                         AIManager ai = manager.AddComponent<AIManager>();
-                        ai.Setup(gameType == GameType.SPAI ? 1 : 10);
+                        ai.Setup(aiSetup_);
                         aiManager_ = ai;
                         break;
                     }
@@ -161,12 +166,12 @@ public class GameManager : MonoBehaviour
         playerMng_ = mng;
     }
 
-    public void AddEnemyFleet(string name, bool ai)
+    public GameObject AddEnemyFleet(string name, bool ai)
     {
         if (!enemyWater_)
         {
             Debug.LogError("No enemyWater found");
-            return;
+            return null;
         }
         GameObject g = Instantiate(buttonsPrefabs_, enemyWater_);
 
@@ -179,12 +184,7 @@ public class GameManager : MonoBehaviour
         else
             g.SetActive(false);
 
-        //Asumimos or ahora easyAI
-        if (ai)
-        {
-            MediumBehaviour eb = g.AddComponent<MediumBehaviour>();
-            aiManager_.addBehaviour(name, (IABehaviour)eb);
-        }
+        return g;
     }
 
     public Fleet GetFleet(string id)
@@ -253,6 +253,16 @@ public class GameManager : MonoBehaviour
         	Debug.Log(fleets_.First().Key+" WINS");
         	ChangeState(GameState.END);
 				}
+    }
+
+    public void FleetLost(Fleet fleet)
+    {
+        FleetLost(fleet.Name());
+    }
+
+    public void SetAISetup(AIData data)
+    {
+        aiSetup_ = data;
     }
 
     public void Exit()
