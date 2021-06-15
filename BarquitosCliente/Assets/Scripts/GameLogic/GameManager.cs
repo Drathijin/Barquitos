@@ -182,7 +182,7 @@ public class GameManager : MonoBehaviour
         //Asumimos or ahora easyAI
         if (ai)
         {
-            MediumBehaviour eb = g.AddComponent<MediumBehaviour>();
+            HardBehaviour eb = g.AddComponent<HardBehaviour>();
             aiManager_.addBehaviour(name, (IABehaviour)eb);
         }
     }

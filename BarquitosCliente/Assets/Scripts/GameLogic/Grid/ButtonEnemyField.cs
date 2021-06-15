@@ -19,7 +19,6 @@ public class ButtonEnemyField : GridObject
     {
         if (GameManager.Instance().State() != GameManager.GameState.SELECTING)
             return;
-        Debug.Log("X: " + (data_.GetX() + 1) + " Y: " + (data_.GetY() + 1));
 
         var gm = GameManager.Instance();
         var ce = gm.PlayerManager();

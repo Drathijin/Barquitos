@@ -6,10 +6,10 @@ public class IABehaviour : MonoBehaviour
   public Fleet fleet_; //Grid of buttons
   protected System.Random generator_;
 
-    //Values between 1 or 0
-    double centerPriority=0.5;
-    double closerPriority=0.5;
-    double horizontalPriority=0.5;
+  //Values between 1 or 0
+  double centerPriority=0.5;
+  double closerPriority=0.5;
+  double horizontalPriority=0.5;
   
   private void Awake() {
     generator_ = new System.Random();
