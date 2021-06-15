@@ -130,7 +130,7 @@ public class HardBehaviour : IABehaviour
 
 	private bool seek()
 	{
-		if(possibleBoats_.Count == 0)
+		if(possibleBoats_.Count == 0 && probableBoats_.Count == 0)
 		{
 			CalculateProbabilities();
 			return true;
@@ -161,8 +161,7 @@ public class HardBehaviour : IABehaviour
 					Vector2Int res = hit_+dir;
 					if((res.x >= 0 && res.x < 10 && res.y >= 0 && res.y < 10))
 						{
-							Debug.Log("Adding: "+res.x+" "+res.y);
-							if(!hitHistory_[res.x,res.y])
+							if(hitHistory_[res.x,res.y])
 							{
 								int i=0;
 								while((res+dir*i).x <10 && (res+dir*i).y<10 && (res+dir*i).x>=0 &&(res+dir*i).y>=0
