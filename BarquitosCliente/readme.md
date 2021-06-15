@@ -44,15 +44,35 @@ La forma de aprovecharse de la dificultad máxima es colocando las naves en los 
 ## Pruebas
 
 ### Ejemplo fácil
+![image](https://user-images.githubusercontent.com/48621751/122024649-eab7cf00-cdc8-11eb-84c4-271574b3e91f.png)  
+Intentos: 85  
+Media teórica: 75  
 
 ### Ejemplo intermedio
+![image](https://user-images.githubusercontent.com/48621751/122025294-8d704d80-cdc9-11eb-8208-9e9a5b16379e.png)  
+Intentos: 63  
+Media teórica: 65  
 
 ### Ejemplo difícil
+![image](https://user-images.githubusercontent.com/48621751/122025880-07083b80-cdca-11eb-87f0-a8a4519472d9.png)  
+Intentos: 56  
+Media teórica: 55  
 
 ### Ejemplo de truquito contra IA difícil
+![image](https://user-images.githubusercontent.com/48621751/122026369-6e25f000-cdca-11eb-9f5f-3e6f0f9d4846.png)  
+Intentos: 66  
+Media teórica: 55  
 
 ### Ejemplo colocación agrupados
 
 ### Ejemplo colocación aleatoria
 
 ### Comparación de resultados
+- Tiempo medio en derribar la primera nave
+  - Fácil:
+  - Intermedia:
+  - Difícil:
+- Tiempo medio en encontrar la primera nave (suponiendo posiciones aleatorias)
+  - Fácil:
+  - Intermedia:
+  - Difícil:
