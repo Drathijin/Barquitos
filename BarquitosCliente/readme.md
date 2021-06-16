@@ -64,8 +64,13 @@ Intentos: 66
 Media teórica: 55  
 
 ## Ejemplo colocación agrupados
+![image](https://user-images.githubusercontent.com/48621751/122278748-88092500-cee7-11eb-8214-79f271859049.png)
 
-## Ejemplo colocación aleatoria
+## Ejemplo colocación horizontal y aleatoria
+![image](https://user-images.githubusercontent.com/48621751/122278777-92c3ba00-cee7-11eb-9dea-1f482a065c8f.png)
+
+## Ejemplo colocación vertical y centrada
+![image](https://user-images.githubusercontent.com/48621751/122278876-b2f37900-cee7-11eb-92a4-8a243c305516.png)
 
 ## Comparación de resultados
 - Tiempo medio en derribar la primera nave
