@@ -10,9 +10,13 @@ public class ButtonEnemyField : GridObject
     [SerializeField]
     Sprite selectedSpr;
 
+    [SerializeField]
+    Image imgViewer_;
+
     private void Start()
     {
         btn_ = GetComponent<Button>();
+        imgViewer_.enabled = false;
     }
 
     public void OnClick()
@@ -28,6 +32,16 @@ public class ButtonEnemyField : GridObject
     public void Selected(bool selected)
     {
         img_.sprite = selected ? selected_ : default_;
+    }
+
+    private void Update()
+    {
+        if (GameManager.Instance().GetGameType() != GameManager.GameType.AI)
+            return;
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            imgViewer_.enabled = !imgViewer_.enabled && data_.Ship() != null;
+        }
     }
 
     protected override void HitState()

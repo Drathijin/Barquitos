@@ -52,8 +52,6 @@ public class GameManager : MonoBehaviour
 
     private ResultText resultText_;
 
-    public GameObject battleshipPrefab_;
-
     private void Awake()
     {
         if (instace_)
