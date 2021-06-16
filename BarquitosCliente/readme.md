@@ -63,7 +63,7 @@ Media teórica: 55
 Intentos: 66  
 Media teórica: 55  
 
- Ejemplo colocación agrupados
+## Ejemplo colocación agrupados
 
 ## Ejemplo colocación aleatoria
 

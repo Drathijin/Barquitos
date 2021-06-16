@@ -6,7 +6,7 @@ El proyecto es una recreación del clásico juego de mesa _"Hundir la flota"_ co
 
 ## Estructura de sub-proyectos
 Para más información sobre cada sub-proyecto entrar al README en cuestión.
-### [Inteligencia Artificial]()
+### [Inteligencia Artificial](https://github.com/Drathijin/Barquitos/tree/main/BarquitosCliente)
 ### [Redes - Librería de Sockets]()
 ### [Redes - Servidor en C#]()
 
