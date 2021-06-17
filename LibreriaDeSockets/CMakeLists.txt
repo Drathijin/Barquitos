@@ -10,8 +10,10 @@ set(SRC "")
 list(APPEND SRC "src/test.cc")
 list(APPEND SRC "src/test.h")
 
-add_library( socket SHARED ${SRC} )
-
 add_compile_definitions( EXPORT_SOCKET=1)
 
-install(TARGETS socket DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+add_library( socket SHARED ${SRC} )
+
+if(WIN32)
+  target_link_libraries(socket wsock32 ws2_32)
+endif()
