@@ -20,6 +20,8 @@
 #include <stdexcept>
 
 #include <ostream>
+#include <fcntl.h>
+
 extern "C"
 {
 	// -----------------------------------------------------------------------------

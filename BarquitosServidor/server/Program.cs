@@ -13,14 +13,18 @@ namespace server
 		static void Main(string[] args)
 		{
 				test(1,1);
-				using(Socket sock = new Socket("127.0.0.1", "49671")){
-					Console.Write(sock.Test());
-					Console.Write(sock.Test());
-					Console.Write(sock.Test() + 4);
-					Console.Write(args[0]);
-
-					foreach(string s in args)
-						Console.WriteLine(sock.Send(s+"\n", IntPtr.Zero));
+				using(Socket sock = new Socket("localhost", "8080")){
+					Console.WriteLine("Listening with IP 127.0.0.1 in port 8080");
+					sock.Bind();
+					
+					char[] buffer = new char[80]; 
+					while(buffer[0] != '!')
+					{
+						if(sock.Recv(buffer,80))
+							Console.Write(new string(buffer));
+						else
+							Console.WriteLine("whoopsie");
+					}
 				}
 		}
 	} 

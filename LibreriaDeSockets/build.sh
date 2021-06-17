@@ -1,3 +1,5 @@
 #!/bin/bash
 
-echo "Automatic build not implemented yet <3"
+cd build;
+cmake ../;
+cmake --build .;

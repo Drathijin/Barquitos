@@ -3,7 +3,7 @@
 
 
 #include <string.h>
-
+#include <errno.h>
 
 extern "C" void test(int a, int b){
 	printf("Test from c++ %d + %d = %d\n",a,b,a+b);
@@ -44,12 +44,11 @@ int Socket::recv(char* buff,int size, Socket *&sock)
   socklen_t sa_len = sizeof(struct sockaddr);
 
   char buffer[MAX_MESSAGE_SIZE];
-
   ssize_t bytes = ::recvfrom(sd, buffer, MAX_MESSAGE_SIZE, 0, &sa, &sa_len);
-
-  if (bytes <= 0)
+  
+	if (bytes <= 0)
   {
-    return -1;
+    return (errno == EWOULDBLOCK || errno == EAGAIN) ? 0 : -1;
   }
 
   if (sock != 0)
@@ -59,7 +58,7 @@ int Socket::recv(char* buff,int size, Socket *&sock)
 
   //obj.from_bin(buffer);
 	memccpy(buff,buffer,1,bytes);
-  return (bytes==size);
+  return bytes;
 }
 
 int Socket::send(char* buff, int size, const Socket &sock)
@@ -113,4 +112,16 @@ extern "C"
 	int SOCKET_API send_socket(void* sock,char* buff, int size, void* other){
 	return ((Socket*)sock)->send(buff,size,(const Socket &)(*(Socket*)other));
 	}
+	
+	int SOCKET_API recv_socket(void* sock, char*buff, int size)
+	{
+		Socket * s = 0;
+		return ((Socket*)sock)->recv(buff,size,s);
+	}
+
+	void SOCKET_API bind_socket(void* sock)
+	{
+		((Socket*)sock)->bind();
+	}
+
 }
