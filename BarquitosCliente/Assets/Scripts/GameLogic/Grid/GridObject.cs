@@ -49,7 +49,7 @@ public class GridObject : MonoBehaviour
         return false;
     }
 
-    void SetState(CellData.CellState state)
+    public void SetState(CellData.CellState state)
     {
         if (data_.State() == state)
             return;

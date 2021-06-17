@@ -82,6 +82,7 @@ public class IABehaviour : MonoBehaviour
             myFleet.AddBattleShip(bs, lastX, lastY);
             Debug.LogError("x: " + lastX + " y: " + lastY + " horizontal: " + horizontal + " - " + shipLength);
         }
+        GameManager.Instance().ReadyCheck(myFleet.Name(), true);
     }
 
     public void SetPriorities(double cenP, double clP, double hP)

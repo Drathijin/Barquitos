@@ -12,6 +12,7 @@ public class PlayerManager : MonoBehaviour
 
     ButtonEnemyField currentAttackButton_;
 
+
     private void Start()
     {
         btsMover_ = GetComponent<BattleShipMover>();
@@ -22,38 +23,43 @@ public class PlayerManager : MonoBehaviour
 
         if (GameManager.Instance())
         {
-						Debug.Log("Adding fleet to GM");
+            Debug.Log("Adding fleet to GM");
             GameManager.Instance().SetPlayerManager(this);
             GameManager.Instance().AddExistingFleet(fleet_);
-            if (GameManager.Instance().State() != GameManager.GameState.PREPARING)
+            if (GameManager.Instance().State() != GameManager.GameState.PREPARING
+            || GameManager.Instance().FleetsReady[fleet_.Name()])
                 btsMover_.enabled = false;
         }
     }
 
     public bool SelectBattleShip(BattleShipViewer ship)
     {
-        if (GameManager.Instance().State() != GameManager.GameState.PREPARING)
+        if (GameManager.Instance().State() != GameManager.GameState.PREPARING
+            || GameManager.Instance().FleetsReady[fleet_.Name()])
             return false;
         return btsMover_.SelectBattleShip(ship);
     }
 
     public void ReleaseBattleShip(BattleShipViewer ship)
     {
-        if (GameManager.Instance().State() != GameManager.GameState.PREPARING)
+        if (GameManager.Instance().State() != GameManager.GameState.PREPARING
+             || GameManager.Instance().FleetsReady[fleet_.Name()])
             return;
         btsMover_.ReleaseBattleShip(ship);
     }
 
     public void OnGridHover(PlayerGridPosition pos)
     {
-        if (GameManager.Instance().State() != GameManager.GameState.PREPARING)
+        if (GameManager.Instance().State() != GameManager.GameState.PREPARING
+            || GameManager.Instance().FleetsReady[fleet_.Name()])
             return;
         btsMover_.OnGridHover(pos);
     }
 
     public void OnGridHoverExit(PlayerGridPosition pos)
     {
-        if (GameManager.Instance().State() != GameManager.GameState.PREPARING)
+        if (GameManager.Instance().State() != GameManager.GameState.PREPARING
+            || GameManager.Instance().FleetsReady[fleet_.Name()])
             return;
         btsMover_.OnGridHoverExit(pos);
     }
@@ -89,7 +95,8 @@ public class PlayerManager : MonoBehaviour
 
     void ManageTurn()
     {
-        if (fleet_.IsDestroyed())
+        if (GameManager.Instance().GetGameType() == GameManager.GameType.AI &&
+            fleet_.IsDestroyed())
             GameManager.Instance().PlayerLost();
     }
 
