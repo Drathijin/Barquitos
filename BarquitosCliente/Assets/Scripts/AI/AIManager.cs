@@ -87,6 +87,8 @@ public class AIManager : MonoBehaviour
             var fleet = GameManager.Instance().GetFleet(item.Key);
             if (fleet.IsDestroyed())
                 GameManager.Instance().FleetLost(fleet);
+            else
+                GameManager.Instance().ReadyCheck(fleet.Name(), true);
         }
     }
     public void ResolveTurn()   // Ejecutar la decisi�n de ataque tomada en el ManageTurn

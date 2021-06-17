@@ -7,6 +7,9 @@ public class ReadyButton : MonoBehaviour
 {
     Button button_;
     Text text_;
+    Image imgCmp_;
+
+    bool ready = false;
 
     void Start()
     {
@@ -17,19 +20,23 @@ public class ReadyButton : MonoBehaviour
             button_.onClick.AddListener(OnReadyClick);
         }
 
+        imgCmp_ = GetComponent<Image>();
         text_ = GetComponentInChildren<Text>();
         text_.text = "READY";
     }
 
     void OnReadyClick()
     {
-        // CABMIAR COLOR ETC
+        ready = !ready;
+        imgCmp_.color = ready ? Color.grey : Color.white;
         GameManager.Instance().OnReadyClick();
     }
 
     public void OnStateChanged(GameManager.GameState state)
     {
         button_.interactable = true;
+        ready = false;
+        imgCmp_.color = Color.white;
         switch (state)
         {
             case GameManager.GameState.PREPARING:

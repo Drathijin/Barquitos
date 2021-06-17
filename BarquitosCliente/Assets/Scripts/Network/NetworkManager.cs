@@ -32,5 +32,10 @@ public class NetworkManager : MonoBehaviour
     }
     public void ResolveTurn() {     // Ejecutar la decisión de ataque tomada en el ManageTurn
         
-    }                
+    }              
+    
+    public void SendPlayer()
+    {
+        string name = GameManager.Instance().PlayerManager().GetFleet().Name();
+    }
 }

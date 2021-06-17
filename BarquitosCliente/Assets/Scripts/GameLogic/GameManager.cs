@@ -40,6 +40,14 @@ public class GameManager : MonoBehaviour
 
     private Dictionary<string, Fleet> fleets_ = new Dictionary<string, Fleet>();
 
+    private Dictionary<string, bool> fleetsReady_ = new Dictionary<string, bool>();
+
+    public Dictionary<string, bool> FleetsReady
+    {
+        get { return fleetsReady_; }
+        private set { fleetsReady_ = value; }
+    }
+
     private List<Fleet> enemyFleets_ = new List<Fleet>();
 
     private int currentEnemyFleet_ = -1;
@@ -51,6 +59,10 @@ public class GameManager : MonoBehaviour
     private WInnerText winText_;
 
     private ResultText resultText_;
+
+    public int Test { get { return test; } private set { test = value; } }
+    [SerializeField]
+    private int test = 0;
 
     private void Awake()
     {
@@ -114,7 +126,6 @@ public class GameManager : MonoBehaviour
                 case GameType.ONLINE:
                     {
                         NetworkManager net = manager.AddComponent<NetworkManager>();
-                        net.Setup(playerMng_.GetFleet().Name());
                         netManager_ = net;
                         break;
                     }
@@ -132,6 +143,7 @@ public class GameManager : MonoBehaviour
     {
         state_ = state;
 
+        ResetChecks();
 
         if (button_)
             button_.OnStateChanged(state);
@@ -153,7 +165,33 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.SELECTING);
     }
 
+
+    public void ReadyCheck(string name, bool set)
+    {
+        fleetsReady_[name] = set;
+
+        bool ready = true;
+
+        foreach (var b in fleetsReady_)
+            ready &= b.Value;
+
+        if (ready && fleetsReady_.Count > 1)
+            ReadyChange();
+    }
+
+    private void ResetChecks()
+    {
+        foreach (var b in fleets_)
+            fleetsReady_[b.Key] = false;
+    }
+
     public void OnReadyClick()
+    {
+        string plName = playerMng_.GetFleet().Name();
+        ReadyCheck(plName, !fleetsReady_[plName]);
+    }
+
+    private void ReadyChange()
     {
         switch (state_)
         {
@@ -169,8 +207,8 @@ public class GameManager : MonoBehaviour
             default:
                 break;
         }
-
     }
+
     public void SetReadyButton(ReadyButton b)
     {
         button_ = b;
@@ -179,6 +217,8 @@ public class GameManager : MonoBehaviour
     public void SetPlayerManager(PlayerManager mng)
     {
         playerMng_ = mng;
+        if (netManager_)
+            netManager_.SendPlayer();
     }
 
     public GameObject AddEnemyFleet(string name, bool ai)
@@ -193,6 +233,7 @@ public class GameManager : MonoBehaviour
         Fleet fleet = g.AddComponent<Fleet>();
         fleet.SetName(name);
         fleets_[name] = fleet;
+        fleetsReady_[name] = false;
         enemyFleets_.Add(fleet);
         if (currentEnemyFleet_ == -1)
             currentEnemyFleet_ = 0;
@@ -230,6 +271,7 @@ public class GameManager : MonoBehaviour
     public void AddExistingFleet(Fleet fleet)
     {
         fleets_[fleet.Name()] = fleet;
+        fleetsReady_[fleet.Name()] = false;
     }
 
     public void SetAIManager(AIManager ai)
