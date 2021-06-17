@@ -28,6 +28,18 @@ namespace server
 		[DllImport("socket", CallingConvention = CallingConvention.Cdecl)]
 		private static extern int recv_socket(IntPtr sock, [Out]char[] buff, int size);
 
+		[DllImport("socket")]
+		private static extern int Init_Sockets();
+		
+		[DllImport("socket")]
+		private static extern int Quit_Sockets();
+
+		public static void InitSockets(){
+			Init_Sockets();
+		}
+		public static void QuitSockets(){
+			Quit_Sockets();
+		}
 		private IntPtr internal_socket;
 
 		public Socket(String addr, String port)
