@@ -6,29 +6,3 @@
 
 #IncludeRegexTransform: 
 
-/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/src/test.cc
-iostream
-/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/src/iostream
-test.h
-/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/src/test.h
-string.h
--
-errno.h
--
-
-/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/src/test.h
-sys/socket.h
--
-sys/types.h
--
-netdb.h
--
-iostream
--
-stdexcept
--
-ostream
--
-fcntl.h
--
-

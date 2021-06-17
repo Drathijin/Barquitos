@@ -2,7 +2,7 @@
 #define SOCKET_H_
 
 #ifdef __WIN32__
-	#ifdef IMPORT_SOCKET
+	#ifdef EXPORT_SOCKET
 		#define SOCKET_API __declspec(dllexport)
 	#else
 		#define SOCKET_API __declspec(dllimport)
@@ -11,9 +11,26 @@
 	#define SOCKET_API
 #endif
 
+#ifdef _WIN32
+  /* See http://stackoverflow.com/questions/12765743/getaddrinfo-on-win32 */
+  #ifndef _WIN32_WINNT
+    #define _WIN32_WINNT 0x0501  /* Windows XP. */
+  #endif
+  #include <winsock2.h>
+  #include <Ws2tcpip.h>
+	using SOCKET_D = unsigned int;
+#else
+  /* Assume that any non-Windows platform uses POSIX-style sockets instead. */
+  #include <sys/socket.h>
+  #include <arpa/inet.h>
+  #include <netdb.h>  /* Needed for getaddrinfo() and freeaddrinfo() */
+  #include <unistd.h> /* Needed for close() */
+	using SOCKET_D = int;
+#endif
 
-#include <sys/socket.h>
-#include <sys/types.h>
+
+// #include <sys/socket.h>
+// #include <sys/types.h>
 #include <netdb.h>
 
 #include <iostream>
@@ -80,7 +97,17 @@ extern "C"
 			Socket(struct sockaddr * _sa, socklen_t _sa_len):sd(-1), sa(*_sa),
 					sa_len(_sa_len){};
 
-			virtual ~Socket(){};
+			virtual ~Socket()
+			{
+				  int status = 0;
+					#ifdef _WIN32
+						status = shutdown(sd, SD_BOTH);
+						if (status == 0) { status = closesocket(sd); }
+					#else
+						status = shutdown(sd, SHUT_RDWR);
+						if (status == 0) { status = close(sd); }
+					#endif
+			};
 
 			/**
 			 *  Recibe un mensaje de aplicación
@@ -131,7 +158,7 @@ extern "C"
 			/**
 			 *  Descriptor del socket
 			 */
-			int sd;
+			SOCKET_D sd;
 
 			/**
 			 *  Representación binaria del extremo, usada por servidor y cliente

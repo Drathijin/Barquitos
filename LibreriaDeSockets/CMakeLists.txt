@@ -9,8 +9,9 @@ message( ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
 set(SRC "")
 list(APPEND SRC "src/test.cc")
 list(APPEND SRC "src/test.h")
+
 add_library( socket SHARED ${SRC} )
 
-install(TARGETS socket
-    DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-    )
+add_compile_definitions( EXPORT_SOCKET=1)
+
+install(TARGETS socket DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

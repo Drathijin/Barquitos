@@ -124,4 +124,23 @@ extern "C"
 		((Socket*)sock)->bind();
 	}
 
+	int SOCKET_API Init_Sockets(void)
+	{
+		#ifdef _WIN32
+			WSADATA wsa_data;
+			return WSAStartup(MAKEWORD(1,1), &wsa_data);
+		#else
+			return 0;
+		#endif
+	}
+
+	int SOCKET_API Quit_Sockets(void)
+	{
+		#ifdef _WIN32
+			return WSACleanup();
+		#else
+			return 0;
+		#endif
+	}
+
 }
