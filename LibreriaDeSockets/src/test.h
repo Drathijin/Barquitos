@@ -122,14 +122,7 @@ extern "C"
 			 *
 			 *    @return 0 en caso de éxito o -1 si error (cerrar conexión)
 			 */
-		int recv(char *buff, int size, Socket *&sock);
-
-		int recv(char *buff, int size) //Descarta los datos del otro extremo
-		{
-			Socket *s = 0;
-
-			return recv(buff, size, s);
-		}
+		int recv(char *buff, int size, Socket*& sock);
 
 		/**
 			 *  Envía un mensaje de aplicación definido por un objeto Serializable.
@@ -179,7 +172,7 @@ extern "C"
 
 	SOCKET_API int send_socket(void *sock, char *buff, int size, void *other);
 
-	SOCKET_API int recv_socket(void *sock, char *buff, int size);
+	SOCKET_API int recv_socket(void *sock, char *buff, int size,void** s);
 
 	SOCKET_API void bind_socket(void *sock);
 

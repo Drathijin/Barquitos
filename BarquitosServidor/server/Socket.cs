@@ -26,7 +26,7 @@ namespace server
 		private static extern int send_socket(IntPtr sock, [Out]byte[] buff, int size, IntPtr other);
 
 		[DllImport("socket", CallingConvention = CallingConvention.Cdecl)]
-		private static extern int recv_socket(IntPtr sock, [Out]byte[] buff, int size);
+		private static extern int recv_socket(IntPtr sock, [Out]byte[] buff, int size, ref IntPtr o);
 
 		[DllImport("socket")]
 		private static extern int Init_Sockets();
@@ -41,6 +41,11 @@ namespace server
 			Quit_Sockets();
 		}
 		private IntPtr internal_socket;
+
+		public Socket(IntPtr ptr)
+		{
+			internal_socket = ptr;
+		}
 
 		public Socket(String addr, String port)
 		{
@@ -62,7 +67,7 @@ namespace server
 		}
 		public bool Send(byte[] s, IntPtr other)
 		{
-			int val = send_socket(internal_socket, s, s.Length+1, (other==IntPtr.Zero) ? internal_socket : other);
+			int val = send_socket(internal_socket, s, s.Length+1, other);
 			if(val == 1102 || val == 112) //Check for EAgain or EWouldBlock
 				return false;
 			else if(val >=0)
@@ -70,17 +75,19 @@ namespace server
 			else
 				throw new Exception("Error sending with socket. Error code: "+val);
 		}
-		public bool Send(ISerializable serializable)
+		public bool Send(ISerializable serializable, Socket other)
 		{
 			int size = (int)serializable.GetSize();
 			byte[] bytes = serializable.ToBin();;
-			bool ret = Send(bytes, IntPtr.Zero);
+			bool ret = Send(bytes, other.internal_socket);
 			return ret;
 		}
 
-		public bool Recv(byte[] buffer, int size)
+		public bool Recv(byte[] buffer, int size, out Socket other)
 		{
-			int val = recv_socket(internal_socket, buffer, size);
+			IntPtr o = new IntPtr();
+			int val = recv_socket(internal_socket, buffer, size, ref o);
+			other = new Socket(o);
 			if(val >0)
 				return true;
 			else if(val == 0)
@@ -89,11 +96,11 @@ namespace server
 				throw new Exception("Error recv with socket. Error code");
 		}
 
-		public bool Recv(ISerializable serializable)
+		public bool Recv(ISerializable serializable, out Socket other)
 		{
 			int size = (int)serializable.GetSize();
 			byte[] bytes = new byte[size];
-			bool ret = Recv(bytes, size);
+			bool ret = Recv(bytes, size, out other);
 			serializable.FromBin(bytes);
 			return ret;
 		}
