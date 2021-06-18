@@ -1,7 +1,3 @@
-/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/build/CMakeFiles/install/strip.dir
-/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/build/CMakeFiles/install/local.dir
-/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/build/CMakeFiles/install.dir
-/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/build/CMakeFiles/list_install_components.dir
-/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/build/CMakeFiles/rebuild_cache.dir
-/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/build/CMakeFiles/edit_cache.dir
-/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/build/CMakeFiles/socket.dir
+G:/MisCosas/UnityProjects/Barquitos/LibreriaDeSockets/build/CMakeFiles/socket.dir
+G:/MisCosas/UnityProjects/Barquitos/LibreriaDeSockets/build/CMakeFiles/ALL_BUILD.dir
+G:/MisCosas/UnityProjects/Barquitos/LibreriaDeSockets/build/CMakeFiles/ZERO_CHECK.dir

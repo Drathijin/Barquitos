@@ -1,1 +1,0 @@
-/home/drathi/DEV/Uni-Tercero/Barquitos/barquitos/LibreriaDeSockets/../BarquitosServidor/server/bin/Debug/net5.0/libsocket.so
