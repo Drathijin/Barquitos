@@ -13,7 +13,7 @@ namespace server
 		static void Main(string[] args)
 		{
 				Socket.InitSockets();
-				using(Socket sock = new Socket("localhost", "8080")){
+				using(Socket sock = new Socket("192.168.1.53", "8080")){
 					Console.WriteLine("Listening with IP 127.0.0.1 in port 8080");
 					sock.Bind();
 					

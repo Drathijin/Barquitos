@@ -1,3 +1,0 @@
-G:/MisCosas/UnityProjects/Barquitos/LibreriaDeSockets/build/CMakeFiles/socket.dir
-G:/MisCosas/UnityProjects/Barquitos/LibreriaDeSockets/build/CMakeFiles/ALL_BUILD.dir
-G:/MisCosas/UnityProjects/Barquitos/LibreriaDeSockets/build/CMakeFiles/ZERO_CHECK.dir
