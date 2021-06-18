@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Text;
 
 public class ISerializable {
 	protected uint size_;
@@ -27,17 +28,14 @@ public class Message : ISerializable
 	override public Byte[] ToBin(){
 		data_ = new Byte[size_];
 
-		for(int i = 0; i+1<MAX_NAME_SIZE;i++)
-		{
-			data_[2*i]   = BitConverter.GetBytes((i<name_.Length) ?  name_[i] : '\0')[0];
-			data_[2*i+1] = BitConverter.GetBytes((i<name_.Length) ?  name_[i] : '\0')[1];
-		}
+			var aux = System.Text.UnicodeEncoding.Unicode.GetBytes(name_);
+			Array.Resize<Byte>(ref aux, MAX_NAME_SIZE);
 
-		for(int i = 0; i+1<MAX_TEXT_SIZE;i++)
-		{
-			data_[MAX_NAME_SIZE+2*i]   = BitConverter.GetBytes((i<text_.Length) ?  text_[i] : '\0')[0];
-			data_[MAX_NAME_SIZE+2*i+1] = BitConverter.GetBytes((i<text_.Length) ?  text_[i] : '\0')[1];
-		}
+			var aux2 = System.Text.UnicodeEncoding.Unicode.GetBytes(text_);
+			Array.Resize<Byte>(ref aux2, MAX_TEXT_SIZE);
+			
+			aux.CopyTo(data_, 0);
+			aux2.CopyTo(data_, MAX_NAME_SIZE);
 
 		if(BitConverter.IsLittleEndian)
 			Array.Reverse(data_);
@@ -49,23 +47,7 @@ public class Message : ISerializable
 			Array.Reverse(data);
 		data_ = data;
 
-		char[] name = new char[MAX_NAME_SIZE];
-		for(int i = 0; i<MAX_NAME_SIZE;i++)
-		{
-			name[i] = BitConverter.ToChar(data_,i*2);
-			if(name[i]=='\0')
-				break;
-		}
-
-		char[] text = new char[MAX_TEXT_SIZE];
-		for(int i = 0; i<MAX_TEXT_SIZE;i++)
-		{
-			text[i] = BitConverter.ToChar(data_,MAX_NAME_SIZE+(i*2));
-			if(text[i]=='\0')
-				break;
-		}
-		name_ = new String(name);
-		text_ = new String(text);
-
+		name_ = System.Text.UnicodeEncoding.Unicode.GetString(data_,0,MAX_NAME_SIZE);
+		text_ = System.Text.UnicodeEncoding.Unicode.GetString(data_,MAX_NAME_SIZE,MAX_TEXT_SIZE);
 	}
 }
