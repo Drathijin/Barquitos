@@ -152,17 +152,19 @@ public class GameManager : MonoBehaviour
             playerMng_.OnStateChanged(state);
 
         if (aiManager_)
+            //Invoke("DelayBorrar", 10f);
             aiManager_.OnStateChanged(state);
         else if (netManager_)
             netManager_.OnStateChanged(state);
 
         if (state == GameState.ATTACKING)
-            Invoke("DelayBorrar", 0f);
+            ChangeState(GameState.SELECTING);
+
     }
 
     public void DelayBorrar()
     {
-        ChangeState(GameState.SELECTING);
+        aiManager_.OnStateChanged(state_);
     }
 
 

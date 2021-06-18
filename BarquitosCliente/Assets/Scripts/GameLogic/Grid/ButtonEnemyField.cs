@@ -21,7 +21,8 @@ public class ButtonEnemyField : GridObject
 
     public void OnClick()
     {
-        if (GameManager.Instance().State() != GameManager.GameState.SELECTING)
+        if (GameManager.Instance().State() != GameManager.GameState.SELECTING ||
+            GameManager.Instance().FleetsReady[GameManager.Instance().PlayerManager().GetFleet().Name()])
             return;
 
         var gm = GameManager.Instance();
