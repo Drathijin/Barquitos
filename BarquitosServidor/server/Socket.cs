@@ -23,10 +23,10 @@ namespace server
 		private static extern int bind_socket(IntPtr sock);
 
 		[DllImport("socket", CallingConvention = CallingConvention.Cdecl)]
-		private static extern int send_socket(IntPtr sock, String buff, int size, IntPtr other);
+		private static extern int send_socket(IntPtr sock, [Out]byte[] buff, int size, IntPtr other);
 
 		[DllImport("socket", CallingConvention = CallingConvention.Cdecl)]
-		private static extern int recv_socket(IntPtr sock, [Out]char[] buff, int size);
+		private static extern int recv_socket(IntPtr sock, [Out]byte[] buff, int size);
 
 		[DllImport("socket")]
 		private static extern int Init_Sockets();
@@ -60,17 +60,25 @@ namespace server
 		{
 			bind_socket(internal_socket);
 		}
-		public bool Send(String s, IntPtr other)
+		public bool Send(byte[] s, IntPtr other)
 		{
 			int val = send_socket(internal_socket, s, s.Length+1, (other==IntPtr.Zero) ? internal_socket : other);
-			if(val == 1102 || val == 112)
+			if(val == 1102 || val == 112) //Check for EAgain or EWouldBlock
 				return false;
 			else if(val >=0)
 				return true;
 			else
 				throw new Exception("Error sending with socket. Error code: "+val);
 		}
-		public bool Recv(char[] buffer, int size)
+		public bool Send(ISerializable serializable)
+		{
+			int size = (int)serializable.GetSize();
+			byte[] bytes = serializable.ToBin();;
+			bool ret = Send(bytes, IntPtr.Zero);
+			return ret;
+		}
+
+		public bool Recv(byte[] buffer, int size)
 		{
 			int val = recv_socket(internal_socket, buffer, size);
 			if(val >0)
@@ -79,6 +87,15 @@ namespace server
 				return false;
 			else 
 				throw new Exception("Error recv with socket. Error code");
+		}
+
+		public bool Recv(ISerializable serializable)
+		{
+			int size = (int)serializable.GetSize();
+			byte[] bytes = new byte[size];
+			bool ret = Recv(bytes, size);
+			serializable.FromBin(bytes);
+			return ret;
 		}
 	} 
 }

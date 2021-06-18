@@ -10,21 +10,53 @@ namespace server
 		[DllImport("socket")]
 		private static extern void test(int a,int b);
 		
+		public static string IP;
+		public static string PORT;
+
+		static void Client(string name)
+		{
+			using (Socket sock = new Socket(IP, PORT))
+			{
+				while(true)
+				{
+					String input = Console.ReadLine();
+					if(input == "!q")
+						return;
+
+					Message message = new Message(name, input);
+					sock.Send(message);
+				}
+			}
+		}
+		static void Server()
+		{
+			using (Socket sock = new Socket(IP, PORT))
+			{
+				sock.Bind();
+				while(true)
+				{
+					Message message = new Message("","");
+					sock.Recv(message);
+					Console.WriteLine(message.name_);
+					Console.WriteLine(message.text_);
+				}
+			}
+		}
+
 		static void Main(string[] args)
 		{
 				Socket.InitSockets();
-				using(Socket sock = new Socket("192.168.1.53", "8080")){
-					Console.WriteLine("Listening with IP 127.0.0.1 in port 8080");
-					sock.Bind();
-					
-					char[] buffer = new char[80]; 
-					while(buffer[0] != '!')
-					{
-						if(sock.Recv(buffer,80))
-							Console.Write(new string(buffer));
-						else
-							Console.WriteLine("whoopsie");
-					}
+				if(args.Length == 3)
+				{
+					IP = args[1];
+					PORT = args[2];
+					Client(args[0]);
+				}
+				else if(args.Length == 2)
+				{
+					IP = args[0];
+					PORT = args[1];
+					Server();
 				}
 				Socket.QuitSockets();
 		}
