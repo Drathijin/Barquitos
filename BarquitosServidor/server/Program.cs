@@ -17,7 +17,6 @@ namespace server
 		{
 			using (Socket sock = new Socket(IP, PORT))
 			{
-				Socket other;
 				while(true)
 				{
 					String input = Console.ReadLine();
@@ -26,7 +25,7 @@ namespace server
 
 					Message message = new Message(name, input);
 					sock.Send(message,sock);
-					sock.Recv(message, out other);
+					sock.Recv(message);
 					Console.WriteLine(message.name_+": "+ message.text_);
 				}
 			}

@@ -96,11 +96,32 @@ namespace server
 				throw new Exception("Error recv with socket. Error code");
 		}
 
+		public bool Recv(byte[] buffer, int size)
+		{
+			IntPtr o = IntPtr.Zero;
+			int val = recv_socket(internal_socket, buffer, size, ref o);
+			if(val >0)
+				return true;
+			else if(val == 0)
+				return false;
+			else 
+				throw new Exception("Error recv with socket. Error code");
+		}
+
 		public bool Recv(ISerializable serializable, out Socket other)
 		{
 			int size = (int)serializable.GetSize();
 			byte[] bytes = new byte[size];
 			bool ret = Recv(bytes, size, out other);
+			serializable.FromBin(bytes);
+			return ret;
+		}
+
+		public bool Recv(ISerializable serializable)
+		{
+			int size = (int)serializable.GetSize();
+			byte[] bytes = new byte[size];
+			bool ret = Recv(bytes, size);
 			serializable.FromBin(bytes);
 			return ret;
 		}
