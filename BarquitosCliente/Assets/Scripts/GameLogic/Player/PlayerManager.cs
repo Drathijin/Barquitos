@@ -48,6 +48,11 @@ public class PlayerManager : MonoBehaviour
         btsMover_.ReleaseBattleShip(ship);
     }
 
+    public void SetName(string name)
+    {
+        fleet_.SetName(name);
+    }
+
     public void OnGridHover(PlayerGridPosition pos)
     {
         if (GameManager.Instance().State() != GameManager.GameState.PREPARING

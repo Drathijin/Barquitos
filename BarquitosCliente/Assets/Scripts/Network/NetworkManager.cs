@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
 {
-    public void Setup(string playerName)
+    public void Setup(NetworkData setup, string ip , string port)
     {
         // MANDAR EL PLAYER AL SERVER O ALGO ----- MIRALO LUEGO
+
+
+        // TODO ESTÁ READY PAPA
+        GameManager.Instance().PlayersReady();
     }
 
     public void OnStateChanged(GameManager.GameState state)

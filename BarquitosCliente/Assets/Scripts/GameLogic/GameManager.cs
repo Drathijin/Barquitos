@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public enum GameState
     {
         MENU,
+        WAITINGFORPLAYERS,
         PREPARING,
         SELECTING,
         ATTACKING,
@@ -23,12 +24,9 @@ public class GameManager : MonoBehaviour
 
     private static GameManager instace_;
 
-    [SerializeField]
-    private GameObject buttonsPrefabs_;
-
     public Transform enemyWater_;
 
-    private GameState state_ = GameState.PREPARING;
+    #region Managers
 
     private PlayerManager playerMng_;
 
@@ -36,7 +34,9 @@ public class GameManager : MonoBehaviour
 
     private AIManager aiManager_;
 
-    private ReadyButton button_;
+    #endregion
+
+    #region FleetsData
 
     private Dictionary<string, Fleet> fleets_ = new Dictionary<string, Fleet>();
 
@@ -52,17 +52,42 @@ public class GameManager : MonoBehaviour
 
     private int currentEnemyFleet_ = -1;
 
+    #endregion
+
+    #region GameData
+
+    private GameState state_ = GameState.PREPARING;
+
     private GameType gameType_ = GameType.AI;
 
     private AIData aiSetup_ = new AIData();
+
+    private NetworkData networkSetup = new NetworkData();
+
+    public string ip = "127.0.0.1";
+
+    public string port = "8080";
+
+    public string playerName = "Player";
+
+    #endregion
+
+    #region UIVariables
+    [Header("UI Variables")]
+    [SerializeField]
+    private GameObject buttonsPrefabs_;
 
     private WInnerText winText_;
 
     private ResultText resultText_;
 
-    public int Test { get { return test; } private set { test = value; } }
-    [SerializeField]
-    private int test = 0;
+    private ReadyButton button_;
+
+    private NameUI playerNameUI_, enemyNameUI_;
+
+    private WaitingText waitingText_;
+
+    #endregion
 
     private void Awake()
     {
@@ -81,29 +106,10 @@ public class GameManager : MonoBehaviour
         return instace_;
     }
 
+    #region SceneManagement
     public void LoadLevel(string level)
     {
         SceneManager.LoadScene(level);
-    }
-
-    public void SetGameType(GameType type)
-    {
-        gameType_ = type;
-    }
-
-    public GameType GetGameType()
-    {
-        return gameType_;
-    }
-
-    public void SetGameType(int type)
-    {
-        if (type >= 3)
-        {
-            Debug.LogWarning("Wrong index of GameType " + type);
-            return;
-        }
-        SetGameType((GameType)type);
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -112,33 +118,39 @@ public class GameManager : MonoBehaviour
             ChangeState(GameState.MENU);
         else
         {
+            fleets_ = new Dictionary<string, Fleet>();
+            fleetsReady_ = new Dictionary<string, bool>();
+            enemyFleets_ = new List<Fleet>();
+
             enemyWater_ = GameObject.Find("WaterOponent").transform;
             GameObject manager = new GameObject("EnemyManager");
             switch (gameType_)
             {
+
                 case GameType.AI:
                     {
                         AIManager ai = manager.AddComponent<AIManager>();
-                        ai.Setup(aiSetup_);
                         aiManager_ = ai;
+                        ai.Setup(aiSetup_);
+                        ChangeState(GameState.PREPARING);
                         break;
                     }
                 case GameType.ONLINE:
                     {
                         NetworkManager net = manager.AddComponent<NetworkManager>();
+                        playerName = networkSetup.playerName;
                         netManager_ = net;
+                        ChangeState(GameState.WAITINGFORPLAYERS);
+                        net.Setup(networkSetup, ip, port);
                         break;
                     }
             }
-            ChangeState(GameState.PREPARING);
         }
     }
 
-    public GameState State()
-    {
-        return state_;
-    }
+    #endregion
 
+    #region States
     public void ChangeState(GameState state)
     {
         state_ = state;
@@ -167,7 +179,6 @@ public class GameManager : MonoBehaviour
         aiManager_.OnStateChanged(state_);
     }
 
-
     public void ReadyCheck(string name, bool set)
     {
         fleetsReady_[name] = set;
@@ -189,6 +200,8 @@ public class GameManager : MonoBehaviour
 
     public void OnReadyClick()
     {
+        if (state_ == GameState.END)
+            ReadyChange();
         string plName = playerMng_.GetFleet().Name();
         ReadyCheck(plName, !fleetsReady_[plName]);
     }
@@ -211,99 +224,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SetReadyButton(ReadyButton b)
-    {
-        button_ = b;
-    }
-
-    public void SetPlayerManager(PlayerManager mng)
-    {
-        playerMng_ = mng;
-        if (netManager_)
-            netManager_.SendPlayer();
-    }
-
-    public GameObject AddEnemyFleet(string name, bool ai)
-    {
-        if (!enemyWater_)
-        {
-            Debug.LogError("No enemyWater found");
-            return null;
-        }
-        GameObject g = Instantiate(buttonsPrefabs_, enemyWater_);
-
-        Fleet fleet = g.AddComponent<Fleet>();
-        fleet.SetName(name);
-        fleets_[name] = fleet;
-        fleetsReady_[name] = false;
-        enemyFleets_.Add(fleet);
-        if (currentEnemyFleet_ == -1)
-            currentEnemyFleet_ = 0;
-        else
-            g.SetActive(false);
-
-        return g;
-    }
-
-    public Fleet GetFleet(string id)
-    {
-        return fleets_[id];
-    }
-
-    public void NextFleet()
-    {
-        enemyFleets_[currentEnemyFleet_].gameObject.SetActive(false);
-        currentEnemyFleet_ = ++currentEnemyFleet_ % enemyFleets_.Count;
-        enemyFleets_[currentEnemyFleet_].gameObject.SetActive(true);
-    }
-
-    public void PreviousFleet()
-    {
-        enemyFleets_[currentEnemyFleet_].gameObject.SetActive(false);
-        currentEnemyFleet_ = --currentEnemyFleet_ == -1 ? enemyFleets_.Count - 1 : currentEnemyFleet_;
-        enemyFleets_[currentEnemyFleet_].gameObject.SetActive(true);
-    }
-
-    public List<string> GetPlayerList()
-    {
-        List<string> list = fleets_.Keys.ToList<string>();
-        return list;
-    }
-
-    public void AddExistingFleet(Fleet fleet)
-    {
-        fleets_[fleet.Name()] = fleet;
-        fleetsReady_[fleet.Name()] = false;
-    }
-
-    public void SetAIManager(AIManager ai)
-    {
-        if (ai)
-            aiManager_ = ai;
-    }
-
-    public void SetNetworkManager(NetworkManager net)
-    {
-        if (net)
-            netManager_ = net;
-    }
-
-    public Fleet CurrentEnemyFleet()
-    {
-        return enemyFleets_[currentEnemyFleet_];
-    }
-
-    public PlayerManager PlayerManager()
-    {
-        return playerMng_;
-    }
-
     public void PlayerLost()
     {
         Debug.Log("YOU LOSE");
         FleetLost(playerMng_.GetFleet().Name());
     }
 
+    #endregion
+
+    #region FleetsManagement
     public void FleetLost(string fleet)
     {
         fleets_.Remove(fleet);
@@ -322,9 +251,116 @@ public class GameManager : MonoBehaviour
         FleetLost(fleet.Name());
     }
 
+    public void SetEnemyFleet(int enemyFleet)
+    {
+        if (enemyFleets_.Count == 0)
+            return;
+        currentEnemyFleet_ = enemyFleet;
+        enemyFleets_[currentEnemyFleet_].gameObject.SetActive(true);
+        if (enemyNameUI_)
+            enemyNameUI_.SetName(enemyFleets_[currentEnemyFleet_].Name());
+    }
+
+    public GameObject AddEnemyFleet(string name, bool ai)
+    {
+        if (!enemyWater_)
+        {
+            Debug.LogError("No enemyWater found");
+            return null;
+        }
+        GameObject g = Instantiate(buttonsPrefabs_, enemyWater_);
+
+        Fleet fleet = g.AddComponent<Fleet>();
+        fleet.SetName(name);
+        fleets_[name] = fleet;
+        fleetsReady_[name] = false;
+        enemyFleets_.Add(fleet);
+        if (currentEnemyFleet_ == -1)
+            SetEnemyFleet(0);
+        else
+            g.SetActive(false);
+
+        return g;
+    }
+
+    public void NextFleet()
+    {
+        if (enemyFleets_.Count == 0)
+            return;
+        enemyFleets_[currentEnemyFleet_].gameObject.SetActive(false);
+        SetEnemyFleet(++currentEnemyFleet_ % enemyFleets_.Count);
+    }
+
+    public void PreviousFleet()
+    {
+        if (enemyFleets_.Count == 0)
+            return;
+        enemyFleets_[currentEnemyFleet_].gameObject.SetActive(false);
+        SetEnemyFleet(--currentEnemyFleet_ == -1 ? enemyFleets_.Count - 1 : currentEnemyFleet_);
+    }
+
+    public void AddExistingFleet(Fleet fleet)
+    {
+        fleets_[fleet.Name()] = fleet;
+        fleetsReady_[fleet.Name()] = false;
+    }
+
+    #endregion
+
+    #region Getters
+    public List<string> GetPlayerList()
+    {
+        List<string> list = fleets_.Keys.ToList<string>();
+        return list;
+    }
+
+    public Fleet GetFleet(string id)
+    {
+        return fleets_[id];
+    }
+
+    public Fleet CurrentEnemyFleet()
+    {
+        return enemyFleets_[currentEnemyFleet_];
+    }
+
+    public PlayerManager PlayerManager()
+    {
+        return playerMng_;
+    }
+
+    public GameType GetGameType()
+    {
+        return gameType_;
+    }
+
+    public GameState State()
+    {
+        return state_;
+    }
+
+    public bool IsBr()
+    {
+        return networkSetup.battleRoyale;
+    }
+
+    #endregion
+
+    #region Setters
+    public void SetPlayerManager(PlayerManager mng)
+    {
+        playerMng_ = mng;
+        playerMng_.SetName(playerName);
+    }
+
     public void SetAISetup(AIData data)
     {
         aiSetup_ = data;
+    }
+
+    public void SetNetworkSetup(NetworkData data)
+    {
+        networkSetup = data;
     }
 
     public void SetResultText(ResultText text)
@@ -338,6 +374,64 @@ public class GameManager : MonoBehaviour
         winText_ = text;
         text.gameObject.SetActive(false);
     }
+
+    public void SetPlayerNameUI(NameUI name)
+    {
+        playerNameUI_ = name;
+        playerNameUI_.SetName(playerName);
+    }
+
+    public void SetReadyButton(ReadyButton b)
+    {
+        button_ = b;
+    }
+
+    public void SetEnemyNameUI(NameUI name)
+    {
+        enemyNameUI_ = name;
+        SetEnemyFleet(currentEnemyFleet_);
+    }
+
+    public void SetAIManager(AIManager ai)
+    {
+        if (ai)
+            aiManager_ = ai;
+    }
+
+    public void SetWaitingText(WaitingText text)
+    {
+        waitingText_ = text;
+    }
+
+    public void PlayersReady()
+    {
+        if (waitingText_)
+            waitingText_.gameObject.SetActive(false);
+        ChangeState(GameState.PREPARING);
+    }
+
+    public void SetNetworkManager(NetworkManager net)
+    {
+        if (net)
+            netManager_ = net;
+    }
+
+    public void SetGameType(GameType type)
+    {
+        gameType_ = type;
+    }
+
+    public void SetGameType(int type)
+    {
+        if (type >= 3)
+        {
+            Debug.LogWarning("Wrong index of GameType " + type);
+            return;
+        }
+        SetGameType((GameType)type);
+    }
+
+    #endregion
 
     public void Exit()
     {

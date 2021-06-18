@@ -7,7 +7,10 @@ public class MenuManager : MonoBehaviour
     [SerializeField]
     GameObject mainGroup, onlineGroup, aiGroup;
     [SerializeField]
-    AIDataGroup dataGroup_;
+    AIDataGroup aiDataGroup_;
+    [SerializeField]
+    NetworkDataGroup netDataGroup_;
+
 
     public void Start()
     {
@@ -33,10 +36,20 @@ public class MenuManager : MonoBehaviour
         onlineGroup.SetActive(true);
     }
 
-    public void LoadAILevel()
+    public void LoadLevel(bool ai)
     {
-        GameManager.Instance().SetGameType(GameManager.GameType.AI);
-        GameManager.Instance().SetAISetup(dataGroup_.data_);
+        if (ai)
+        {
+            GameManager.Instance().SetGameType(GameManager.GameType.AI);
+            GameManager.Instance().SetAISetup(aiDataGroup_.data_);
+        }
+        else
+        {
+            GameManager.Instance().SetGameType(GameManager.GameType.ONLINE);
+            GameManager.Instance().SetNetworkSetup(netDataGroup_.data_);
+            GameManager.Instance().ip = netDataGroup_.ip;
+            GameManager.Instance().port = netDataGroup_.port;
+        }
         GameManager.Instance().LoadLevel("Game");
     }
 
@@ -47,7 +60,7 @@ public class MenuManager : MonoBehaviour
 
     private void SetGroup(List<GameObject> group, bool set)
     {
-        foreach(GameObject g in group)
+        foreach (GameObject g in group)
         {
             g.SetActive(set);
         }
