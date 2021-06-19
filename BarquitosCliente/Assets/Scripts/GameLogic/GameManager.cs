@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     }
 
     private static GameManager instace_;
+
+    public static Object lock_;
 
     public Transform enemyWater_;
 
@@ -56,7 +58,7 @@ public class GameManager : MonoBehaviour
 
     #region GameData
 
-    private GameState state_ = GameState.PREPARING;
+    public GameState state_ = GameState.PREPARING;
 
     private GameType gameType_ = GameType.AI;
 
@@ -69,7 +71,6 @@ public class GameManager : MonoBehaviour
     public string port = "8080";
 
     public string playerName = "Player";
-
     #endregion
 
     #region UIVariables
@@ -97,6 +98,7 @@ public class GameManager : MonoBehaviour
             return;
         }
         instace_ = this;
+        lock_ = new Object();
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -137,11 +139,10 @@ public class GameManager : MonoBehaviour
                     }
                 case GameType.ONLINE:
                     {
-                        NetworkManager net = manager.AddComponent<NetworkManager>();
+                        netManager_ = new NetworkManager();
                         playerName = networkSetup.playerName;
-                        netManager_ = net;
                         ChangeState(GameState.WAITINGFORPLAYERS);
-                        net.Setup(networkSetup, ip, port);
+                        netManager_.Setup(networkSetup, ip, port);
                         break;
                     }
             }
@@ -166,7 +167,7 @@ public class GameManager : MonoBehaviour
         if (aiManager_)
             //Invoke("DelayBorrar", 10f);
             aiManager_.OnStateChanged(state);
-        else if (netManager_)
+        else if (netManager_ != null)
             netManager_.OnStateChanged(state);
 
         if (state == GameState.ATTACKING)
@@ -405,15 +406,10 @@ public class GameManager : MonoBehaviour
 
     public void PlayersReady()
     {
+        Debug.Log("aaaaaa");
         if (waitingText_)
             waitingText_.gameObject.SetActive(false);
         ChangeState(GameState.PREPARING);
-    }
-
-    public void SetNetworkManager(NetworkManager net)
-    {
-        if (net)
-            netManager_ = net;
     }
 
     public void SetGameType(GameType type)
@@ -440,6 +436,8 @@ public class GameManager : MonoBehaviour
 
     private void OnDisable()
     {
+        if (netManager_ != null)
+            netManager_.OnDestroy();
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }

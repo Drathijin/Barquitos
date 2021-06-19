@@ -13,7 +13,9 @@ public class BattleShipMover : MonoBehaviour
     private void Update()
     {
         if (selectedBts_)
+        {
             selectedBts_.transform.position = Input.mousePosition + new Vector3(-30, 30, 0);
+        }
     }
 
     public bool SelectBattleShip(BattleShipViewer ship)

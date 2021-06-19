@@ -26,9 +26,6 @@ public class PlayerManager : MonoBehaviour
             Debug.Log("Adding fleet to GM");
             GameManager.Instance().SetPlayerManager(this);
             GameManager.Instance().AddExistingFleet(fleet_);
-            if (GameManager.Instance().State() != GameManager.GameState.PREPARING
-            || GameManager.Instance().FleetsReady[fleet_.Name()])
-                btsMover_.enabled = false;
         }
     }
 
