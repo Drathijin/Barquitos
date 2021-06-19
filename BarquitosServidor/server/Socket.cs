@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace server
 {
-	class Socket : IDisposable
+	public class Socket : IDisposable
 	{
 		[DllImport("socket")]
 		private static extern void test(int a,int b);

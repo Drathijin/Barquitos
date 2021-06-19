@@ -1,68 +1,111 @@
 ﻿using System;
 using System.Text;
 using System.Runtime.InteropServices;
-
+using System.Threading;
+using System.Collections.Generic;
 
 namespace server
 {
 	class Program
 	{
-		[DllImport("socket")]
-		private static extern void test(int a,int b);
-		
 		public static string IP;
 		public static string PORT;
 
-		static void Client(string name)
-		{
-			using (Socket sock = new Socket(IP, PORT))
-			{
-				while(true)
-				{
-					String input = Console.ReadLine();
-					if(input == "!q")
-						return;
+		public static Dictionary<System.Guid, Game> games_;
+		public static Dictionary<System.Guid, Thread> gameThreads_;
 
-					Message message = new Message(name, input);
-					sock.Send(message,sock);
-					sock.Recv(message);
-					Console.WriteLine(message.name_+": "+ message.text_);
+		public static object player_lock;
+		public static Queue<Player> players_;
+		public static object br_player_lock;
+		public static Queue<Player> BattleRoyalePlayers_;
+
+		public static Thread handler;
+		
+		//Adds a single conection to the correct queue
+		public static void ManageConection(IMessage conectionMessage, Socket socket) //this should be casted to conectionMessage
+		{
+			if(conectionMessage/*.isBattleRoyale()*/!=null)
+			{
+				lock(br_player_lock){
+					BattleRoyalePlayers_.Enqueue(new Player("conectionMessage.name",socket));
+				}
+			}
+			else
+			{
+				lock(player_lock){
+					players_.Enqueue(new Player("conectionMessage.name",socket));
 				}
 			}
 		}
-		static void Server()
+
+		//Every 5 seconds tries to create games with the current amount of players in queue and spawns a thread with the corresponding game
+		public static void HandleQueues()
 		{
+			lock(player_lock)
+			{
+				while(players_.Count >= 2)
+				{
+					Player player1 = players_.Dequeue();
+					Player player2 = players_.Dequeue();
+					System.Guid id = System.Guid.NewGuid();
+					games_.Add(id, new Game());
+				}
+			}
+			lock(br_player_lock)
+			{
+
+			}
+			Thread.Sleep(5);
+		}
+
+		public static void ManageGames()
+		{
+
+		}
+
+		public static System.Guid Match()
+		{
+			// Console.WriteLine($"This simulates a game between {game_.p1Name} and {game_.p2Name}");
+			var uuid = System.Guid.NewGuid();
+			return uuid;
+		}
+
+		public static void Server()
+		{
+			handler = new Thread(HandleQueues);
 			using (Socket sock = new Socket(IP, PORT))
 			{
 				sock.Bind();
+				NetworkData conection = new NetworkData();
+				IMessage message = new IMessage(0,System.Guid.Empty);
 				while(true)
 				{
-					Message message = new Message("","");
-					Socket other;
-					sock.Recv(message, out other);
-					Console.WriteLine(message.name_);
-					Console.WriteLine(message.text_);
-					sock.Send(new Message("[Server]",">.<"),other);
+					sock.Recv(message);
+					switch (message.header_.messageType_)
+					{
+							case IMessage.MessageType.ClientConection:
+								break;
+							default:
+								break;
+					}
 				}
 			}
 		}
 
 		static void Main(string[] args)
 		{
-				Socket.InitSockets();
-				if(args.Length == 3)
-				{
-					IP = args[1];
-					PORT = args[2];
-					Client(args[0]);
-				}
-				else if(args.Length == 2)
-				{
-					IP = args[0];
-					PORT = args[1];
-					Server();
-				}
-				Socket.QuitSockets();
+			Socket.InitSockets();
+			if(args.Length == 2)
+			{
+				IP = args[0];
+				PORT = args[1];
+				Server();
+			}
+			Socket.QuitSockets();
+			
+			
+			// var id = Match();
+			// Console.WriteLine($"ID:{id.ToString()} with size of: {id.ToByteArray().Length} bytes");
 		}
 	} 
 }
