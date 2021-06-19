@@ -15,7 +15,7 @@ public class IMessage : ISerializable
 	public enum MessageType : int
 	{
 		ClientConection,//Manda nombre y modo de juego
-		ServerConection,//Devuelve ID de la partida al jugador
+		ServerConection,//
 		ClientSetup,    //Manda todos los barcos de un cliente
 		ServerSetup,    //Manda todos los nombres de los jugadores de la partida a los clientes de la partida
 		ClientAttack,   //Manda un x,y para el próximo ataque
@@ -52,6 +52,7 @@ public class IMessage : ISerializable
 	
 	public IMessage(MessageType messageType, System.Guid id)
 	{
+		header_ = new IMessage.Header();
 		header_.messageType_ = messageType;
 		header_.gameID_ = id;
 		data_ = new Byte[MESSAGE_SIZE];
@@ -60,25 +61,24 @@ public class IMessage : ISerializable
 
 	override public Byte[] ToBin()
 	{
-		data_ = new Byte[MESSAGE_SIZE];
-
-
 		Byte[] bytes = BitConverter.GetBytes((int)header_.messageType_);
 		bytes.CopyTo(data_,0);
 
-		bytes = header_.gameID_.ToByteArray();
-		bytes.CopyTo(data_,4);
+		Byte[] guid = header_.gameID_.ToByteArray();
+		guid.CopyTo(data_,4);
 
+		Console.WriteLine(header_.gameID_.ToString());
+		Console.WriteLine((new System.Guid(guid)).ToString());
 		return data_;
 	}
 	override public void FromBin(Byte[] data)
 	{
 		data_ = data;
 		
-		//Get de bytes for id
 		byte[] bytes = new byte[16];
-		Console.WriteLine($"Bytes in data {data.Length} - offset {4}, bytes in bytes {bytes.Length} - offset {0}");
 		Buffer.BlockCopy(data_,4,bytes,0,16);
+
+		Console.WriteLine(new System.Guid(bytes).ToString());
 		
 		header_.messageType_ = (IMessage.MessageType)BitConverter.ToInt32(data_,0);
 		header_.gameID_ = new System.Guid(bytes);

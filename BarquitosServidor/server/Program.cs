@@ -57,7 +57,7 @@ namespace server
 						List<Player> pList = new List<Player>();
 						pList.Add(player1);
 						pList.Add(player2);
-						Console.WriteLine($"Starting game with {player1.name_} and {player2.name_}");
+						Console.WriteLine($"Starting game with {player1.name_} and {player2.name_}. ID = {id.ToString()}");
 						gameThreads_.Add(id, new Thread(() => ManageGame(id,2,pList)));
 						gameThreads_[id].Start();
 					}
@@ -113,6 +113,16 @@ namespace server
 							data.FromBin(message.GetData());
 							ManageConection(data, other);
 							break;
+						case IMessage.MessageType.ServerConection:
+							ServerConection dataa = new ServerConection();
+							dataa.FromBin(message.GetData());
+							Console.WriteLine(">>>>>>>"+dataa.header_.gameID_.ToString());
+							break;
+						case IMessage.MessageType.ClientSetup:
+							ClientSetup dataaa = new ClientSetup(Guid.Empty, new List<BattleShip>());
+							dataaa.FromBin(message.GetData());
+							Console.WriteLine(">>>>>>>"+dataaa.header_.gameID_.ToString());
+							break;
 						default:
 							break;
 				}
@@ -130,6 +140,13 @@ namespace server
 				Server();
 			}
 			Socket.QuitSockets();
+
+			// Console.WriteLine($"String: {System.Guid.NewGuid().ToString()} -- Size: {System.Guid.NewGuid().ToString().Length} -- Bytes: {System.Guid.NewGuid().ToByteArray().Length}");
+			// Console.WriteLine($"String: {System.Guid.NewGuid().ToString()} -- Size: {System.Guid.NewGuid().ToString().Length} -- Bytes: {System.Guid.NewGuid().ToByteArray().Length}");
+			// Console.WriteLine($"String: {System.Guid.NewGuid().ToString()} -- Size: {System.Guid.NewGuid().ToString().Length} -- Bytes: {System.Guid.NewGuid().ToByteArray().Length}");
+			// Console.WriteLine($"String: {System.Guid.NewGuid().ToString()} -- Size: {System.Guid.NewGuid().ToString().Length} -- Bytes: {System.Guid.NewGuid().ToByteArray().Length}");
+			// Console.WriteLine($"String: {System.Guid.NewGuid().ToString()} -- Size: {System.Guid.NewGuid().ToString().Length} -- Bytes: {System.Guid.NewGuid().ToByteArray().Length}");
+			// Console.WriteLine($"String: {System.Guid.NewGuid().ToString()} -- Size: {System.Guid.NewGuid().ToString().Length} -- Bytes: {System.Guid.NewGuid().ToByteArray().Length}");
 		}
 	} 
 }

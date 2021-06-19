@@ -75,10 +75,14 @@ namespace server
 			//Notify all players that the game started
 			lock(socket_lock)
 			{
+				List<string> names = new List<string>();
+				foreach (Player player in players_)
+					names.Add(player.name_);
+				
 				foreach (Player player in players_)
 				{
 					Console.WriteLine("Sending ServerConection to player");
-					socket.Send(new ServerConection(id),player.socket_);
+					socket.Send(new ServerSetup(id,names), player.socket_);
 				}
 			}
 		}
