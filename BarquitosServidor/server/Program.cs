@@ -11,6 +11,7 @@ namespace server
 		public static string IP;
 		public static string PORT;
 		public static Socket socket_;
+		public static object socket_lock;
 
 		public static Dictionary<System.Guid, Game> games_;
 		public static Dictionary<System.Guid, Thread> gameThreads_;
@@ -29,13 +30,13 @@ namespace server
 			if(conectionMessage.battleRoyale)
 			{
 				lock(br_player_lock){
-					BattleRoyalePlayers_.Enqueue(new Player("conectionMessage.name",socket));
+					BattleRoyalePlayers_.Enqueue(new Player(conectionMessage.playerName,socket));
 				}
 			}
 			else
 			{
 				lock(player_lock){
-					players_.Enqueue(new Player("conectionMessage.name",socket));
+					players_.Enqueue(new Player(conectionMessage.playerName,socket));
 				}
 			}
 		}
@@ -67,17 +68,9 @@ namespace server
 
 		public static void ManageGame(System.Guid id, int playerCount, List<Player> pList)
 		{
-			Game game = new Game(playerCount,socket_,pList,id);
+			Game game = new Game(playerCount,socket_,socket_lock,pList,id);
 			games_.Add(id, game);
 			game.StartGame();
-			
-		}
-
-		public static System.Guid Match()
-		{
-			// Console.WriteLine($"This simulates a game between {game_.p1Name} and {game_.p2Name}");
-			var uuid = System.Guid.NewGuid();
-			return uuid;
 		}
 
 		public static void Init()
@@ -88,6 +81,7 @@ namespace server
 			BattleRoyalePlayers_ = new Queue<Player>();
 			player_lock = new Object();
 			br_player_lock = new Object();
+			socket_lock = new Object();
 
 			handler = new Thread(HandleQueues);
 			handler.Start();
@@ -104,7 +98,10 @@ namespace server
 			Socket other;
 			while(true)
 			{
-				socket_.Recv(message, out other);
+				lock(socket_lock)
+				{
+					socket_.Recv(message, out other);
+				}
 				switch (message.header_.messageType_)
 				{
 						case IMessage.MessageType.ClientConection:
@@ -129,10 +126,6 @@ namespace server
 				Server();
 			}
 			Socket.QuitSockets();
-			
-			
-			// var id = Match();
-			// Console.WriteLine($"ID:{id.ToString()} with size of: {id.ToByteArray().Length} bytes");
 		}
 	} 
 }

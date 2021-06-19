@@ -8,7 +8,7 @@ public class NetworkData : IMessage
     public string playerName;
     public bool battleRoyale;
 
-    public NetworkData() : base(IMessage.MessageType.ClientSetup, System.Guid.Empty)
+    public NetworkData() : base(IMessage.MessageType.ClientConection, System.Guid.Empty)
     {
         playerName = "Player";
         battleRoyale = false;

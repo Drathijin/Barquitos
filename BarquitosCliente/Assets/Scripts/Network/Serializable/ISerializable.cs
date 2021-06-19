@@ -46,7 +46,8 @@ public class IMessage : ISerializable
 
 	protected static int HEADER_SIZE = 20;
 	protected static int MESSAGE_SIZE = 1024 - HEADER_SIZE;
-
+	//!Carefull only use this on server to cast message to correct type after it has been constructed by socket
+	public byte[] GetData(){return data_;}
 	public IMessage(MessageType messageType, System.Guid id)
 	{
 		header_.messageType_ = messageType;

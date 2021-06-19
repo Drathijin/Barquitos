@@ -57,20 +57,30 @@ namespace server
 	public class Game {
 		
 		public static Socket socket_;
+		public static object socket_lock;
 		List<Player> players_;
-		System.Guid id;
+		System.Guid id_;
 		int secondsToStart_ = 60;
 		int secondsForNextRound_ = 30;
-		public Game(int playerCount,Socket socket, List<Player> players, System.Guid id)
+
+
+		public Game(int playerCount,Socket socket, object sck_lock, List<Player> players, System.Guid id)
 		{
 			players_ = players;
 			socket_ = socket;
+			id_=id;
+			socket_lock = sck_lock;
+			
 			//Notify all players that the game started
-			foreach (Player player in players_)
+			lock(socket_lock)
 			{
-				socket.Send(new ServerConection(id),player.socket_);
+				foreach (Player player in players_)
+				{
+					socket.Send(new ServerConection(id),player.socket_);
+				}
 			}
 		}
+
 		public void StartGame()
 		{
 			while(secondsToStart_ > 0)
@@ -80,6 +90,7 @@ namespace server
 			}
 			SetAllPositions();
 		}
+
 		public void SetPlayerPositions(/*ClientPositions*/)
 		{
 			string name = "";//GetPlayerName
@@ -96,7 +107,9 @@ namespace server
 			}
 			if(allReady)
 				secondsToStart_ = 0;
-			
+		}
+
+		public void Play(){
 			bool playing = true;
 			while(playing)
 			{
@@ -107,8 +120,8 @@ namespace server
 				}
 				playing = ResolveRound();
 			}
-
 		}
+
 		public void SetAllPositions()
 		{
 			/*send ServerSetup to all players*/
