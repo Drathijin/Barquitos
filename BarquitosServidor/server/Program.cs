@@ -10,6 +10,7 @@ namespace server
 	{
 		public static string IP;
 		public static string PORT;
+		public static Socket socket_;
 
 		public static Dictionary<System.Guid, Game> games_;
 		public static Dictionary<System.Guid, Thread> gameThreads_;
@@ -45,10 +46,14 @@ namespace server
 			{
 				while(players_.Count >= 2)
 				{
+					System.Guid id = System.Guid.NewGuid();
 					Player player1 = players_.Dequeue();
 					Player player2 = players_.Dequeue();
-					System.Guid id = System.Guid.NewGuid();
-					games_.Add(id, new Game());
+					List<Player> pList = new List<Player>();
+					pList.Add(player1);
+					pList.Add(player2);
+
+					games_.Add(id, new Game(2,socket_,pList,id));
 				}
 			}
 			lock(br_player_lock)
@@ -73,23 +78,22 @@ namespace server
 		public static void Server()
 		{
 			handler = new Thread(HandleQueues);
-			using (Socket sock = new Socket(IP, PORT))
+			socket_ = new Socket(IP, PORT);
+			socket_.Bind();
+			NetworkData conection = new NetworkData();
+			IMessage message = new IMessage(0,System.Guid.Empty);
+			while(true)
 			{
-				sock.Bind();
-				NetworkData conection = new NetworkData();
-				IMessage message = new IMessage(0,System.Guid.Empty);
-				while(true)
+				socket_.Recv(message);
+				switch (message.header_.messageType_)
 				{
-					sock.Recv(message);
-					switch (message.header_.messageType_)
-					{
-							case IMessage.MessageType.ClientConection:
-								break;
-							default:
-								break;
-					}
+						case IMessage.MessageType.ClientConection:
+							break;
+						default:
+							break;
 				}
 			}
+			
 		}
 
 		static void Main(string[] args)

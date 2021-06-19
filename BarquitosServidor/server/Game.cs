@@ -24,6 +24,7 @@ namespace server
 		//returns wether the ship has been sunk or not
 		public bool attack(int x, int y, out bool hit)
 		{
+			bool ret = false;
 			hit = false;
 			foreach (BattleShip ship in ships_)
 			{
@@ -33,16 +34,16 @@ namespace server
 							if(p.x == x && p.y == y)
 								{
 									hit = true;
+									ret = ship.CheckAttack(p.x,p.y); 
 									break;
 								}
 					}
 					if(hit)
 						break;
 			}
-			bool ret = ship.CheckAttack(p.x,p.y); 
-			if(ret)
+			if(ret) //Checked ship sunk
 			{
-				//Player lost until proven otherwise
+				//Player lost until we find a ship alive
 				dead = true; 
 				foreach (BattleShip ship in ships_)
 					if(!ship.Destroyed())
@@ -77,7 +78,7 @@ namespace server
 			}
 			SetAllPositions();
 		}
-		public SetPlayerPositions(/*ClientPositions*/)
+		public void SetPlayerPositions(/*ClientPositions*/)
 		{
 			string name = "";//GetPlayerName
 			bool allReady = true;
