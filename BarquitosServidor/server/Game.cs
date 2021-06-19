@@ -68,13 +68,15 @@ namespace server
 			//Notify all players that the game started
 			foreach (Player player in players_)
 			{
-				// socket.Send(new ServerConection(id),player.socket);
+				socket.Send(new ServerConection(id),player.socket_);
 			}
-
+		}
+		public void StartGame()
+		{
 			while(secondsToStart_ > 0)
 			{
 				secondsToStart_--;
-				Thread.Sleep(1); //Esperamos 30 segundos o hasta que estén todas las posiciones
+				Thread.Sleep(1); //Esperamos 60 segundos o hasta que estén todas las posiciones
 			}
 			SetAllPositions();
 		}

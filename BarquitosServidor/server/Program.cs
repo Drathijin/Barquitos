@@ -17,15 +17,16 @@ namespace server
 
 		public static object player_lock;
 		public static Queue<Player> players_;
+
 		public static object br_player_lock;
 		public static Queue<Player> BattleRoyalePlayers_;
 
 		public static Thread handler;
 		
 		//Adds a single conection to the correct queue
-		public static void ManageConection(IMessage conectionMessage, Socket socket) //this should be casted to conectionMessage
+		public static void ManageConection(NetworkData conectionMessage, Socket socket) //this should be casted to conectionMessage
 		{
-			if(conectionMessage/*.isBattleRoyale()*/!=null)
+			if(conectionMessage.battleRoyale)
 			{
 				lock(br_player_lock){
 					BattleRoyalePlayers_.Enqueue(new Player("conectionMessage.name",socket));
@@ -53,7 +54,8 @@ namespace server
 					pList.Add(player1);
 					pList.Add(player2);
 
-					games_.Add(id, new Game(2,socket_,pList,id));
+					gameThreads_.Add(id, new Thread(() => ManageGame(id,2,pList)));
+					gameThreads_[id].Start();
 				}
 			}
 			lock(br_player_lock)
@@ -63,9 +65,12 @@ namespace server
 			Thread.Sleep(5);
 		}
 
-		public static void ManageGames()
+		public static void ManageGame(System.Guid id, int playerCount, List<Player> pList)
 		{
-
+			Game game = new Game(playerCount,socket_,pList,id);
+			games_.Add(id, game);
+			game.StartGame();
+			
 		}
 
 		public static System.Guid Match()
@@ -75,19 +80,37 @@ namespace server
 			return uuid;
 		}
 
-		public static void Server()
+		public static void Init()
 		{
+			games_ = new Dictionary<Guid, Game>();
+			gameThreads_ = new Dictionary<Guid, Thread>();
+			players_ = new Queue<Player>();
+			BattleRoyalePlayers_ = new Queue<Player>();
+			player_lock = new Object();
+			br_player_lock = new Object();
+
 			handler = new Thread(HandleQueues);
+			handler.Start();
+
+
 			socket_ = new Socket(IP, PORT);
 			socket_.Bind();
-			NetworkData conection = new NetworkData();
+		}
+
+		public static void Server()
+		{
+			Init();
 			IMessage message = new IMessage(0,System.Guid.Empty);
+			Socket other;
 			while(true)
 			{
-				socket_.Recv(message);
+				socket_.Recv(message, out other);
 				switch (message.header_.messageType_)
 				{
 						case IMessage.MessageType.ClientConection:
+							NetworkData data = ((NetworkData)message);
+							data.FromBin(message.GetData());
+							ManageConection(data, other);
 							break;
 						default:
 							break;

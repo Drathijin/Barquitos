@@ -10,44 +10,71 @@ public class ISerializable {
 	public virtual void FromBin(Byte[] data){}
 }
 
-public class Message : ISerializable
+public class IMessage : ISerializable
 {
-	public string name_;
-	public string text_;
-	private static int MAX_NAME_SIZE = 256;
-	private static int MAX_TEXT_SIZE = 1024;
-
-	public Message(string name, string text)
+	public enum MessageType : int
 	{
-		size_ = (uint)(MAX_NAME_SIZE+MAX_TEXT_SIZE) * 2; // every char is 2 bytes in size bcs unicode
-		data_ = new Byte[size_];
-		name_=name;
-		text_=text;
+		ClientConection,//Manda nombre y modo de juego
+		ServerConection,//Devuelve ID de la partida al jugador
+		ClientSetup,    //Manda todos los barcos de un cliente
+		ServerSetup,    //Manda todos los nombres de los jugadores de la partida a los clientes de la partida
+		ClientAttack,   //Manda un x,y para el próximo ataque
+		ServerAttack,   //Responde con el resultado de la última ronda de ataques
+		FleetDefeated,  //Name de la fleet derrotada
+		EndGame,        //NAme del jugador ganador
 	}
 
-	override public Byte[] ToBin(){
-		data_ = new Byte[size_];
+/*
+-----------------
+|               |   <--- | Message Type
+|               |   <--- | Game ID
+-----------------
+|               |
+|               |
+|               |
+|               |
+|               |
+|               |
+-----------------
+*/
+	public struct Header
+	{
+			public MessageType messageType_;
+			public System.Guid gameID_;
+	}
+	public Header header_;
 
-			var aux = System.Text.UnicodeEncoding.Unicode.GetBytes(name_);
-			Array.Resize<Byte>(ref aux, MAX_NAME_SIZE);
+	protected static int HEADER_SIZE = 20;
+	protected static int MESSAGE_SIZE = 1024 - HEADER_SIZE;
 
-			var aux2 = System.Text.UnicodeEncoding.Unicode.GetBytes(text_);
-			Array.Resize<Byte>(ref aux2, MAX_TEXT_SIZE);
-			
-			aux.CopyTo(data_, 0);
-			aux2.CopyTo(data_, MAX_NAME_SIZE);
+	public IMessage(MessageType messageType, System.Guid id)
+	{
+		header_.messageType_ = messageType;
+		header_.gameID_ = id;
+	}
 
-		if(BitConverter.IsLittleEndian)
-			Array.Reverse(data_);
-		return data_;
+	override public Byte[] ToBin()
+	{
+		Byte[] data = new Byte[MESSAGE_SIZE];
+
+
+		Byte[] bytes = BitConverter.GetBytes((int)header_.messageType_);
+		Array.Copy(bytes,0,data,0,4);
+
+		bytes = header_.gameID_.ToByteArray();
+		Array.Copy(bytes,0,data,4,16);
+
+		return data;
 	}
 	override public void FromBin(Byte[] data)
 	{
-		if(BitConverter.IsLittleEndian)
-			Array.Reverse(data);
 		data_ = data;
-
-		name_ = System.Text.UnicodeEncoding.Unicode.GetString(data_,0,MAX_NAME_SIZE);
-		text_ = System.Text.UnicodeEncoding.Unicode.GetString(data_,MAX_NAME_SIZE,MAX_TEXT_SIZE);
+		
+		//Get de bytes for id
+		byte[] bytes = new byte[16];
+		Buffer.BlockCopy(data,4,bytes,0,16);
+		
+		header_.messageType_ = (IMessage.MessageType)BitConverter.ToInt32(data_,0);
+		header_.gameID_ = new System.Guid(bytes);
 	}
 }

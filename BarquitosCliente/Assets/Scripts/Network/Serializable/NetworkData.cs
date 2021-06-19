@@ -2,13 +2,13 @@ using System;
 using System.Diagnostics;
 using System.Text;
 
-public class NetworkData : ISerializable
+public class NetworkData : IMessage
 {
     private static int MAX_NAME_SIZE = 24;
     public string playerName;
     public bool battleRoyale;
 
-    public NetworkData()
+    public NetworkData() : base(IMessage.MessageType.ClientSetup, System.Guid.Empty)
     {
         playerName = "Player";
         battleRoyale = false;
@@ -17,13 +17,14 @@ public class NetworkData : ISerializable
 
     override public Byte[] ToBin()
     {
-        data_ = new Byte[size_];
+        data_ = base.ToBin();
+				int index = IMessage.HEADER_SIZE;
 
         var aux = System.Text.UnicodeEncoding.Unicode.GetBytes(playerName);
         Array.Resize<Byte>(ref aux, MAX_NAME_SIZE + 1);
         aux[MAX_NAME_SIZE] = BitConverter.GetBytes(battleRoyale)[0];
 
-        aux.CopyTo(data_, 0);
+        aux.CopyTo(data_, index);
 
         if (BitConverter.IsLittleEndian)
             Array.Reverse(data_);
@@ -33,9 +34,10 @@ public class NetworkData : ISerializable
     {
         if (BitConverter.IsLittleEndian)
             Array.Reverse(data);
+				base.FromBin(data);
         data_ = data;
 
-        playerName = System.Text.UnicodeEncoding.Unicode.GetString(data_, 0, MAX_NAME_SIZE);
-        battleRoyale = BitConverter.ToBoolean(data_, MAX_NAME_SIZE);
+        playerName = System.Text.UnicodeEncoding.Unicode.GetString(data_, IMessage.HEADER_SIZE, MAX_NAME_SIZE);
+        battleRoyale = BitConverter.ToBoolean(data_, IMessage.HEADER_SIZE+MAX_NAME_SIZE);
     }
 }
