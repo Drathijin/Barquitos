@@ -61,10 +61,10 @@ public class IMessage : ISerializable
 
 
 		Byte[] bytes = BitConverter.GetBytes((int)header_.messageType_);
-		Array.Copy(bytes,0,data,0,4);
+		bytes.Copy(data,0,4);
 
 		bytes = header_.gameID_.ToByteArray();
-		Array.Copy(bytes,0,data,4,16);
+		bytes.Copy(data,4,16);
 
 		return data;
 	}
@@ -74,7 +74,7 @@ public class IMessage : ISerializable
 		
 		//Get de bytes for id
 		byte[] bytes = new byte[16];
-		Buffer.BlockCopy(data,4,bytes,0,16);
+		Buffer.BlockCopy(data_,4,bytes,0,16);
 		
 		header_.messageType_ = (IMessage.MessageType)BitConverter.ToInt32(data_,0);
 		header_.gameID_ = new System.Guid(bytes);
