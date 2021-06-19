@@ -12,7 +12,6 @@ public class NetworkData : IMessage
     {
         playerName = "Player";
         battleRoyale = false;
-        size_ = (uint)(MAX_NAME_SIZE + 1);
     }
 
     override public Byte[] ToBin()

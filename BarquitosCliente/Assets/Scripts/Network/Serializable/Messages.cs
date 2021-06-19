@@ -1,11 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Text;
 using server;
 
 public class ServerConection : IMessage
 {	
-	public ServerConection(System.Guid id) : base(IMessage.MessageType.ServerConection, id){}
+	public ServerConection() : base(IMessage.MessageType.ServerConection, System.Guid.Empty){}
+	override public Byte[] ToBin()
+	{
+		return base.ToBin();
+	}
+	override public void FromBin(Byte[] data)
+	{
+		base.FromBin(data);
+		data_ = data;
+	}
 }
 
 
@@ -78,18 +88,46 @@ public class ClientSetup : IMessage
 	}
 }
 
-// public class ServerSetup : IMessage
-// {
-// 	List<string> names_;
-// 	public ServerSetup(System.Guid id, List<string> names) : base(IMessage.MessageType.ServerSetup, id){
-// 		names = new List<string>();
-// 	} 
-// 	override public Byte[] ToBin()
-// 	{
-		
-// 	}
-// 	override public void FromBin(Byte[] data)
-// 	{
+public class ServerSetup : IMessage
+{
+	List<string> names_;
+	static int MAX_NAME_SIZE=24;
 
-// 	}
-// }
+	public ServerSetup(System.Guid id, List<string> names) : base(IMessage.MessageType.ServerSetup, id){
+		names_ = new List<string>();
+	} 
+	override public Byte[] ToBin()
+	{
+		base.ToBin();
+		int index= HEADER_SIZE;
+
+		byte[] size = BitConverter.GetBytes(names_.Count);
+		
+		size.CopyTo(data_,index);
+		index+=sizeof(int);
+
+
+		foreach(string name in names_)
+		{
+			byte[] str = Encoding.Unicode.GetBytes(name);
+			Array.Resize(ref str, MAX_NAME_SIZE);
+			
+			size.CopyTo(data_,index);
+			index+=MAX_NAME_SIZE;
+		}
+		return data_;
+	}
+	override public void FromBin(Byte[] data)
+	{
+		base.FromBin(data);
+
+		int index = HEADER_SIZE;
+		int length = BitConverter.ToInt32(data_,index);
+		index+=sizeof(int);
+		for (int i = 0; i < length; i++)
+		{
+				string str = Encoding.Unicode.GetString(data_,index,MAX_NAME_SIZE);
+				names_.Add(str);
+		}
+	}
+}
