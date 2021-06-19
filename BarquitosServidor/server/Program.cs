@@ -27,6 +27,7 @@ namespace server
 		//Adds a single conection to the correct queue
 		public static void ManageConection(NetworkData conectionMessage, Socket socket) //this should be casted to conectionMessage
 		{
+			Console.WriteLine($"Player: {conectionMessage.playerName} Queueing for ${conectionMessage.battleRoyale}");
 			if(conectionMessage.battleRoyale)
 			{
 				lock(br_player_lock){
@@ -44,26 +45,29 @@ namespace server
 		//Every 5 seconds tries to create games with the current amount of players in queue and spawns a thread with the corresponding game
 		public static void HandleQueues()
 		{
-			lock(player_lock)
+			while(true)
 			{
-				while(players_.Count >= 2)
+				lock(player_lock)
 				{
-					System.Guid id = System.Guid.NewGuid();
-					Player player1 = players_.Dequeue();
-					Player player2 = players_.Dequeue();
-					List<Player> pList = new List<Player>();
-					pList.Add(player1);
-					pList.Add(player2);
-
-					gameThreads_.Add(id, new Thread(() => ManageGame(id,2,pList)));
-					gameThreads_[id].Start();
+					while(players_.Count >= 2)
+					{
+						System.Guid id = System.Guid.NewGuid();
+						Player player1 = players_.Dequeue();
+						Player player2 = players_.Dequeue();
+						List<Player> pList = new List<Player>();
+						pList.Add(player1);
+						pList.Add(player2);
+						Console.WriteLine($"Starting game with {player1.name_} and {player2.name_}");
+						gameThreads_.Add(id, new Thread(() => ManageGame(id,2,pList)));
+						gameThreads_[id].Start();
+					}
 				}
-			}
-			lock(br_player_lock)
-			{
+				lock(br_player_lock)
+				{
 
-			}
-			Thread.Sleep(5);
+				}
+					Thread.Sleep(5);
+				}
 		}
 
 		public static void ManageGame(System.Guid id, int playerCount, List<Player> pList)
@@ -100,12 +104,12 @@ namespace server
 			{
 				lock(socket_lock)
 				{
-					socket_.Recv(message, out other);
 				}
+				socket_.Recv(message, out other);
 				switch (message.header_.messageType_)
 				{
 						case IMessage.MessageType.ClientConection:
-							NetworkData data = ((NetworkData)message);
+							NetworkData data = new NetworkData();
 							data.FromBin(message.GetData());
 							ManageConection(data, other);
 							break;

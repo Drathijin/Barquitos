@@ -1,6 +1,7 @@
 using server;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using System.Threading;
 
 namespace server
@@ -76,6 +77,7 @@ namespace server
 			{
 				foreach (Player player in players_)
 				{
+					Console.WriteLine("Sending ServerConection to player");
 					socket.Send(new ServerConection(id),player.socket_);
 				}
 			}
@@ -90,6 +92,8 @@ namespace server
 			}
 			SetAllPositions();
 		}
+
+		//No ha llegado no al recv?
 
 		public void SetPlayerPositions(/*ClientPositions*/)
 		{

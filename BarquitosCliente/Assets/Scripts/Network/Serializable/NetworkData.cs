@@ -26,14 +26,14 @@ public class NetworkData : IMessage
 
         aux.CopyTo(data_, index);
 
-        if (BitConverter.IsLittleEndian)
-            Array.Reverse(data_);
+        // if (BitConverter.IsLittleEndian)
+        //     Array.Reverse(data_);
         return data_;
     }
     override public void FromBin(Byte[] data)
     {
-        if (BitConverter.IsLittleEndian)
-            Array.Reverse(data);
+        // if (BitConverter.IsLittleEndian)
+        //     Array.Reverse(data);
 				base.FromBin(data);
         data_ = data;
 

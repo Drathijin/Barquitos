@@ -45,28 +45,31 @@ public class IMessage : ISerializable
 	public Header header_;
 
 	protected static int HEADER_SIZE = 20;
-	protected static int MESSAGE_SIZE = 1024 - HEADER_SIZE;
+	protected static int MESSAGE_SIZE = 1024;
 	
 	//!Carefull only use this on server to cast message to correct type after it has been constructed by socket
 	public byte[] GetData(){return data_;}
+	
 	public IMessage(MessageType messageType, System.Guid id)
 	{
 		header_.messageType_ = messageType;
 		header_.gameID_ = id;
+		data_ = new Byte[MESSAGE_SIZE];
+		size_ = (uint)MESSAGE_SIZE;
 	}
 
 	override public Byte[] ToBin()
 	{
-		Byte[] data = new Byte[MESSAGE_SIZE];
+		data_ = new Byte[MESSAGE_SIZE];
 
 
 		Byte[] bytes = BitConverter.GetBytes((int)header_.messageType_);
-		bytes.Copy(data,0,4);
+		bytes.CopyTo(data_,0);
 
 		bytes = header_.gameID_.ToByteArray();
-		bytes.Copy(data,4,16);
+		bytes.CopyTo(data_,4);
 
-		return data;
+		return data_;
 	}
 	override public void FromBin(Byte[] data)
 	{
@@ -74,6 +77,7 @@ public class IMessage : ISerializable
 		
 		//Get de bytes for id
 		byte[] bytes = new byte[16];
+		Console.WriteLine($"Bytes in data {data.Length} - offset {4}, bytes in bytes {bytes.Length} - offset {0}");
 		Buffer.BlockCopy(data_,4,bytes,0,16);
 		
 		header_.messageType_ = (IMessage.MessageType)BitConverter.ToInt32(data_,0);
