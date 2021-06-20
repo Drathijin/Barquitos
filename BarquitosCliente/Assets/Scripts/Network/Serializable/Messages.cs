@@ -69,6 +69,7 @@ public class ClientSetup : IMessage
     
     string str = Encoding.Unicode.GetString(data_, index, 24);
     index+=24;
+    name_ = str;
 
     int size = BitConverter.ToInt32(data, index);
     bs_ = new List<BattleShip>();

@@ -67,11 +67,9 @@ public class NetworkManager
     switch (state)
     {
       case GameManager.GameState.PREPARING:
-        break;
-      case GameManager.GameState.SELECTING:
         th_ = new Thread(WaitForReady);
         break;
-      case GameManager.GameState.ATTACKING:
+      case GameManager.GameState.SELECTING:
         th_ = new Thread(ResolveTurn);
         break;
       default:
@@ -85,21 +83,25 @@ public class NetworkManager
   {
     Fleet fl = GameManager.Instance().PlayerManager().GetFleet();
 
-    ClientSetup setup = new ClientSetup(id_, fl.ships);
+    ClientSetup setup = new ClientSetup(id_, fl.ships, fl.Name());
 
     socket_.Send(setup, socket_);
   }
 
-  public void SendPlayerAttack(AttackData data)
+  public void SendPlayerAttack()
   {
+
+    GridObject obj = GameManager.Instance().PlayerManager().currentAttackButton_;
+
+    AttackData data = obj ? new AttackData(obj.Data().GetX(), obj.Data().GetX(), obj.Fleet().Name(), GameManager.Instance().playerName) : new AttackData();
+
     data.header_.gameID_ = id_;
-    data.myId = GameManager.Instance().playerName;
+    //data.myId = GameManager.Instance().playerName;
     socket_.Send(data, socket_);
   }
 
   private void WaitForReady()    // Escuchar al servidor para saber cuando le han dado a listo
   {
-    SendPlayerFleet();
     Debug.Log("Waiting for ready");
     ReadyTurn ready = new ReadyTurn(id_);
     socket_.Recv(ready);

@@ -217,8 +217,7 @@ public class GameManager : MonoBehaviour
     else if (netManager_ != null)
       netManager_.OnStateChanged(state);
 
-    if (state == GameState.ATTACKING
-        && gameType_ == GameType.AI)
+    if (state == GameState.ATTACKING)
       ChangeState(GameState.SELECTING);
 
   }
@@ -257,9 +256,20 @@ public class GameManager : MonoBehaviour
   {
     if (state_ == GameState.END)
       ReadyChange();
-    string plName = playerMng_.GetFleet().Name();
-    // ReadyCheck(plName, !fleetsReady_[plName]);
-    ReadyChange();
+
+    if (gameType_ == GameType.ONLINE)
+    {
+      if (state_ == GameState.PREPARING)
+        netManager_.SendPlayerFleet();
+      else if (state_ == GameState.SELECTING)
+        netManager_.SendPlayerAttack();
+    }
+    else
+    {
+      string plName = playerMng_.GetFleet().Name();
+      ReadyCheck(plName, !fleetsReady_[plName]);
+      ReadyChange();
+    }
   }
 
   private void ReadyChange()

@@ -10,7 +10,7 @@ public class PlayerManager : MonoBehaviour
     BattleShipMover btsMover_;
     Fleet fleet_;
 
-    ButtonEnemyField currentAttackButton_;
+    public ButtonEnemyField currentAttackButton_;
 
 
     private void Start()
@@ -104,17 +104,11 @@ public class PlayerManager : MonoBehaviour
 
     void ResolveTurn()
     {
-        if (!currentAttackButton_)
+        if (!currentAttackButton_ || GameManager.Instance().GetGameType() == GameManager.GameType.ONLINE)
             return;
         int x = currentAttackButton_.Data().GetX();
         int y = currentAttackButton_.Data().GetY();
-        if (GameManager.Instance().GetGameType() == GameManager.GameType.ONLINE)
-        {
-            string enemyName = currentAttackButton_.Fleet().Name();
-            GameManager.Instance().NetworkManager().SendPlayerAttack(new AttackData(x, y, enemyName));
-        }
-        else
-            currentAttackButton_.Fleet().Attack(x, y);
+        currentAttackButton_.Fleet().Attack(x, y);
 
         // LIMPIAR ICONO
         currentAttackButton_ = null;
