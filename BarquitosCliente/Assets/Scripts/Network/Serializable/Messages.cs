@@ -26,7 +26,7 @@ public class ClientSetup : IMessage
     {
         bs_ = bs;
     }
-
+		public List<BattleShip> GetBattleShips(){return bs_;}
     override public Byte[] ToBin()
     {
         base.ToBin();
@@ -221,7 +221,7 @@ public class FleetDefeated: IMessage
 {
     static int MAX_NAME_SIZE = 24;
     public string fleetName;
-    public FleetDefeated(System.Guid id, string fleet) : base(IMessage.MessageType.ServerAttack, id)
+    public FleetDefeated(System.Guid id, string fleet) : base(IMessage.MessageType.FleetDefeated, id)
     {
         fleetName = fleet;
     }

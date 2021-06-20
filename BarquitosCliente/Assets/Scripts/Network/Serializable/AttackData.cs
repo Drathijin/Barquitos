@@ -6,14 +6,16 @@ public class AttackData : IMessage
 {
     private static int MAX_NAME_SIZE = 24;
     public string enemyId;
+		public string myId;
 
     public int x, y;
 
-    public AttackData(int x = 0, int y = 0, string id = "") : base(IMessage.MessageType.ClientAttack, System.Guid.Empty)
+    public AttackData(int x = 0, int y = 0, string id = "", string myID_) : base(IMessage.MessageType.ClientAttack, System.Guid.Empty)
     {
         this.x = x;
         this.y = y;
         enemyId = id;
+				myId = myID_;
         size_ = (uint)(MAX_NAME_SIZE + sizeof(int) * 2);
     }
 
@@ -25,10 +27,15 @@ public class AttackData : IMessage
         var aux = System.Text.UnicodeEncoding.Unicode.GetBytes(enemyId);
         Array.Resize<Byte>(ref aux, MAX_NAME_SIZE);
 
+        var myName = System.Text.UnicodeEncoding.Unicode.GetBytes(myId);
+        Array.Resize<Byte>(ref aux, MAX_NAME_SIZE);
+
         var x_ = BitConverter.GetBytes(x);
         var y_ = BitConverter.GetBytes(y);
 
         aux.CopyTo(data_, index);
+        index += MAX_NAME_SIZE;
+				myName.CopyTo(data_, index);
         index += MAX_NAME_SIZE;
         x_.CopyTo(data_, index);
         index += sizeof(int);
@@ -43,6 +50,8 @@ public class AttackData : IMessage
         int index = HEADER_SIZE;
 
         enemyId = System.Text.UnicodeEncoding.Unicode.GetString(data_, index, MAX_NAME_SIZE);
+        index += MAX_NAME_SIZE;
+				myId = System.Text.UnicodeEncoding.Unicode.GetString(data_, index, MAX_NAME_SIZE);
         index += MAX_NAME_SIZE;
         x = BitConverter.ToInt32(data_, index);
         index += sizeof(int);

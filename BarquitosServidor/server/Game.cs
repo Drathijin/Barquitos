@@ -57,16 +57,23 @@ namespace server
 
 	public class Game {
 		
-		public static Socket socket_;
-		public static object socket_lock;
+		public Socket socket_;
+		public object socket_lock;
+
+		public object messages_lock_;
+		public List<IMessage> messages_;
+
 		List<Player> players_;
 		System.Guid id_;
 		int secondsToStart_ = 60;
 		int secondsForNextRound_ = 30;
-
+		bool playing_ = false; //this bool will be true only in the second fase of the game
 
 		public Game(int playerCount,Socket socket, object sck_lock, List<Player> players, System.Guid id)
 		{
+			messages_ = new List<IMessage>();
+			messages_lock_ = new Object();
+
 			players_ = players;
 			socket_ = socket;
 			id_=id;
@@ -98,10 +105,10 @@ namespace server
 				secondsToStart_--;
 				Thread.Sleep(1000); //Esperamos 60 segundos o hasta que estén todas las posiciones
 			}
-			SetAllPositions();
+			Play();
 		}
 
-		public void SetPlayerPositions(/*ClientPositions*/)
+		public void SetPlayerPositions(ClientSetup setup)
 		{
 			string name = "";//GetPlayerName
 			bool allReady = true;
@@ -110,6 +117,7 @@ namespace server
 				if(p.name_ == name)
 				{
 					//setPlayerPositions to ClientPositionsParam
+					p.ships_ = setup.GetBattleShips();
 					p.ready = true;
 				}
 				if(!p.ready)
@@ -120,28 +128,66 @@ namespace server
 		}
 
 		public void Play(){
-			bool playing = true;
-			while(playing)
+			//Notify change state
+			ReadyTurn rt = new ReadyTurn(id_);
+			lock(socket_lock)
+			{
+				foreach (Player p in players_)
+					socket_.Send(rt,p);
+			}
+
+			//Start playing
+			playing_ = true;
+			while(playing_)
 			{
 				while(secondsForNextRound_ > 0)
 				{
 					secondsForNextRound_--;
 					Thread.Sleep(1);
 				}
-				playing = ResolveRound();
+				playing_ = ResolveRound();
 			}
 		}
 
-		public void SetAllPositions()
+		public void CheckMessages()
 		{
-			/*send ServerSetup to all players*/
-			Console.WriteLine("Setting all positions");
+			lock(messages_lock_)
+			{
+				while(messages_.Count > 0)
+				{
+					IMessage current = messages_[0];
+					messages_.RemoveAt(0);
+					switch(current.header_.GetType())
+					{
+						case ClientSetup:
+						if(!playing_)
+							SetPlayerPositions(current);
+						break;
+						case ClientAttack:
+						if(playing_)
+						{
+							AttackData attack = current as AttackData;
+							foreach (Player p in players_)
+							{
+								if(p.name_ == attack.myId)
+									{
+										p.targetName_ = attack.enemyId;
+										p.taretAttack_ = new BattleShip.Position(attack.x, attack.y);
+									}
+							}
+						}
+						break;
+					}
+				}
+			}
 		}
 
 		//returns whether or not the game has ended
 		public bool ResolveRound()
 		{
 			int aliveCount = 0;
+			ServerAttack sa = new ServerAttack(id_);
+
 			foreach(Player a in players_)
 			{
 				bool hit = false;
@@ -153,11 +199,14 @@ namespace server
 							aliveCount++;
 					}
 				}
-				foreach(Player p in players_)
-				{
-					//Send ServerAttack(a.targetName, a.targetPosition, hit) to p.socket;					
-				}
+				sa.attacks_.Add(new ServerAttack.AttackResult(hit,a.taretAttack_.x,a.taretAttack_.y,a.targetName_));
 			}
+			lock (socket_lock)
+			{
+				foreach(Player p in players_)
+					socket_.Send(sa,p.socket_);
+			}
+			
 			if(aliveCount >= 2)
 			{
 				secondsForNextRound_ = 30;

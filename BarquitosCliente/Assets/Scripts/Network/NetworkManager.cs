@@ -46,7 +46,7 @@ public class NetworkManager
 
         socket_.Recv(conection);
 
-        // TODO ESTÁ READY PAPA
+        // TODO ESTï¿½ READY PAPA
 
         lock (GameManager.lock_)
         {
@@ -97,7 +97,7 @@ public class NetworkManager
     public void SendPlayerAttack(AttackData data)
     {
         data.header_.gameID_ = id_;
-
+				data.myId = GameManager.Instance().playerName;
         socket_.Send(data, socket_);
     }
 
@@ -112,7 +112,7 @@ public class NetworkManager
         }
     }
 
-    private void ResolveTurn()   // Ejecutar la decisión de ataque tomada en el ManageTurn
+    private void ResolveTurn()   // Ejecutar la decisiï¿½n de ataque tomada en el ManageTurn
     {
         ServerAttack serverAttack = new ServerAttack(id_);
 
