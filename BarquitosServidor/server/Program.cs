@@ -144,6 +144,16 @@ namespace server
 							Console.WriteLine("Client Attack");
 							ProcessClientMessage<AttackData>(message, new AttackData());
 							break;
+						case IMessage.MessageType.ServerSetup:
+							ServerSetup ss = new ServerSetup(Guid.Empty, new List<string>());
+							ss.FromBin(message.GetData());
+							Console.Write($"Names: ");
+							foreach (string n in ss.names_)
+							{
+								Console.Write($" {n} ");
+							}
+							Console.WriteLine("");
+							break;
 						default:
 							break;
 				}

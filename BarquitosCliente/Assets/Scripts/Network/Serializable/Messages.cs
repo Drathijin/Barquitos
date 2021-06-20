@@ -23,7 +23,7 @@ public class ClientSetup : IMessage
 {
   private List<BattleShip> bs_;
   public string name_;
-  public ClientSetup(System.Guid id, List<BattleShip> bs, string name) : base(IMessage.MessageType.ClientSetup, id)
+  public ClientSetup(System.Guid id,  List<BattleShip> bs,string name) : base(IMessage.MessageType.ClientSetup, id)
   {
     bs_ = bs;
     name_ = name;
@@ -76,7 +76,6 @@ public class ClientSetup : IMessage
 
     int size = BitConverter.ToInt32(data, index);
     bs_ = new List<BattleShip>();
-
     index += sizeof(int);
 
     for (int i = 0; i < size; i++)
@@ -118,9 +117,9 @@ public class ServerSetup : IMessage
     base.ToBin();
     int index = HEADER_SIZE;
 
-    byte[] size = BitConverter.GetBytes(names_.Count);
+    byte[] ssize = BitConverter.GetBytes(names_.Count);
 
-    size.CopyTo(data_, index);
+    ssize.CopyTo(data_, index);
     index += sizeof(int);
 
 
@@ -128,10 +127,10 @@ public class ServerSetup : IMessage
     {
       byte[] str = Encoding.Unicode.GetBytes(name);
       Array.Resize(ref str, MAX_NAME_SIZE);
-
       str.CopyTo(data_, index);
       index += MAX_NAME_SIZE;
     }
+
     return data_;
   }
   override public void FromBin(Byte[] data)
