@@ -64,7 +64,6 @@ public class ClientSetup : IMessage
   {
     base.FromBin(data);
 
-
     int index = HEADER_SIZE;
     
     string str = Encoding.Unicode.GetString(data_, index, 24);

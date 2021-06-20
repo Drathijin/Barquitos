@@ -127,6 +127,7 @@ public class NetworkManager
         Debug.Log("Attack to: " + res.name + " in x: " + res.x + " y: " + res.y + " --Result:" + res.hit);
         GameManager.Instance().attacks_.Add(res);
       }
+      GameManager.Instance().nextState = true;
     }
   }
 
@@ -137,6 +138,7 @@ public class NetworkManager
       Debug.Log("Cerrando Thread");
       th_.Abort();
     }
+    socket_.Dispose();
     Socket.QuitSockets();
   }
 }
