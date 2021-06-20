@@ -76,13 +76,17 @@ namespace server
 			lock(socket_lock)
 			{
 				List<string> names = new List<string>();
-				foreach (Player player in players_)
-					names.Add(player.name_);
-				
+			
 				foreach (Player player in players_)
 				{
+					foreach (Player p in players_)
+					{
+						if(p.name_ != player.name_)
+							names.Add(p.name_);
+					}
 					Console.WriteLine("Sending ServerConection to player");
 					socket.Send(new ServerSetup(id,names), player.socket_);
+					names.Clear();
 				}
 			}
 		}
@@ -92,12 +96,10 @@ namespace server
 			while(secondsToStart_ > 0)
 			{
 				secondsToStart_--;
-				Thread.Sleep(1); //Esperamos 60 segundos o hasta que estén todas las posiciones
+				Thread.Sleep(1000); //Esperamos 60 segundos o hasta que estén todas las posiciones
 			}
 			SetAllPositions();
 		}
-
-		//No ha llegado no al recv?
 
 		public void SetPlayerPositions(/*ClientPositions*/)
 		{
@@ -133,6 +135,7 @@ namespace server
 		public void SetAllPositions()
 		{
 			/*send ServerSetup to all players*/
+			Console.WriteLine("Setting all positions");
 		}
 
 		//returns whether or not the game has ended

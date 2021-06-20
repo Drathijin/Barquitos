@@ -64,9 +64,19 @@ namespace server
 				}
 				lock(br_player_lock)
 				{
-
+					while(BattleRoyalePlayers_.Count >= 5)
+					{
+						System.Guid id = System.Guid.NewGuid();
+						List<Player> pList = new List<Player>();
+						for (int i = 0; i < 5; i++)
+						{
+								pList.Add(BattleRoyalePlayers_.Dequeue());
+						}
+						gameThreads_.Add(id, new Thread(() => ManageGame(id,5,pList)));
+						gameThreads_[id].Start();
+					}
 				}
-					Thread.Sleep(5);
+					Thread.Sleep(5000);
 				}
 		}
 
@@ -102,9 +112,6 @@ namespace server
 			Socket other;
 			while(true)
 			{
-				lock(socket_lock)
-				{
-				}
 				socket_.Recv(message, out other);
 				switch (message.header_.messageType_)
 				{
@@ -112,11 +119,6 @@ namespace server
 							NetworkData data = new NetworkData();
 							data.FromBin(message.GetData());
 							ManageConection(data, other);
-							break;
-						case IMessage.MessageType.ServerConection:
-							ServerConection dataa = new ServerConection();
-							dataa.FromBin(message.GetData());
-							Console.WriteLine(">>>>>>>"+dataa.header_.gameID_.ToString());
 							break;
 						case IMessage.MessageType.ClientSetup:
 							ClientSetup dataaa = new ClientSetup(Guid.Empty, new List<BattleShip>());

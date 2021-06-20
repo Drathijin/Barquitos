@@ -94,7 +94,7 @@ public class ServerSetup : IMessage
 	static int MAX_NAME_SIZE=24;
 
 	public ServerSetup(System.Guid id, List<string> names) : base(IMessage.MessageType.ServerSetup, id){
-		names_ = new List<string>();
+		names_ = names;
 	} 
 	override public Byte[] ToBin()
 	{
@@ -112,7 +112,7 @@ public class ServerSetup : IMessage
 			byte[] str = Encoding.Unicode.GetBytes(name);
 			Array.Resize(ref str, MAX_NAME_SIZE);
 			
-			size.CopyTo(data_,index);
+			str.CopyTo(data_,index);
 			index+=MAX_NAME_SIZE;
 		}
 		return data_;
@@ -128,6 +128,7 @@ public class ServerSetup : IMessage
 		{
 				string str = Encoding.Unicode.GetString(data_,index,MAX_NAME_SIZE);
 				names_.Add(str);
+				index+=MAX_NAME_SIZE;
 		}
 	}
 }
