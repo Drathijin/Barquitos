@@ -2,14 +2,14 @@ using System;
 using System.Diagnostics;
 using System.Text;
 
-public class AttackData : ISerializable
+public class AttackData : IMessage
 {
     private static int MAX_NAME_SIZE = 24;
     public string enemyId;
 
     public int x, y;
 
-    public AttackData(int x = 0, int y = 0, string id = "")
+    public AttackData(int x = 0, int y = 0, string id = "") : base(IMessage.MessageType.ClientAttack, System.Guid.Empty)
     {
         this.x = x;
         this.y = y;
@@ -19,7 +19,8 @@ public class AttackData : ISerializable
 
     override public Byte[] ToBin()
     {
-        data_ = new Byte[size_];
+        base.ToBin();
+        int index = HEADER_SIZE;
 
         var aux = System.Text.UnicodeEncoding.Unicode.GetBytes(enemyId);
         Array.Resize<Byte>(ref aux, MAX_NAME_SIZE);
@@ -27,22 +28,24 @@ public class AttackData : ISerializable
         var x_ = BitConverter.GetBytes(x);
         var y_ = BitConverter.GetBytes(y);
 
-        aux.CopyTo(data_, 0);
-        x_.CopyTo(data_, MAX_NAME_SIZE);
-        y_.CopyTo(data_, MAX_NAME_SIZE + sizeof(int));
+        aux.CopyTo(data_, index);
+        index += MAX_NAME_SIZE;
+        x_.CopyTo(data_, index);
+        index += sizeof(int);
+        y_.CopyTo(data_, index);
 
-        if (BitConverter.IsLittleEndian)
-            Array.Reverse(data_);
         return data_;
     }
     override public void FromBin(Byte[] data)
     {
-        if (BitConverter.IsLittleEndian)
-            Array.Reverse(data);
-        data_ = data;
+        base.FromBin(data);
 
-        enemyId = System.Text.UnicodeEncoding.Unicode.GetString(data_, 0, MAX_NAME_SIZE);
-        x = BitConverter.ToInt32(data_, MAX_NAME_SIZE);
-        y = BitConverter.ToInt32(data_, MAX_NAME_SIZE + sizeof(int));
+        int index = HEADER_SIZE;
+
+        enemyId = System.Text.UnicodeEncoding.Unicode.GetString(data_, index, MAX_NAME_SIZE);
+        index += MAX_NAME_SIZE;
+        x = BitConverter.ToInt32(data_, index);
+        index += sizeof(int);
+        y = BitConverter.ToInt32(data_, index);
     }
 }

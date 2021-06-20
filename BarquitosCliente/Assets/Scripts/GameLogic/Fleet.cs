@@ -8,7 +8,7 @@ public class Fleet : MonoBehaviour
 
     string name_;
 
-    List<BattleShip> ships_ = new List<BattleShip>();
+    public List<BattleShip> ships = new List<BattleShip>();
 
     private void Awake()
     {
@@ -54,7 +54,7 @@ public class Fleet : MonoBehaviour
     {
         if (!IsFree(ship, x, y))
             return false;
-        ships_.Add(ship);
+        ships.Add(ship);
         SetShipPosition(ship, x, y);
         return true;
     }
@@ -67,7 +67,7 @@ public class Fleet : MonoBehaviour
             GridObject p = grid_.GetPos(pos[i].x, pos[i].y);
             p.SetShip(null);
         }
-        ships_.Remove(ship);
+        ships.Remove(ship);
     }
 
     private void SetShipPosition(BattleShip ship, int x, int y)
@@ -86,7 +86,7 @@ public class Fleet : MonoBehaviour
     {
         bool destroyed = true;
 
-        foreach (BattleShip b in ships_)
+        foreach (BattleShip b in ships)
             destroyed &= b.Destroyed();
 
         return destroyed;

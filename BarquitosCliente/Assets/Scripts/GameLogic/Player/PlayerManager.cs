@@ -108,8 +108,13 @@ public class PlayerManager : MonoBehaviour
             return;
         int x = currentAttackButton_.Data().GetX();
         int y = currentAttackButton_.Data().GetY();
-        currentAttackButton_.Fleet().Attack(x, y);
-        // fleet_.Attack(x, y);
+        if (GameManager.Instance().GetGameType() == GameManager.GameType.ONLINE)
+        {
+            string enemyName = currentAttackButton_.Fleet().Name();
+            GameManager.Instance().NetworkManager().SendPlayerAttack(new AttackData(x, y, enemyName));
+        }
+        else
+            currentAttackButton_.Fleet().Attack(x, y);
 
         // LIMPIAR ICONO
         currentAttackButton_ = null;

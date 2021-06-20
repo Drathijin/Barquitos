@@ -54,6 +54,19 @@ public class GameManager : MonoBehaviour
 
     private int currentEnemyFleet_ = -1;
 
+
+    #endregion
+
+    #region NetworkingData
+
+    public string id_ = "123id123id123id123id123id";
+
+    public List<string> potentialFleets_ = new List<string>();
+
+    public bool nextState = false;
+
+    public List<ServerAttack.AttackResult> attacks_ = new List<ServerAttack.AttackResult>();
+
     #endregion
 
     #region GameData
@@ -71,6 +84,7 @@ public class GameManager : MonoBehaviour
     public string port = "8080";
 
     public string playerName = "Player";
+
     #endregion
 
     #region UIVariables
@@ -88,6 +102,8 @@ public class GameManager : MonoBehaviour
 
     private WaitingText waitingText_;
 
+    private IdText idText_;
+
     #endregion
 
     private void Awake()
@@ -101,6 +117,29 @@ public class GameManager : MonoBehaviour
         lock_ = new Object();
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void Update()
+    {
+        lock (lock_)
+        {
+            while (potentialFleets_.Count > 0)
+            {
+                AddEnemyFleet(potentialFleets_[0]);
+                potentialFleets_.RemoveAt(0);
+            }
+            while(attacks_.Count > 0)
+            {
+                ServerAttack.AttackResult res = attacks_[0];
+                Fleet fleet = GetFleet(res.name);
+                fleet.GetGrid().GetPos(res.x, res.y).SetState(res.hit ?
+                    CellData.CellState.HIT : CellData.CellState.MISSED);
+                attacks_.RemoveAt(0);
+            }
+            if (nextState)
+                NextState();
+            SetId(id_);
+        }
     }
 
     public static GameManager Instance()
@@ -170,9 +209,16 @@ public class GameManager : MonoBehaviour
         else if (netManager_ != null)
             netManager_.OnStateChanged(state);
 
-        if (state == GameState.ATTACKING)
+        if (state == GameState.ATTACKING
+            && gameType_ == GameType.AI)
             ChangeState(GameState.SELECTING);
 
+    }
+
+    private void NextState()
+    {
+        nextState = false;
+        ReadyChange();
     }
 
     public void DelayBorrar()
@@ -216,6 +262,9 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.SELECTING:
                 ChangeState(GameState.ATTACKING);
+                break;
+            case GameState.ATTACKING:
+                ChangeState(GameState.SELECTING);
                 break;
             case GameState.END:
                 LoadLevel("Menu");
@@ -262,8 +311,10 @@ public class GameManager : MonoBehaviour
             enemyNameUI_.SetName(enemyFleets_[currentEnemyFleet_].Name());
     }
 
-    public GameObject AddEnemyFleet(string name, bool ai)
+    public GameObject AddEnemyFleet(string name)
     {
+        if (name == playerName)
+            return null;
         if (!enemyWater_)
         {
             Debug.LogError("No enemyWater found");
@@ -345,6 +396,11 @@ public class GameManager : MonoBehaviour
         return networkSetup.battleRoyale;
     }
 
+    public NetworkManager NetworkManager()
+    {
+        return netManager_;
+    }
+
     #endregion
 
     #region Setters
@@ -404,9 +460,19 @@ public class GameManager : MonoBehaviour
         waitingText_ = text;
     }
 
+    public void SetIdText(IdText id)
+    {
+        idText_ = id;
+    }
+
+    public void SetId(string id)
+    {
+        if (idText_)
+            idText_.SetText(id);
+    }
+
     public void PlayersReady()
     {
-        Debug.Log("aaaaaa");
         if (waitingText_)
             waitingText_.gameObject.SetActive(false);
         ChangeState(GameState.PREPARING);

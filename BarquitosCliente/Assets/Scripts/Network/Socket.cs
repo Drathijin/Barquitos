@@ -89,7 +89,7 @@ namespace server
 
 		public bool Recv(byte[] buffer, int size)
 		{
-			IntPtr o = IntPtr.Zero;
+			IntPtr o = new IntPtr();
 			int val = recv_socket(internal_socket, buffer, size, ref o);
 			if(val >0)
 				return true;

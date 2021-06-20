@@ -289,7 +289,7 @@ MonoBehaviour:
       - m_Target: {fileID: 555165781}
         m_TargetAssemblyTypeName: NetworkDataGroup, Assembly-CSharp
         m_MethodName: SetBr
-        m_Mode: 6
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -675,7 +675,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4087279997382614214, guid: e5a73feac9abdb54d8651545ca9dd61e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -121.666664
+      value: -121.66675
       objectReference: {fileID: 0}
     - target: {fileID: 4133786057664666169, guid: e5a73feac9abdb54d8651545ca9dd61e, type: 3}
       propertyPath: m_Type
@@ -1047,11 +1047,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9021486336500560000, guid: e5a73feac9abdb54d8651545ca9dd61e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 33.346
+      value: 33.34601
       objectReference: {fileID: 0}
     - target: {fileID: 9021486336500560000, guid: e5a73feac9abdb54d8651545ca9dd61e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -82.858
+      value: -82.85791
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5a73feac9abdb54d8651545ca9dd61e, type: 3}
@@ -1889,6 +1889,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e86893bee66e00246afd1efbd13f8972, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ip: 
+  port: 
 --- !u!1 &555273367
 GameObject:
   m_ObjectHideFlags: 0
