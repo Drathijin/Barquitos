@@ -43,20 +43,24 @@ public class ClientSetup : IMessage
     count.CopyTo(data_, index);
     index += sizeof(int);
 
-    foreach (BattleShip ship in bs_)
+    for(int i = 0; i < bs_.Count; i++)
     {
+      BattleShip ship = bs_[i];
       var shipSize = BitConverter.GetBytes(ship.GetSize());
-      var hor = BitConverter.GetBytes(ship.horizontal);
-
       shipSize.CopyTo(data_, index);
-      hor.CopyTo(data_, index + sizeof(int));
+      index += sizeof(int);
+
+      var hor = BitConverter.GetBytes(ship.horizontal);
+      hor.CopyTo(data_, index);
+      index++;
 
       var x_ = BitConverter.GetBytes(ship.PlacedPositions()[0].x);
-      var y_ = BitConverter.GetBytes(ship.PlacedPositions()[0].y);
-      x_.CopyTo(data_, index + sizeof(int) + 1);
-      y_.CopyTo(data_, index + sizeof(int) * 2 + 1);
+      x_.CopyTo(data_, index );
+      index += sizeof(int);
 
-      index += sizeof(int) * 3 + 1;
+      var y_ = BitConverter.GetBytes(ship.PlacedPositions()[0].y);
+      y_.CopyTo(data_, index );
+      index += sizeof(int);
     }
     return data_;
   }
@@ -221,6 +225,7 @@ public class ServerAttack : IMessage
       index += sizeof(int);
 
       string name = Encoding.Unicode.GetString(data_, index, MAX_NAME_SIZE);
+      index += MAX_NAME_SIZE;
 
       AttackResult result = new AttackResult(hit, x, y, name);
       attacks_.Add(result);
