@@ -28,7 +28,7 @@ public class AttackData : IMessage
     Array.Resize<Byte>(ref aux, MAX_NAME_SIZE);
 
     var myName = System.Text.UnicodeEncoding.Unicode.GetBytes(myId);
-    Array.Resize<Byte>(ref aux, MAX_NAME_SIZE);
+    Array.Resize<Byte>(ref myName, MAX_NAME_SIZE);
 
     var x_ = BitConverter.GetBytes(x);
     var y_ = BitConverter.GetBytes(y);

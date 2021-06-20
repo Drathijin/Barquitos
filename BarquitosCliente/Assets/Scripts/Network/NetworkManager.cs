@@ -93,7 +93,7 @@ public class NetworkManager
 
     GridObject obj = GameManager.Instance().PlayerManager().currentAttackButton_;
 
-    AttackData data = obj ? new AttackData(obj.Data().GetX(), obj.Data().GetX(), obj.Fleet().Name(), GameManager.Instance().playerName) : new AttackData();
+    AttackData data = obj ? new AttackData(obj.Data().GetX(), obj.Data().GetY(), obj.Fleet().Name(), GameManager.Instance().playerName) : new AttackData();
 
     data.header_.gameID_ = id_;
     //data.myId = GameManager.Instance().playerName;
