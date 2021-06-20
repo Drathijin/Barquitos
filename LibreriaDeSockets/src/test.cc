@@ -48,9 +48,10 @@ int Socket::recv(char *buff, int size, Socket*& sock)
 		return (errno == EWOULDBLOCK || errno == EAGAIN) ? 0 : -1;
 	}
 
-	sock = new Socket(&sa, sa_len);
+	if(sock != NULL)
+		sock = new Socket(&sa, sa_len);
 
-	memccpy(buff, buffer, 1, bytes);
+	memcpy(buff, buffer, bytes);
 	return bytes;
 }
 
