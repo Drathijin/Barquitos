@@ -14,7 +14,7 @@ public class AIManager : MonoBehaviour
         nextAttacks_ = new Dictionary<string, AttackData>();
         GameManager.Instance().SetAIManager(this);
         string name = "AIFleet";
-        GameObject g = GameManager.Instance().AddEnemyFleet(name, true);
+        GameObject g = GameManager.Instance().AddEnemyFleet(name);
         IABehaviour eb;
 
         switch (aiData.diff)

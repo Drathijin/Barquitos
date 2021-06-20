@@ -13,16 +13,18 @@ public class ReadyButton : MonoBehaviour
 
     void Start()
     {
+
+        imgCmp_ = GetComponent<Image>();
+        text_ = GetComponentInChildren<Text>();
+        text_.text = "READY";
+
         button_ = GetComponent<Button>();
         if (GameManager.Instance())
         {
             GameManager.Instance().SetReadyButton(this);
             button_.onClick.AddListener(OnReadyClick);
+            OnStateChanged(GameManager.Instance().state_);
         }
-
-        imgCmp_ = GetComponent<Image>();
-        text_ = GetComponentInChildren<Text>();
-        text_.text = "READY";
     }
 
     void OnReadyClick()
@@ -35,10 +37,14 @@ public class ReadyButton : MonoBehaviour
     public void OnStateChanged(GameManager.GameState state)
     {
         button_.interactable = true;
+        gameObject.SetActive(true);
         ready = false;
         imgCmp_.color = Color.white;
         switch (state)
         {
+            case GameManager.GameState.WAITINGFORPLAYERS:
+                gameObject.SetActive(false);
+                break;
             case GameManager.GameState.PREPARING:
                 text_.text = "READY";
                 break;
