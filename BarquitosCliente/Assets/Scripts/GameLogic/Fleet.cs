@@ -39,7 +39,7 @@ public class Fleet : MonoBehaviour
     {
         if (!((x <= 9 && x >= 0) && (y <= 9 && y >= 0)))
             return false;
-        for (int i = 0; i < ship.Size(); i++)
+        for (int i = 0; i < ship.GetSize(); i++)
         {
             GridObject p = grid_.GetPos(
                 x + i * (ship.horizontal ? 1 : 0),
@@ -72,7 +72,7 @@ public class Fleet : MonoBehaviour
 
     private void SetShipPosition(BattleShip ship, int x, int y)
     {
-        for (int i = 0; i < ship.Size(); i++)
+        for (int i = 0; i < ship.GetSize(); i++)
         {
             int x_ = x + i * (ship.horizontal ? 1 : 0);
             int y_ = y + i * (ship.horizontal ? 0 : 1);
