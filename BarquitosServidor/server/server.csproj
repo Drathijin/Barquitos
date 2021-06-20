@@ -6,7 +6,9 @@
   </PropertyGroup>
     <ItemGroup>
      <Compile Include="../../BarquitosCliente/Assets/Scripts/Network/Serializable/NetworkData.cs" />
+     <Compile Include="../../BarquitosCliente/Assets/Scripts/Network/Serializable/AttackData.cs" />
      <Compile Include="../../BarquitosCliente/Assets/Scripts/Network/Serializable/Messages.cs" />
+     <Compile Include="../../BarquitosCliente/Assets/Scripts/Network/Serializable/ISerializable.cs" />
      <Compile Include="../../BarquitosCliente/Assets/Scripts/Network/Serializable/BattleShip.cs" />
     </ItemGroup>
 </Project>

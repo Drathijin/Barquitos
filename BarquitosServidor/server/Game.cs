@@ -65,7 +65,7 @@ namespace server
 
 		List<Player> players_;
 		System.Guid id_;
-		int secondsToStart_ = 60;
+		int secondsToStart_ = 120;
 		int secondsForNextRound_ = 30;
 		bool playing_ = false; //this bool will be true only in the second fase of the game
 
@@ -91,7 +91,7 @@ namespace server
 						if(p.name_ != player.name_)
 							names.Add(p.name_);
 					}
-					Console.WriteLine("Sending ServerConection to player");
+					Console.WriteLine($"Sending ServerConection to player | ID of the game is: ${id}");
 					socket.Send(new ServerSetup(id,names), player.socket_);
 					names.Clear();
 				}
@@ -102,6 +102,7 @@ namespace server
 		{
 			while(secondsToStart_ > 0)
 			{
+				CheckMessages();
 				secondsToStart_--;
 				Thread.Sleep(1000); //Esperamos 60 segundos o hasta que estén todas las posiciones
 			}
@@ -110,13 +111,14 @@ namespace server
 
 		public void SetPlayerPositions(ClientSetup setup)
 		{
-			string name = "";//GetPlayerName
+			string name = setup.name_;
 			bool allReady = true;
 			foreach(Player p in players_)
 			{
 				if(p.name_ == name)
 				{
 					//setPlayerPositions to ClientPositionsParam
+					Console.WriteLine($"Setting up positions for {name}");
 					p.ships_ = setup.GetBattleShips();
 					p.ready = true;
 				}
@@ -132,8 +134,9 @@ namespace server
 			ReadyTurn rt = new ReadyTurn(id_);
 			lock(socket_lock)
 			{
+				Console.WriteLine("Sending ready message to all players");
 				foreach (Player p in players_)
-					socket_.Send(rt,p);
+					socket_.Send(rt,p.socket_);
 			}
 
 			//Start playing
@@ -142,6 +145,7 @@ namespace server
 			{
 				while(secondsForNextRound_ > 0)
 				{
+					CheckMessages();
 					secondsForNextRound_--;
 					Thread.Sleep(1);
 				}
@@ -157,13 +161,14 @@ namespace server
 				{
 					IMessage current = messages_[0];
 					messages_.RemoveAt(0);
-					switch(current.header_.GetType())
+					switch(current.header_.messageType_)
 					{
-						case ClientSetup:
+						case IMessage.MessageType.ClientSetup:
+						ClientSetup cs = current as ClientSetup;
 						if(!playing_)
-							SetPlayerPositions(current);
+							SetPlayerPositions(cs);
 						break;
-						case ClientAttack:
+						case IMessage.MessageType.ClientAttack:
 						if(playing_)
 						{
 							AttackData attack = current as AttackData;
@@ -190,6 +195,10 @@ namespace server
 
 			foreach(Player a in players_)
 			{
+				//If we don't actually have a target, skip the attack
+				if(a.targetName_ != null)
+					continue;
+
 				bool hit = false;
 				foreach(Player p in players_)
 				{

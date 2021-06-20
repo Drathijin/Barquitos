@@ -10,7 +10,7 @@ public class AttackData : IMessage
 
     public int x, y;
 
-    public AttackData(int x = 0, int y = 0, string id = "", string myID_) : base(IMessage.MessageType.ClientAttack, System.Guid.Empty)
+    public AttackData(int x = 0, int y = 0, string id = "", string myID_="") : base(IMessage.MessageType.ClientAttack, System.Guid.Empty)
     {
         this.x = x;
         this.y = y;

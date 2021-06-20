@@ -103,6 +103,22 @@ namespace server
 
 			socket_ = new Socket(IP, PORT);
 			socket_.Bind();
+
+			Console.WriteLine($"Initialized server on {IP}:{PORT} successfully");
+		}
+
+		public static void ProcessClientMessage<T>(IMessage message, T ClientMessage) where T : IMessage
+		{
+			ClientMessage.FromBin(message.GetData());
+			if(games_.ContainsKey(ClientMessage.header_.gameID_))
+			{
+				Game game = games_[ClientMessage.header_.gameID_];
+				lock(game.messages_lock_){
+					game.messages_.Add(ClientMessage);
+				}
+			}
+			else
+				Console.WriteLine($"[Error]: Invalid game id - {ClientMessage.header_.gameID_}");
 		}
 
 		public static void Server()
@@ -121,9 +137,12 @@ namespace server
 							ManageConection(data, other);
 							break;
 						case IMessage.MessageType.ClientSetup:
-							ClientSetup dataaa = new ClientSetup(Guid.Empty, new List<BattleShip>());
-							dataaa.FromBin(message.GetData());
-							Console.WriteLine(">>>>>>>"+dataaa.header_.gameID_.ToString());
+							Console.WriteLine("Client Setup");
+							ProcessClientMessage<ClientSetup>(message, new ClientSetup(Guid.Empty, new List<BattleShip>(),""));
+							break;
+						case IMessage.MessageType.ClientAttack:
+							Console.WriteLine("Client Attack");
+							ProcessClientMessage<AttackData>(message, new AttackData());
 							break;
 						default:
 							break;
