@@ -69,6 +69,7 @@ public class GameManager : MonoBehaviour
 
   public List<ServerAttack.AttackResult> attacks_ = new List<ServerAttack.AttackResult>();
 
+
   #endregion
 
   #region GameData
@@ -137,6 +138,8 @@ public class GameManager : MonoBehaviour
         fleet.GetGrid().GetPos(res.x, res.y).SetState(res.hit ?
             CellData.CellState.HIT : CellData.CellState.MISSED);
         attacks_.RemoveAt(0);
+        if(res.fleetDestroyed)
+          FleetLost(res.name);
       }
       if (state_ == GameState.WAITINGFORPLAYERS && playersReady_)
       {

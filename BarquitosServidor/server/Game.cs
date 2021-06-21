@@ -65,11 +65,12 @@ namespace server
     public List<IMessage> messages_;
 
     List<Player> players_;
+    Player winningPlayer_ = null;
     System.Guid id_;
     int secondsToStart_ = 120;
     int secondsForNextRound_ = 300;
     bool playing_ = false; //this bool will be true only in the second fase of the game
-
+    public bool finished = false;
     public Game(int playerCount, Socket socket, object sck_lock, List<Player> players, System.Guid id)
     {
       messages_ = new List<IMessage>();
@@ -122,7 +123,7 @@ namespace server
           Console.WriteLine($"Setting up positions for {name}");
           p.ships_ = setup.GetBattleShips();
           foreach (var s in p.ships_)
-          { 
+          {
             Console.WriteLine($"Ship of size {s.GetSize()} is on position [{s.PlacedPositions()[0].x},{s.PlacedPositions()[0].y}] with {(s.horizontal ? "horizontal" : "vertical")} direction");
           }
           p.ready = true;
@@ -159,6 +160,7 @@ namespace server
         }
         playing_ = ResolveRound();
       }
+    finished = true;
     }
 
     public void CheckMessages()
@@ -212,7 +214,7 @@ namespace server
       {
         foreach (var s in a.ships_)
         {
-          if(!s.Destroyed()) 
+          if (!s.Destroyed())
             Console.WriteLine($">>>>>>> Ship of size {s.GetSize()} is on position [{s.PlacedPositions()[0].x},{s.PlacedPositions()[0].y}] with {(s.horizontal ? "horizontal" : "vertical")} direction");
         }
         //If we don't actually have a target, skip the attack
@@ -220,15 +222,19 @@ namespace server
           continue;
 
         bool hit = false;
+        bool dead = false;
         foreach (Player p in players_)
         {
           if (a.targetName_ == p.name_)
           {
             if (p.attack(a.taretAttack_.x, a.taretAttack_.y, out hit) && p.dead)
+            {
               aliveCount--;
+              dead = p.dead;
+            };
           }
         }
-        sa.attacks_.Add(new ServerAttack.AttackResult(hit, a.taretAttack_.x, a.taretAttack_.y, a.targetName_));
+        sa.attacks_.Add(new ServerAttack.AttackResult(hit, a.taretAttack_.x, a.taretAttack_.y, a.targetName_, dead));
       }
       lock (socket_lock)
       {
@@ -242,7 +248,12 @@ namespace server
         return true;
       }
       else
+      {
+        foreach (Player p in players_)
+          if (!p.dead)
+            winningPlayer_ = p;
         return false;
+      }
     }
   }
 }

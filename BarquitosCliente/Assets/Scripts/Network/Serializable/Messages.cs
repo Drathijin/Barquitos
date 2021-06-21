@@ -154,17 +154,19 @@ public class ServerAttack : IMessage
   static int MAX_NAME_SIZE = 24;
   public struct AttackResult
   {
-    public AttackResult(bool hit, int x, int y, string name)
+    public AttackResult(bool hit, int x, int y, string name, bool fleetDestroyed = false)
     {
       this.hit = hit;
       this.x = x;
       this.y = y;
       this.name = name;
+      this.fleetDestroyed = fleetDestroyed;
     }
     public bool hit;
     public int x;
     public int y;
     public string name;
+    public bool fleetDestroyed;
   }
   public List<AttackResult> attacks_;
   public ServerAttack(System.Guid id) : base(IMessage.MessageType.ServerAttack, id)
@@ -198,6 +200,10 @@ public class ServerAttack : IMessage
       var str = Encoding.Unicode.GetBytes(attack.name);
       str.CopyTo(data_, index);
       index += MAX_NAME_SIZE;
+
+      var destroy = BitConverter.GetBytes(attack.fleetDestroyed);
+      destroy.CopyTo(data_, index);
+      index += 1;
     }
     return data_;
   }
@@ -226,7 +232,10 @@ public class ServerAttack : IMessage
       string name = Encoding.Unicode.GetString(data_, index, MAX_NAME_SIZE);
       index += MAX_NAME_SIZE;
 
-      AttackResult result = new AttackResult(hit, x, y, name);
+      bool destroy = BitConverter.ToBoolean(data, index);
+      index += 1;
+
+      AttackResult result = new AttackResult(hit, x, y, name, destroy);
       attacks_.Add(result);
     }
   }
