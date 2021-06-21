@@ -200,12 +200,17 @@ namespace server
               }
               break;
             case IMessage.MessageType.ClientExit:
-              ServerAttack sa = new ServerAttack(id_);
-              
-              sa.attacks_.Add(new ServerAttack.AttackResult(false,0,0,(current as ClientExit).name,true));
+              // ServerAttack sa = new ServerAttack(id_);
+              ClientExit ce = current as ClientExit;
               foreach (Player p in players_)
-                socket_.Send(sa, p.socket_);
-              break;
+                if (p.name_ == ce.name)
+                  {
+                    p.targetName_ = ce.name;
+                    p.taretAttack_ = new BattleShip.Position(0,0);
+                    p.dead = true;
+                    p.ready = true;
+                  }
+                break;
           }
         }
       }
@@ -229,7 +234,7 @@ namespace server
         {
           if (a.targetName_ == p.name_)
           {
-            if (p.attack(a.taretAttack_.x, a.taretAttack_.y, out hit) && p.dead)
+            if (p.attack(a.taretAttack_.x, a.taretAttack_.y, out hit) || p.dead)
             {
               aliveCount--;
               dead = p.dead;
@@ -243,6 +248,8 @@ namespace server
         foreach (Player p in players_)
           socket_.Send(sa, p.socket_);
       }
+
+      players_.RemoveAll(x => x.dead);
 
       if (aliveCount >= 2)
       {

@@ -155,6 +155,14 @@ namespace server
             Console.WriteLine("Client Attack");
             ProcessClientMessage<AttackData>(message, new AttackData());
             break;
+          case IMessage.MessageType.ClientExit:
+            Console.WriteLine("Client Exit");
+            ProcessClientMessage<ClientExit>(message, new ClientExit(Guid.Empty,""));
+            if(message.header_.gameID_ == Guid.Empty)
+            {
+              
+            }
+            break;
           case IMessage.MessageType.ServerSetup:
             ServerSetup ss = new ServerSetup(Guid.Empty, new List<string>());
             ss.FromBin(message.GetData());
@@ -165,6 +173,7 @@ namespace server
             }
             Console.WriteLine("");
             break;
+
           default:
             break;
         }
