@@ -33,8 +33,8 @@ public class NetworkManager
 
     Debug.Log("Comienza el Setup");
 
-    //socket_ = new Socket("83.41.58.21", "8080");
-    socket_ = new Socket(ip, port);
+    socket_ = new Socket("83.41.58.21", "8080");
+    //socket_ = new Socket(ip, port);
 
     socket_.Send(networkData_, socket_);
 

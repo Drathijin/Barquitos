@@ -33,6 +33,11 @@ public class BattleShip
         return placedPositions_;
     }
 
+    public void ClearPositions()
+    {
+        placedPositions_.Clear();
+    }
+
     public void AddPlacedPosition(int x, int y)
     {
         placedPositions_.Add(new Position(x, y));

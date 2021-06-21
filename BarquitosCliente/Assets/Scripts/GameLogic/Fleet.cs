@@ -72,6 +72,7 @@ public class Fleet : MonoBehaviour
 
     private void SetShipPosition(BattleShip ship, int x, int y)
     {
+        ship.ClearPositions();
         for (int i = 0; i < ship.GetSize(); i++)
         {
             int x_ = x + i * (ship.horizontal ? 1 : 0);
