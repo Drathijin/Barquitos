@@ -57,4 +57,9 @@ public class AttackData : IMessage
     index += sizeof(int);
     y = BitConverter.ToInt32(data_, index);
   }
+
+  public new static MessageType Type()
+  {
+    return MessageType.ClientAttack;
+  }
 }

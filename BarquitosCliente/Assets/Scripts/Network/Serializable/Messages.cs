@@ -4,26 +4,11 @@ using System;
 using System.Text;
 using server;
 
-public class ServerConection : IMessage
-{
-  public ServerConection() : base(IMessage.MessageType.ServerConection, System.Guid.Empty) { }
-  override public Byte[] ToBin()
-  {
-    return base.ToBin();
-  }
-  override public void FromBin(Byte[] data)
-  {
-    base.FromBin(data);
-    data_ = data;
-  }
-}
-
-
 public class ClientSetup : IMessage
 {
   private List<BattleShip> bs_;
   public string name_;
-  public ClientSetup(System.Guid id,  List<BattleShip> bs,string name) : base(IMessage.MessageType.ClientSetup, id)
+  public ClientSetup(System.Guid id, List<BattleShip> bs, string name) : base(IMessage.MessageType.ClientSetup, id)
   {
     bs_ = bs;
     name_ = name;
@@ -36,14 +21,14 @@ public class ClientSetup : IMessage
 
     byte[] str = Encoding.Unicode.GetBytes(name_);
     Array.Resize(ref str, 24);
-    str.CopyTo(data_,index);
-    index+=24;
+    str.CopyTo(data_, index);
+    index += 24;
 
     var count = BitConverter.GetBytes(bs_.Count);
     count.CopyTo(data_, index);
     index += sizeof(int);
 
-    for(int i = 0; i < bs_.Count; i++)
+    for (int i = 0; i < bs_.Count; i++)
     {
       BattleShip ship = bs_[i];
       var shipSize = BitConverter.GetBytes(ship.GetSize());
@@ -55,11 +40,11 @@ public class ClientSetup : IMessage
       index++;
 
       var x_ = BitConverter.GetBytes(ship.PlacedPositions()[0].x);
-      x_.CopyTo(data_, index );
+      x_.CopyTo(data_, index);
       index += sizeof(int);
 
       var y_ = BitConverter.GetBytes(ship.PlacedPositions()[0].y);
-      y_.CopyTo(data_, index );
+      y_.CopyTo(data_, index);
       index += sizeof(int);
     }
     return data_;
@@ -69,9 +54,9 @@ public class ClientSetup : IMessage
     base.FromBin(data);
 
     int index = HEADER_SIZE;
-    
+
     string str = Encoding.Unicode.GetString(data_, index, 24);
-    index+=24;
+    index += 24;
     name_ = str;
 
     int size = BitConverter.ToInt32(data, index);
@@ -100,6 +85,10 @@ public class ClientSetup : IMessage
       }
       bs_.Add(b);
     }
+  }
+  public new static MessageType Type()
+  {
+    return MessageType.ClientSetup;
   }
 }
 
@@ -146,6 +135,11 @@ public class ServerSetup : IMessage
       names_.Add(str);
       index += MAX_NAME_SIZE;
     }
+  }
+
+  public new static MessageType Type()
+  {
+    return MessageType.ServerSetup;
   }
 }
 
@@ -240,15 +234,32 @@ public class ServerAttack : IMessage
     }
   }
 
+  public new static MessageType Type()
+  {
+    return MessageType.ServerAttack;
+  }
+
 }
 
-public class FleetDefeated : IMessage
+public class ReadyGame : IMessage
 {
-  static int MAX_NAME_SIZE = 24;
-  public string fleetName;
-  public FleetDefeated(System.Guid id, string fleet) : base(IMessage.MessageType.FleetDefeated, id)
+  public ReadyGame(System.Guid id) : base(MessageType.ReadyTurn, id)
+  { }
+
+  public new static MessageType Type()
   {
-    fleetName = fleet;
+    return MessageType.ReadyTurn;
+  }
+}
+
+public class ClientExit : IMessage
+{
+  private static int MAX_NAME_SIZE = 24;
+  public string name;
+
+  public ClientExit(System.Guid id, string name) : base(IMessage.MessageType.ClientExit, id)
+  {
+    this.name = name;
   }
 
   override public Byte[] ToBin()
@@ -256,8 +267,8 @@ public class FleetDefeated : IMessage
     base.ToBin();
     int index = HEADER_SIZE;
 
-    var name = Encoding.Unicode.GetBytes(fleetName);
-    name.CopyTo(data_, index);
+    var nameBin = Encoding.Unicode.GetBytes(name);
+    nameBin.CopyTo(data_, index);
 
     return data_;
   }
@@ -267,46 +278,12 @@ public class FleetDefeated : IMessage
 
     int index = HEADER_SIZE;
 
-    fleetName = Encoding.Unicode.GetString(data_, index, MAX_NAME_SIZE);
+    name = Encoding.Unicode.GetString(data_, index, MAX_NAME_SIZE);
 
   }
 
-}
-
-public class ReadyTurn : IMessage
-{
-  public ReadyTurn(System.Guid id) : base(MessageType.ReadyTurn, id)
-  { }
-}
-
-
-public class ClientExit: IMessage
-{
-    private static int MAX_NAME_SIZE = 24;
-    public string name;
-    public ClientExit(System.Guid id, string name) : base(IMessage.MessageType.ClientExit, id)
-    {
-        this.name = name;
-    }
-
-    override public Byte[] ToBin()
-    {
-        base.ToBin();
-        int index = HEADER_SIZE;
-
-        var nameBin = Encoding.Unicode.GetBytes(name);
-        nameBin.CopyTo(data_, index);
-
-        return data_;
-    }
-    override public void FromBin(Byte[] data)
-    {
-        base.FromBin(data);
-
-        int index = HEADER_SIZE;
-
-        name = Encoding.Unicode.GetString(data_, index, MAX_NAME_SIZE);
-
-    }
-
+  public new static MessageType Type()
+  {
+    return MessageType.ClientExit;
+  }
 }

@@ -39,7 +39,7 @@ public class NetworkManager
       socket_ = new Socket("83.41.58.21", "8080");
       //socket_ = new Socket(ip, port);
     }
-    catch(Exception e)
+    catch (Exception e)
     {
       Debug.LogError(e.Message);
       lock (GameManager.lock_)
@@ -117,7 +117,7 @@ public class NetworkManager
   private void WaitForReady()    // Escuchar al servidor para saber cuando le han dado a listo
   {
     Debug.Log("Waiting for ready");
-    ReadyTurn ready = new ReadyTurn(id_);
+    ReadyGame ready = new ReadyGame(id_);
     socket_.Recv(ready);
     Debug.Log("We ready");
     lock (GameManager.lock_)
@@ -145,13 +145,18 @@ public class NetworkManager
     }
   }
 
-  private void Recieve(ref IMessage msg)
+  private void Recieve<T>(ref T msg, IMessage.MessageType expectedType) where T : IMessage
   {
     try
     {
       socket_.Recv(msg);
+
+      if(msg.header_.messageType_ != expectedType)
+      {
+        UnexpectedMessage(msg, expectedType);
+      }
     }
-    catch(Exception e)
+    catch (Exception e)
     {
       Debug.LogError(e.Message);
       lock (GameManager.lock_)
@@ -159,6 +164,11 @@ public class NetworkManager
         GameManager.Instance().ConectionErrorExit = true;
       }
     }
+  }
+
+  private void UnexpectedMessage(IMessage msg, IMessage.MessageType expectedMessage)
+  {
+
   }
 
   public void OnDestroy()
