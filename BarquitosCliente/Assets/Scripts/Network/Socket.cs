@@ -47,6 +47,8 @@ namespace server
     public Socket(String addr, String port)
     {
       internal_socket = make_socket(addr, port);
+      if (internal_socket == null)
+        throw new Exception("Error creating Socket. Error code");
     }
     public void Dispose()
     {
@@ -61,7 +63,7 @@ namespace server
     public bool Send(byte[] s, IntPtr other)
     {
       int val = send_socket(internal_socket, s, s.Length, other);
-      if (val != s.Length) //Check for EAgain or EWouldBlock
+      if (val <= 0) //Check for EAgain or EWouldBlock
         return false;
       else
         return true;

@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
 
   public List<ServerAttack.AttackResult> attacks_ = new List<ServerAttack.AttackResult>();
 
-
+  public bool ConectionErrorExit = false;
   #endregion
 
   #region GameData
@@ -126,6 +126,8 @@ public class GameManager : MonoBehaviour
   {
     lock (lock_)
     {
+      if (ConectionErrorExit)
+        LoadLevel("Error");
       while (potentialFleets_.Count > 0)
       {
         AddEnemyFleet(potentialFleets_[0]);
@@ -138,7 +140,7 @@ public class GameManager : MonoBehaviour
         fleet.GetGrid().GetPos(res.x, res.y).SetState(res.hit ?
             CellData.CellState.HIT : CellData.CellState.MISSED);
         attacks_.RemoveAt(0);
-        if(res.fleetDestroyed)
+        if (res.fleetDestroyed)
           FleetLost(res.name);
       }
       if (state_ == GameState.WAITINGFORPLAYERS && playersReady_)
@@ -161,14 +163,19 @@ public class GameManager : MonoBehaviour
   #region SceneManagement
   public void LoadLevel(string level)
   {
+    if (netManager_ != null)
+    {
+      netManager_.OnDestroy();
+      netManager_ = null;
+    }
     SceneManager.LoadScene(level);
   }
 
   void OnSceneLoaded(Scene scene, LoadSceneMode mode)
   {
-    if (scene.name == "Menu")
-      ChangeState(GameState.MENU);
-    else
+    ConectionErrorExit = false;
+    ChangeState(GameState.MENU);
+    if (scene.name == "Game")
     {
       fleets_ = new Dictionary<string, Fleet>();
       fleetsReady_ = new Dictionary<string, bool>();

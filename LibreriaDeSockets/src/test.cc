@@ -8,13 +8,13 @@ void handleGAIError(const char *s, int err)
 {
 	char str[1024];
 	snprintf(str,1024,"Socket library error on function %s : %s",s,gai_strerror(err));
-	throw(new std::runtime_error(std::string(str)));
+	//throw(new std::runtime_error(std::string(str)));
 }
 void handleError(const char *s)
 {
 	char str[1024];
 	snprintf(str,1024,"Socket library error on function %s : %s",s,strerror(errno));
-	throw(new std::runtime_error(std::string(str)));
+	//throw(new std::runtime_error(std::string(str)));
 }
 
 Socket::Socket(const char *address, const char *port) : sd(-1)
@@ -84,15 +84,15 @@ extern "C"
 	void *make_socket(const char *add, const char *port)
 	{
 		Socket* sock;
-		try
-		{
 			sock = new Socket(add, port);
-		}
-		catch(std::runtime_error e)
-		{
-			printf("%s",e.what());
-			sock = NULL;
-		}
+		// try
+		// {
+		// }
+		// catch(std::runtime_error e)
+		// {
+		// 	printf("%s",e.what());
+		// 	sock = NULL;
+		// }
 		return sock;
 	}
 

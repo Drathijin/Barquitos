@@ -10,6 +10,8 @@ public class NetworkDataGroup : MonoBehaviour
   public NetworkData data_;
   public string ip;
   public string port;
+  public bool wrongIp = false;
+  public bool wrongPort = false;
 
   void Start()
   {
@@ -29,16 +31,60 @@ public class NetworkDataGroup : MonoBehaviour
 
   public void SetIp(string ip)
   {
-    if (ip == "")
-      ip = "127.0.0.1";
-    this.ip = ip;
+    if (ip == "" || !CheckIp(ip))
+      wrongIp = true;
+    else
+    {
+      this.ip = ip;
+      wrongIp = false;
+    }
+  }
+
+  private bool CheckIp(string ip)
+  {
+    for (int i = 0; i < ip.Length; i++)
+    {
+      char c = ip[i];
+      if (char.IsLetter(c))
+        return false;
+    }
+
+    string[] splits = ip.Split('.');
+
+    if (splits.Length != 4)
+      return false;
+
+    foreach (string split in splits)
+    {
+      int s = int.Parse(split);
+      if (s > 255 || s < 0)
+        return false;
+    }
+
+    return true;
   }
 
   public void SetPort(string port)
   {
-    if (port == "")
-      port = "8080";
-    this.port = port;
+    if (port == "" || !CheckPort(port))
+      wrongPort = true;
+    else
+    {
+      wrongPort = false;
+      this.port = port;
+    }
+
+  }
+
+  private bool CheckPort(string port)
+  {
+    for (int i = 0; i < port.Length; i++)
+    {
+      char c = port[i];
+      if (!char.IsDigit(c))
+        return false;
+    }
+    return true;
   }
 
   public void SetBr(bool br)

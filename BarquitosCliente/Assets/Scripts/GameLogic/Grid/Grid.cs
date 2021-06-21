@@ -27,7 +27,7 @@ public class Grid
 
     public GridObject GetPos(int x , int y)
     {
-        if (x >= 10 || y >= 10)
+        if (x >= 10 || y >= 10 || x < 0 || y < 0)
             return null;
         return grid[x, y];
     }

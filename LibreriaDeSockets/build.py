@@ -9,9 +9,12 @@ for root, dirs, files in os.walk(mypath):
 if (platform.system() == "Linux" or platform.system() == "Linux2"):
 	os.system("cd ./build && cmake ../ && cmake --build .")
 	os.system("cp ./build/libsocket.so ../BarquitosServidor/server/bin/Debug/net5.0")
+	os.system("cp ./build/libsocket.so ../BarquitosCliente/Assets/Scripts/Network")
 else:
 	os.system('cmd /c "cd ./build & cmake ../ & cmake --build ."')
 	shutil.copy("./build/Debug/socket.dll","../BarquitosServidor/server/bin/Debug/net5.0")
+	shutil.copy("./build/Debug/socket.dll","../BarquitosCliente/Assets/Scripts/Network")
+
 
 
 # os.system('cmd /c "cp ./build/Debug/socket.dll ../BarquitosServidor/server/bin/Debug/net5.0"')
