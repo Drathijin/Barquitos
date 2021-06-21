@@ -160,7 +160,7 @@ namespace server
         }
         playing_ = ResolveRound();
       }
-    finished = true;
+      finished = true;
     }
 
     public void CheckMessages()
@@ -198,6 +198,13 @@ namespace server
                 if (allReady)
                   secondsForNextRound_ = 0;
               }
+              break;
+            case IMessage.MessageType.ClientExit:
+              ServerAttack sa = new ServerAttack(id_);
+              
+              sa.attacks_.Add(new ServerAttack.AttackResult(false,0,0,(current as ClientExit).name,true));
+              foreach (Player p in players_)
+                socket_.Send(sa, p.socket_);
               break;
           }
         }

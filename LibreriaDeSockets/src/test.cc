@@ -83,7 +83,16 @@ extern "C"
 
 	void *make_socket(const char *add, const char *port)
 	{
-		return new Socket(add, port);
+		Socket* sock;
+		try
+		{
+			sock = new Socket(add, port);
+		}
+		catch(std::runtime_error e)
+		{
+			sock = NULL;
+		}
+		return sock;
 	}
 
 	int test_socket(void *sock)
