@@ -212,13 +212,8 @@ namespace server
 
       foreach (Player a in players_)
       {
-        foreach (var s in a.ships_)
-        {
-          if (!s.Destroyed())
-            Console.WriteLine($">>>>>>> Ship of size {s.GetSize()} is on position [{s.PlacedPositions()[0].x},{s.PlacedPositions()[0].y}] with {(s.horizontal ? "horizontal" : "vertical")} direction");
-        }
         //If we don't actually have a target, skip the attack
-        if (a.targetName_ == null || a.targetName_ == "")
+        if (a.targetName_ == null || a.targetName_ == "\0\0\0\0\0\0\0\0\0\0\0\0")
           continue;
 
         bool hit = false;

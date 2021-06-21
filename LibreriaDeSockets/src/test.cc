@@ -6,14 +6,15 @@
 
 void handleGAIError(const char *s, int err)
 {
-	printf("Some error with, Ricky talking from dll land %s\n", s);
-	fprintf(stderr, "%s\n", gai_strerror(err));
-	exit(1);
+	char str[1024];
+	snprintf(str,1024,"Socket library error on fucntion %s : %s",s,gai_strerror(err));
+	throw(new std::runtime_error(std::string(str)));
 }
 void handleError(const char *s)
 {
-	printf("Some error with, Ricky talking from dll land %s\n", s);
-	exit(1);
+	char str[1024];
+	snprintf(str,1024,"Socket library error on fucntion %s : %s",s,strerror(errno));
+	throw(new std::runtime_error(std::string(str)));
 }
 
 Socket::Socket(const char *address, const char *port) : sd(-1)
