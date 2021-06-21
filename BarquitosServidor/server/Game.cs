@@ -138,7 +138,7 @@ namespace server
     public void Play()
     {
       //Notify change state
-      ReadyTurn rt = new ReadyTurn(id_);
+      ReadyGame rt = new ReadyGame(id_);
       lock (socket_lock)
       {
         Console.WriteLine("Sending ready message to all players");
