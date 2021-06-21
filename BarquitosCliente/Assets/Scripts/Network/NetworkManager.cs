@@ -33,7 +33,8 @@ public class NetworkManager
 
     Debug.Log("Comienza el Setup");
 
-    socket_ = new Socket("83.41.58.21", "8080");
+    //socket_ = new Socket("83.41.58.21", "8080");
+    socket_ = new Socket(ip, port);
 
     socket_.Send(networkData_, socket_);
 
@@ -90,13 +91,13 @@ public class NetworkManager
 
   public void SendPlayerAttack()
   {
-
-    GridObject obj = GameManager.Instance().PlayerManager().currentAttackButton_;
+    PlayerManager player = GameManager.Instance().PlayerManager();
+    GridObject obj = player.currentAttackButton_;
+    player.CleanButton();
 
     AttackData data = obj ? new AttackData(obj.Data().GetX(), obj.Data().GetY(), obj.Fleet().Name(), GameManager.Instance().playerName) : new AttackData();
 
     data.header_.gameID_ = id_;
-    //data.myId = GameManager.Instance().playerName;
     socket_.Send(data, socket_);
   }
 

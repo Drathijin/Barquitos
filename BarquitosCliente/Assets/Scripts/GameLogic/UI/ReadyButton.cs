@@ -9,8 +9,6 @@ public class ReadyButton : MonoBehaviour
     Text text_;
     Image imgCmp_;
 
-    bool ready = false;
-
     void Start()
     {
 
@@ -29,8 +27,7 @@ public class ReadyButton : MonoBehaviour
 
     void OnReadyClick()
     {
-        ready = !ready;
-        imgCmp_.color = ready ? Color.grey : Color.white;
+        button_.interactable = false;
         GameManager.Instance().OnReadyClick();
     }
 
@@ -38,7 +35,6 @@ public class ReadyButton : MonoBehaviour
     {
         button_.interactable = true;
         gameObject.SetActive(true);
-        ready = false;
         imgCmp_.color = Color.white;
         switch (state)
         {
