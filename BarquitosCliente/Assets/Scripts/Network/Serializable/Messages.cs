@@ -278,3 +278,35 @@ public class ReadyTurn : IMessage
   public ReadyTurn(System.Guid id) : base(MessageType.ReadyTurn, id)
   { }
 }
+
+
+public class ClientExit: IMessage
+{
+    private static int MAX_NAME_SIZE = 24;
+    public string name;
+    public ClientExit(System.Guid id, string name) : base(IMessage.MessageType.ClientExit, id)
+    {
+        this.name = name;
+    }
+
+    override public Byte[] ToBin()
+    {
+        base.ToBin();
+        int index = HEADER_SIZE;
+
+        var nameBin = Encoding.Unicode.GetBytes(name);
+        nameBin.CopyTo(data_, index);
+
+        return data_;
+    }
+    override public void FromBin(Byte[] data)
+    {
+        base.FromBin(data);
+
+        int index = HEADER_SIZE;
+
+        name = Encoding.Unicode.GetString(data_, index, MAX_NAME_SIZE);
+
+    }
+
+}
