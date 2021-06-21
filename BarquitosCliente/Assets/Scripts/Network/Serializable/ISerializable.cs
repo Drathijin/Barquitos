@@ -23,6 +23,7 @@ public class IMessage : ISerializable
         ServerAttack,   //Responde con el resultado de la última ronda de ataques
         FleetDefeated,  //Name de la fleet derrotada
         ReadyTurn,      //Jugador está listo
+        ClientExit,     //El jugador se desconecta
         EndGame        //NAme del jugador ganador
     }
 
