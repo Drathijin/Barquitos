@@ -7,13 +7,13 @@
 void handleGAIError(const char *s, int err)
 {
 	char str[1024];
-	snprintf(str,1024,"Socket library error on fucntion %s : %s",s,gai_strerror(err));
+	snprintf(str,1024,"Socket library error on function %s : %s",s,gai_strerror(err));
 	throw(new std::runtime_error(std::string(str)));
 }
 void handleError(const char *s)
 {
 	char str[1024];
-	snprintf(str,1024,"Socket library error on fucntion %s : %s",s,strerror(errno));
+	snprintf(str,1024,"Socket library error on function %s : %s",s,strerror(errno));
 	throw(new std::runtime_error(std::string(str)));
 }
 
@@ -57,7 +57,7 @@ int Socket::recv(char *buff, int size, Socket*& sock)
 
 int Socket::send(char *buff, int size, const Socket &sock)
 {
-	return sendto(sd, buff, size, 0, &sock.sa, sock.sa_len) == -1 ? -1 : 0;
+	return sendto(sd, buff, size, 0, &sock.sa, sock.sa_len);
 }
 
 
@@ -90,6 +90,7 @@ extern "C"
 		}
 		catch(std::runtime_error e)
 		{
+			printf("%s",e.what());
 			sock = NULL;
 		}
 		return sock;
