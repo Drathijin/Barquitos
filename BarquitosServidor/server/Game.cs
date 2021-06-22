@@ -67,8 +67,8 @@ namespace server
     List<Player> players_;
     Player winningPlayer_ = null;
     System.Guid id_;
-    int secondsToStart_ = 45;
-    int secondsForNextRound_ = 15;
+    int secondsToStart_ = 47;
+    int secondsForNextRound_ = 17;
     bool playing_ = false; //this bool will be true only in the second fase of the game
     public bool finished = false;
     public Game(int playerCount, Socket socket, object sck_lock, List<Player> players, System.Guid id)
@@ -251,7 +251,7 @@ namespace server
 
       if (aliveCount >= 2)
       {
-        secondsForNextRound_ = 15;
+        secondsForNextRound_ = 17;
         return true;
       }
       else

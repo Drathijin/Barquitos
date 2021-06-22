@@ -59,6 +59,8 @@ namespace server
         lock (br_player_lock)
         {
           BattleRoyalePlayers_.Enqueue(new Player(conectionMessage.playerName, socket));
+          if(BattleRoyalePlayers_.Count >= 5)
+            handler.Resume();
         }
       }
       else
@@ -178,12 +180,13 @@ namespace server
             data.FromBin(message.GetData());
             if(CheckName(data.playerName))
             {
+              Console.WriteLine("Aceptando conexión");
               socket_.Send(new AcceptConnection(Guid.Empty, data.playerName), other);
               ManageConection(data, other);
             }
             else
             {
-              Console.WriteLine("EH EH, pa donde vah?");
+              Console.WriteLine("Nombre repetido");
               socket_.Send(new AcceptConnection(Guid.Empty, ""), other);
             }
             break;
