@@ -24,6 +24,11 @@ public class GameManager : MonoBehaviour
 
   private static GameManager instace_;
 
+  public static GameManager Instance()
+  {
+    return instace_;
+  }
+
   public static Object lock_;
 
   public Transform enemyWater_;
@@ -111,6 +116,11 @@ public class GameManager : MonoBehaviour
 
   #endregion
 
+
+  #region Functions
+
+  #region MonoBehaviour
+
   private void Awake()
   {
     if (instace_)
@@ -126,6 +136,7 @@ public class GameManager : MonoBehaviour
 
   private void Update()
   {
+    Debug.Log("pepe");
     lock (lock_)
     {
       if (ConectionErrorExit)
@@ -157,10 +168,19 @@ public class GameManager : MonoBehaviour
     }
   }
 
-  public static GameManager Instance()
+  public void Exit()
   {
-    return instace_;
+    Application.Quit();
   }
+
+  private void OnDisable()
+  {
+    if (netManager_ != null)
+      netManager_.OnDestroy();
+    SceneManager.sceneLoaded -= OnSceneLoaded;
+  }
+
+  #endregion
 
   #region SceneManagement
   public void LoadLevel(string level)
@@ -203,6 +223,7 @@ public class GameManager : MonoBehaviour
             ChangeState(GameState.WAITINGFORPLAYERS);
             if (!netManager_.Setup(networkSetup, ip, port))
               SceneManager.LoadScene("Error");
+            //netManager_.Setup(networkSetup, ip, port);
             break;
           }
       }
@@ -260,6 +281,7 @@ public class GameManager : MonoBehaviour
 
   private void ResetChecks()
   {
+    playersReady_ = false;
     foreach (var b in fleets_)
       fleetsReady_[b.Key] = false;
   }
@@ -318,6 +340,7 @@ public class GameManager : MonoBehaviour
     fleets_.Remove(fleet);
     if (fleets_.Count == 1)
     {
+      nextState = false;
       Debug.Log("GAME END");
       Debug.Log(fleets_.First().Key + " WINS");
       winText_.OnEnd(fleets_.First().Key);
@@ -525,15 +548,5 @@ public class GameManager : MonoBehaviour
 
   #endregion
 
-  public void Exit()
-  {
-    Application.Quit();
-  }
-
-  private void OnDisable()
-  {
-    if (netManager_ != null)
-      netManager_.OnDestroy();
-    SceneManager.sceneLoaded -= OnSceneLoaded;
-  }
+  #endregion
 }

@@ -85,8 +85,6 @@ public class NetworkManager
 
   public void OnStateChanged(GameManager.GameState state)
   {
-    if (th_ != null)
-      th_.Join();
     th_ = null;
     switch (state)
     {
