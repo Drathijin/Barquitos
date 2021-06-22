@@ -25,6 +25,8 @@ public class MenuManager : MonoBehaviour
     //{
     //  b.onClick.AddListener(Click);
     //}
+    if (GameManager.Instance().AudioManager())
+      GameManager.Instance().AudioManager().PlayMusic(AudioManager.Music.Menu, true);
     Back();
   }
 
