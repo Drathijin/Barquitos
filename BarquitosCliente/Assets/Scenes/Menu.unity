@@ -1895,6 +1895,7 @@ MonoBehaviour:
   wrongPort: 0
   ipField: {fileID: 378386753}
   portField: {fileID: 835963219}
+  playerName: {fileID: 2051207859}
 --- !u!1 &555273367
 GameObject:
   m_ObjectHideFlags: 0

@@ -50,6 +50,7 @@ public class NetworkManager
 
     StreamWriter writer = new StreamWriter(path);
 
+    writer.WriteLine(networkData_.playerName);
     writer.WriteLine(this.ip);
     writer.WriteLine(this.port);
     writer.Close();

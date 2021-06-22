@@ -493,6 +493,8 @@ public class GameManager : MonoBehaviour
   public void SetIdText(IdText id)
   {
     idText_ = id;
+    if (gameType_ == GameType.AI)
+      id.gameObject.SetActive(false);
   }
 
   public void SetId(string id)

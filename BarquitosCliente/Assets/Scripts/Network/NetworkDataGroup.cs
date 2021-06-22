@@ -15,7 +15,7 @@ public class NetworkDataGroup : MonoBehaviour
   public bool wrongPort = true;
 
   [SerializeField]
-  InputField ipField, portField;
+  InputField ipField, portField, playerName;
 
   void Start()
   {
@@ -23,8 +23,10 @@ public class NetworkDataGroup : MonoBehaviour
     if (File.Exists(NetworkManager.path))
     {
       StreamReader reader = new StreamReader(NetworkManager.path);
+      data_.playerName = reader.ReadLine();
       ip = reader.ReadLine();
       port = reader.ReadLine();
+      playerName.text = data_.playerName;
       ipField.text = ip;
       portField.text = port;
       reader.Close();
