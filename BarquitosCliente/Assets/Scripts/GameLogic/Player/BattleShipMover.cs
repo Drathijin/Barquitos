@@ -53,6 +53,11 @@ public class BattleShipMover : MonoBehaviour
 
   public void ReleaseBattleShipOnPosition(BattleShipViewer ship, GridObject obj)
   {
+    if (ship == selectedBts_)
+    {
+      selectedBts_.ResetPosition();
+      selectedBts_ = null;
+    }
     if (plMng.GetFleet().AddBattleShip(ship.BattleShip(),
         obj.Data().GetX(),
         obj.Data().GetY()))

@@ -20,30 +20,36 @@ public class NetworkManager
 
   Thread th_;
 
-  private bool conected_ = false;
+  public bool conected_ = false;
 
-  public bool Setup(NetworkData setup, string ip, string port)
+  public void Setup(NetworkData setup, string ip, string port)
   {
     Socket.InitSockets();
     networkData_ = setup;
     Debug.Log(ip + ":" + port);
-    //this.ip = "83.41.58.21";
-    //this.port = "8080";
     this.ip = ip;
     this.port = port;
 
 
-    //socket_ = new Socket("83.41.58.21", "8080");
     socket_ = new Socket(this.ip, this.port);
 
     socket_.Send(networkData_, socket_);
 
+    th_ = new Thread(SetupThread);
+    th_.Start();
+  }
+
+  private void SetupThread()
+  {
     AcceptConnection ac = new AcceptConnection(Guid.Empty, "");
     Recieve(ref ac, IMessage.MessageType.AcceptConnection);
     if (ac.name == "\0\0\0\0\0\0\0\0\0\0\0\0")
     {
-      GameManager.Instance().ErrorMessage = $"Name already in use \n{networkData_.playerName}";
-      return false;
+      lock (GameManager.Instance())
+      {
+        GameManager.Instance().ErrorMessage = $"Name already in use \n{networkData_.playerName}";
+        GameManager.Instance().ConectionErrorExit = true;
+      }
     }
 
     //File.WriteAllText(path, this.ip + "\n" + this.port);
@@ -56,13 +62,7 @@ public class NetworkManager
     writer.Close();
 
     conected_ = true;
-    th_ = new Thread(SetupThread);
-    th_.Start();
-    return true;
-  }
 
-  private void SetupThread()
-  {
     ServerSetup conection = new ServerSetup(System.Guid.Empty, new List<string>());
     Recieve(ref conection, IMessage.MessageType.ServerSetup);
 

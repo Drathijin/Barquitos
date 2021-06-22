@@ -241,12 +241,20 @@ public class GameManager : MonoBehaviour
             netManager_ = new NetworkManager();
             playerName = networkSetup.playerName;
             ChangeState(GameState.WAITINGFORPLAYERS);
-            if (!netManager_.Setup(networkSetup, ip, port))
-              SceneManager.LoadScene("Error");
-            //netManager_.Setup(networkSetup, ip, port);
+            netManager_.Setup(networkSetup, ip, port);
+            Invoke("NoResponse", 2f);
             break;
           }
       }
+    }
+  }
+
+  private void NoResponse()
+  {
+    if (!netManager_.conected_)
+    {
+      ErrorMessage = "Conection time out";
+      LoadLevel("Error");
     }
   }
 
@@ -358,7 +366,7 @@ public class GameManager : MonoBehaviour
     float start, end;
     float offset;
     if (state_ == GameState.PREPARING)
-      offset = 10;
+      offset = 45;
     else if (state_ == GameState.SELECTING)
       offset = 15;
     else
