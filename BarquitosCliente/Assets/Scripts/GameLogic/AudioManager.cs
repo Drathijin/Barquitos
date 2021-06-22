@@ -7,25 +7,46 @@ public class AudioManager : MonoBehaviour
   public enum Effecs
   {
     Click,
-    Shoot,
-    Hit,
-    Miss,
-    Win
+    Shoot
+  }
+
+  public enum Music
+  {
+    Win,
+    Loose,
+    Menu,
+    Game
   }
 
   [SerializeField]
   AudioSource effectSource, musicSource;
   [SerializeField]
-  List<AudioClip> effectClips, musicClips;
+  List<AudioClip> effectClips, winMusic, looseMusic, menuMusic, gameMusic;
 
-  private void Start() {
+  [SerializeField]
+  List<List<AudioClip>> musicClips;
+
+  private void Awake()
+  {
     GameManager.Instance().SetAudioManager(this);
+    musicClips = new List<List<AudioClip>>();
+    musicClips.Add(winMusic);
+    musicClips.Add(looseMusic);
+    musicClips.Add(menuMusic);
+    musicClips.Add(gameMusic);
   }
   public void PlayEffect(Effecs ef)
   {
-    if(effectSource.isPlaying)
+    if (effectSource.isPlaying)
       return;
     effectSource.clip = effectClips[(int)ef];
     effectSource.Play();
+  }
+
+  public void PlayMusic(Music mu, bool loop)
+  {
+    musicSource.loop = loop;
+    musicSource.clip = musicClips[(int)mu][Random.Range(0, musicClips[(int)mu].Count)];
+    musicSource.Play();
   }
 }
