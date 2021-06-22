@@ -218,6 +218,7 @@ public class GameManager : MonoBehaviour
     ChangeState(GameState.MENU);
     if (scene.name == "Game")
     {
+      audioManager_.PlayMusic(global::AudioManager.Music.Game, true);
       fleets_ = new Dictionary<string, Fleet>();
       fleetsReady_ = new Dictionary<string, bool>();
       enemyFleets_ = new List<Fleet>();
@@ -357,7 +358,7 @@ public class GameManager : MonoBehaviour
     float start, end;
     float offset;
     if (state_ == GameState.PREPARING)
-      offset = 45;
+      offset = 10;
     else if (state_ == GameState.SELECTING)
       offset = 15;
     else
@@ -385,7 +386,7 @@ public class GameManager : MonoBehaviour
 
   public void StopTimer()
   {
-    timerText_.gameObject.SetActive(false);
+    timerText_.SetTime(0);
     timer = false;
   }
 
@@ -401,6 +402,12 @@ public class GameManager : MonoBehaviour
       Debug.Log(fleets_.First().Key + " WINS");
       winText_.OnEnd(fleets_.First().Key);
       resultText_.OnEnd(fleets_.First().Key == playerMng_.GetFleet().Name());
+
+      if (fleets_.First().Key == playerMng_.GetFleet().Name())
+        audioManager_.PlayMusic(global::AudioManager.Music.Win, false);
+      else
+        audioManager_.PlayMusic(global::AudioManager.Music.Loose, false);
+
       ChangeState(GameState.END);
       ConectionErrorExit = false;
       nextState = false;
@@ -611,7 +618,7 @@ public class GameManager : MonoBehaviour
   public void SetTimerText(TimerText text)
   {
     timerText_ = text;
-    text.gameObject.SetActive(false);
+    StopTimer();
   }
 
   public void PlayersReady()

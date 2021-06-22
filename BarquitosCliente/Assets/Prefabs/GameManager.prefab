@@ -50,7 +50,18 @@ MonoBehaviour:
   effectClips:
   - {fileID: 8300000, guid: 889aed4be0c9df94b8904cdaf6abb7ef, type: 3}
   - {fileID: 8300000, guid: 69962ee1c18200262b8771793bfde0aa, type: 3}
-  musicClips: []
+  winMusic:
+  - {fileID: 8300000, guid: c2fa969741a336848aa34d63f2542b29, type: 3}
+  - {fileID: 8300000, guid: 0b07d7e741fefe74c83d60ed8ac5b6dc, type: 3}
+  - {fileID: 8300000, guid: 2bc935ac417de4b4884e17c8db0235d7, type: 3}
+  looseMusic:
+  - {fileID: 8300000, guid: 3364af9e72a41ee4794a370ec8c44b00, type: 3}
+  - {fileID: 8300000, guid: 33e6aa88e76b1e44887d60d3cd836ad0, type: 3}
+  - {fileID: 8300000, guid: 3e235573dd9dedf42a13ccb810d455d5, type: 3}
+  menuMusic:
+  - {fileID: 8300000, guid: 67c513a895e83e3459b72ae3fa061d20, type: 3}
+  gameMusic:
+  - {fileID: 8300000, guid: 5c6d012269f6e984b80c8f427ddc5bca, type: 3}
 --- !u!1 &4016670821868359335
 GameObject:
   m_ObjectHideFlags: 0
@@ -277,9 +288,9 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.25
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

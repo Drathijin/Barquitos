@@ -57,7 +57,7 @@ public class BattleShipMover : MonoBehaviour
         obj.Data().GetX(),
         obj.Data().GetY()))
     {
-      selectedBts_.transform.position = currentPosition_.transform.position;
+      ship.transform.position = obj.transform.position;
     }
   }
 

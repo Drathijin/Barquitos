@@ -157,10 +157,9 @@ public class PlayerManager : MonoBehaviour
     bool center, horizontal, close;
     foreach (var shipLength in ships)
     {
-      center = Random.Range(0, 100f) <= 50;
       horizontal = Random.Range(0, 100f) <= 50;
-      close = Random.Range(0, 100f) <= 50;
-      lookForPosition(ref lastX, ref lastY, shipLength, fleet_, close, horizontal, center);
+
+      lookForPosition(ref lastX, ref lastY, shipLength, fleet_, false, horizontal, false);
 
       BattleShipViewer bs = null;
 
