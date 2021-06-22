@@ -59,7 +59,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 33e6aa88e76b1e44887d60d3cd836ad0, type: 3}
   - {fileID: 8300000, guid: 3e235573dd9dedf42a13ccb810d455d5, type: 3}
   menuMusic:
-  - {fileID: 8300000, guid: 67c513a895e83e3459b72ae3fa061d20, type: 3}
+  - {fileID: 8300000, guid: fe8f02fde41f69940ad3c7e8ad967c56, type: 3}
   gameMusic:
   - {fileID: 8300000, guid: 5c6d012269f6e984b80c8f427ddc5bca, type: 3}
 --- !u!1 &4016670821868359335
