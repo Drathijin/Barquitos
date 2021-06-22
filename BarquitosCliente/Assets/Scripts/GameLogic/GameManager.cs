@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
   private NetworkManager netManager_;
 
   private AIManager aiManager_;
+  private AudioManager audioManager_;
 
   #endregion
 
@@ -454,6 +455,10 @@ public class GameManager : MonoBehaviour
     return netManager_;
   }
 
+  public AudioManager AudioManager()
+  {
+    return audioManager_;
+  }
   #endregion
 
   #region Setters
@@ -506,6 +511,11 @@ public class GameManager : MonoBehaviour
   {
     if (ai)
       aiManager_ = ai;
+  }
+
+  public void SetAudioManager(AudioManager am)
+  {
+    audioManager_ = am;
   }
 
   public void SetWaitingText(WaitingText text)

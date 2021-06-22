@@ -1435,6 +1435,7 @@ MonoBehaviour:
   aiGroup: {fileID: 796125337}
   aiDataGroup_: {fileID: 432662411}
   netDataGroup_: {fileID: 555165781}
+  audioManager_: {fileID: 812597482}
 --- !u!4 &407090857
 Transform:
   m_ObjectHideFlags: 0
@@ -1752,6 +1753,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 232635088200527066, guid: a079a23ad7f61a34894993b6ab32fbd3, type: 3}
+      propertyPath: effectSource
+      value: 
+      objectReference: {fileID: 1408394647}
+    - target: {fileID: 232635088200527066, guid: a079a23ad7f61a34894993b6ab32fbd3, type: 3}
+      propertyPath: effectClips.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 232635088200527066, guid: a079a23ad7f61a34894993b6ab32fbd3, type: 3}
+      propertyPath: effectClips.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 889aed4be0c9df94b8904cdaf6abb7ef, type: 3}
     - target: {fileID: 4016670821868359329, guid: a079a23ad7f61a34894993b6ab32fbd3, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -2424,6 +2437,17 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &812597482 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 232635088200527066, guid: a079a23ad7f61a34894993b6ab32fbd3, type: 3}
+  m_PrefabInstance: {fileID: 467110426}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f497456fdc5546c4c8c601cc191ab6f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &828079697
 GameObject:
   m_ObjectHideFlags: 0
@@ -3420,6 +3444,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1374292681}
   m_CullTransparentMesh: 1
+--- !u!82 &1408394647 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 2392241421183847774, guid: a079a23ad7f61a34894993b6ab32fbd3, type: 3}
+  m_PrefabInstance: {fileID: 467110426}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1519592311
 GameObject:
   m_ObjectHideFlags: 0

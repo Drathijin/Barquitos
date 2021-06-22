@@ -28,6 +28,7 @@ public class ReadyButton : MonoBehaviour
     void OnReadyClick()
     {
         button_.interactable = false;
+        GameManager.Instance().AudioManager().PlayEffect( GameManager.Instance().State() == GameManager.GameState.SELECTING ? AudioManager.Effecs.Shoot : AudioManager.Effecs.Click);
         GameManager.Instance().OnReadyClick();
     }
 
@@ -50,6 +51,7 @@ public class ReadyButton : MonoBehaviour
             case GameManager.GameState.ATTACKING:
                 text_.text = "ATTACKING";
                 button_.interactable = false;
+                Debug.Log("PUUUM");
                 break;
             case GameManager.GameState.END:
                 text_.text = "return";

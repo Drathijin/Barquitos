@@ -146,7 +146,7 @@ namespace server
     public static T ProcessClientMessage<T>(IMessage message, T ClientMessage) where T : IMessage
     {
       ClientMessage.FromBin(message.GetData());
-      if (games_.ContainsKey(ClientMessage.header_.gameID_))
+      if(games_.ContainsKey(ClientMessage.header_.gameID_))
       {
         Game game = games_[ClientMessage.header_.gameID_];
         lock (game.messages_lock_)
@@ -157,7 +157,8 @@ namespace server
       }
       else
       {
-        Console.WriteLine($"[Error]: Invalid game id - {ClientMessage.header_.gameID_}");
+        if(message.header_.messageType_ != IMessage.MessageType.ClientExit)
+          Console.WriteLine($"[Error]: Invalid game id - {ClientMessage.header_.gameID_}");
         return ClientMessage;
       }
     }

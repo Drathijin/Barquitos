@@ -6,7 +6,7 @@ public class AudioManager : MonoBehaviour
 {
   public enum Effecs
   {
-    CLick,
+    Click,
     Shoot,
     Hit,
     Miss,
@@ -18,14 +18,14 @@ public class AudioManager : MonoBehaviour
   [SerializeField]
   List<AudioClip> effectClips, musicClips;
 
-  void Start()
-  {
-    //effectSource.cl
+  private void Start() {
+    GameManager.Instance().SetAudioManager(this);
   }
-
-  // Update is called once per frame
-  void Update()
+  public void PlayEffect(Effecs ef)
   {
-
+    if(effectSource.isPlaying)
+      return;
+    effectSource.clip = effectClips[(int)ef];
+    effectSource.Play();
   }
 }

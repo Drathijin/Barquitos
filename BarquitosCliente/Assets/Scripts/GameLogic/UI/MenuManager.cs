@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
@@ -10,12 +11,24 @@ public class MenuManager : MonoBehaviour
   AIDataGroup aiDataGroup_;
   [SerializeField]
   NetworkDataGroup netDataGroup_;
-
+  [SerializeField]
+  AudioManager audioManager_;
 
   public void Start()
   {
+    mainGroup.SetActive(true);
+    onlineGroup.SetActive(true);
+    aiGroup.SetActive(true);
+
+    Button[] buttons = FindObjectsOfType<Button>();
+    foreach (Button b in buttons)
+    {
+      b.onClick.AddListener(Click);
+    }
+    
     Back();
   }
+
 
   public void Back()
   {
@@ -66,6 +79,10 @@ public class MenuManager : MonoBehaviour
     {
       g.SetActive(set);
     }
+  }
+  private void Click()
+  {
+    audioManager_.PlayEffect(AudioManager.Effecs.Click);
   }
 
 }

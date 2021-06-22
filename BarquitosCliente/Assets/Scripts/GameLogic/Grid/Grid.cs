@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class Grid
 {
@@ -11,6 +13,10 @@ public class Grid
         int i = 0;
         foreach(GridObject g in objs)
         {
+            if(g.GetComponent<Button>())
+            {
+                g.GetComponent<Button>().onClick.AddListener(() => GameManager.Instance().AudioManager().PlayEffect(AudioManager.Effecs.Click));
+            }
             int x = i % 10;
             int y = i / 10;
             g.SetPosition(x, y);

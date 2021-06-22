@@ -67,8 +67,8 @@ namespace server
     List<Player> players_;
     Player winningPlayer_ = null;
     System.Guid id_;
-    int secondsToStart_ = 120;
-    int secondsForNextRound_ = 300;
+    int secondsToStart_ = 45;
+    int secondsForNextRound_ = 15;
     bool playing_ = false; //this bool will be true only in the second fase of the game
     public bool finished = false;
     public Game(int playerCount, Socket socket, object sck_lock, List<Player> players, System.Guid id)
@@ -232,7 +232,7 @@ namespace server
         {
           if (a.targetName_ == p.name_)
           {
-            if (p.attack(a.taretAttack_.x, a.taretAttack_.y, out hit) || p.dead)
+            if ((p.attack(a.taretAttack_.x, a.taretAttack_.y, out hit) && p.dead)|| p.dead)
             {
               aliveCount--;
               dead = p.dead;
@@ -251,7 +251,7 @@ namespace server
 
       if (aliveCount >= 2)
       {
-        secondsForNextRound_ = 300000;
+        secondsForNextRound_ = 15;
         return true;
       }
       else

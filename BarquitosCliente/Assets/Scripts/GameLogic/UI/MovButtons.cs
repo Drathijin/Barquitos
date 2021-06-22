@@ -23,5 +23,6 @@ public class MovButtons : MonoBehaviour
             GameManager.Instance().NextFleet();
         else
             GameManager.Instance().PreviousFleet();
+        GameManager.Instance().AudioManager().PlayEffect(AudioManager.Effecs.Click);
     }
 }

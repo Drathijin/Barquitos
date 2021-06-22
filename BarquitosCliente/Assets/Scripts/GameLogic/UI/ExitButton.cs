@@ -9,5 +9,6 @@ public class ExitButton : MonoBehaviour
   void Start()
   {
     GetComponent<Button>().onClick.AddListener(delegate { GameManager.Instance().LoadLevel("Menu"); });
+    GetComponent<Button>().onClick.AddListener(delegate { GameManager.Instance().AudioManager().PlayEffect(AudioManager.Effecs.Click); });
   }
 }
