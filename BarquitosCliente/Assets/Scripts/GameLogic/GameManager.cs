@@ -78,6 +78,13 @@ public class GameManager : MonoBehaviour
   public bool ConectionErrorExit = false;
 
   public string ErrorMessage = "";
+
+  public Queue<string> fleetExit = new Queue<string>();
+
+  private float timerEnd = 0;
+  private float timerTime = 0;
+
+  private bool timer = false;
   #endregion
 
   #region GameData
@@ -115,6 +122,8 @@ public class GameManager : MonoBehaviour
 
   private IdText idText_;
 
+  private TimerText timerText_;
+
   #endregion
 
 
@@ -137,11 +146,20 @@ public class GameManager : MonoBehaviour
 
   private void Update()
   {
-    Debug.Log("pepe");
+    if (timer && gameType_ != GameType.AI)
+    {
+      timerTime = timerEnd - Time.time;
+      if (timerTime <= 0)
+        OnTimerEnd();
+      else
+        timerText_.SetTime(timerTime);
+    }
     lock (lock_)
     {
       if (ConectionErrorExit)
         LoadLevel("Error");
+      while (fleetExit.Count != 0)
+        FleetLost(fleetExit.Dequeue());
       while (potentialFleets_.Count > 0)
       {
         AddEnemyFleet(potentialFleets_[0]);
@@ -253,7 +271,8 @@ public class GameManager : MonoBehaviour
 
     if (state == GameState.ATTACKING)
       ChangeState(GameState.SELECTING);
-
+    if (gameType_ == GameType.ONLINE)
+      StartTimer();
   }
 
   private void NextState()
@@ -333,6 +352,43 @@ public class GameManager : MonoBehaviour
     FleetLost(playerMng_.GetFleet().Name());
   }
 
+  private void StartTimer()
+  {
+    float start, end;
+    float offset;
+    if (state_ == GameState.PREPARING)
+      offset = 45;
+    else if (state_ == GameState.SELECTING)
+      offset = 15;
+    else
+      return;
+    start = Time.time;
+    end = start + offset;
+    timerText_.gameObject.SetActive(true);
+    timerText_.SetTime(end - start);
+    timerEnd = end;
+    timerTime = start;
+    timer = true;
+  }
+
+  private void OnTimerEnd()
+  {
+    StopTimer();
+    if (netManager_ != null)
+    {
+      if (state_ == GameState.PREPARING)
+        netManager_.SendPlayerFleet();
+      else if (state_ == GameState.SELECTING)
+        netManager_.SendPlayerAttack();
+    }
+  }
+
+  public void StopTimer()
+  {
+    timerText_.gameObject.SetActive(false);
+    timer = false;
+  }
+
   #endregion
 
   #region FleetsManagement
@@ -341,12 +397,17 @@ public class GameManager : MonoBehaviour
     fleets_.Remove(fleet);
     if (fleets_.Count == 1)
     {
-      nextState = false;
       Debug.Log("GAME END");
       Debug.Log(fleets_.First().Key + " WINS");
       winText_.OnEnd(fleets_.First().Key);
       resultText_.OnEnd(fleets_.First().Key == playerMng_.GetFleet().Name());
       ChangeState(GameState.END);
+      ConectionErrorExit = false;
+      nextState = false;
+      fleetExit.Clear();
+      potentialFleets_.Clear();
+      attacks_.Clear();
+      currentEnemyFleet_ = -1;
     }
   }
 
@@ -423,6 +484,11 @@ public class GameManager : MonoBehaviour
   public Fleet GetFleet(string id)
   {
     return fleets_[id];
+  }
+
+  public Fleet RandomEnemyFleet()
+  {
+    return enemyFleets_.Count == 1 ? enemyFleets_[0] : enemyFleets_[Random.Range(0, enemyFleets_.Count)];
   }
 
   public Fleet CurrentEnemyFleet()
@@ -515,7 +581,13 @@ public class GameManager : MonoBehaviour
 
   public void SetAudioManager(AudioManager am)
   {
+    if (audioManager_)
+    {
+      Destroy(am);
+      return;
+    }
     audioManager_ = am;
+    DontDestroyOnLoad(am);
   }
 
   public void SetWaitingText(WaitingText text)
@@ -534,6 +606,12 @@ public class GameManager : MonoBehaviour
   {
     if (idText_)
       idText_.SetText(id);
+  }
+
+  public void SetTimerText(TimerText text)
+  {
+    timerText_ = text;
+    text.gameObject.SetActive(false);
   }
 
   public void PlayersReady()

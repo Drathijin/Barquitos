@@ -103,6 +103,9 @@ public class NetworkManager
 
   public void SendPlayerFleet()
   {
+    GameManager.Instance().StopTimer();
+
+    GameManager.Instance().PlayerManager().CheckFleet();
     Fleet fl = GameManager.Instance().PlayerManager().GetFleet();
 
     ClientSetup setup = new ClientSetup(id_, fl.ships, fl.Name());
@@ -112,22 +115,34 @@ public class NetworkManager
 
   public void SendPlayerAttack()
   {
+    GameManager.Instance().StopTimer();
     PlayerManager player = GameManager.Instance().PlayerManager();
     GridObject obj = player.currentAttackButton_;
     player.CleanButton();
 
     AttackData data = obj ? new AttackData(obj.Data().GetX(), obj.Data().GetY(), obj.Fleet().Name(), GameManager.Instance().playerName) :
-            new AttackData(-1, -1, "", GameManager.Instance().playerName);
+      RandomAttack();
+    //new AttackData(-1, -1, "", GameManager.Instance().playerName);
 
+    Debug.Log("AttackSend: " + data.x + " " + data.y + " " + data.enemyId);
     data.header_.gameID_ = id_;
     socket_.Send(data, socket_);
+  }
+
+  private AttackData RandomAttack()
+  {
+    int x = UnityEngine.Random.Range(0, 10);
+    int y = UnityEngine.Random.Range(0, 10);
+    string enemy = GameManager.Instance().RandomEnemyFleet().Name();
+
+    return new AttackData(x, y, enemy, GameManager.Instance().playerName);
   }
 
   private void WaitForReady()    // Escuchar al servidor para saber cuando le han dado a listo
   {
     Debug.Log("Waiting for ready");
     ReadyGame ready = new ReadyGame(id_);
-    Recieve<ReadyGame>(ref ready, IMessage.MessageType.ReadyTurn);
+    Recieve(ref ready, IMessage.MessageType.ReadyTurn);
     Debug.Log("We ready");
     lock (GameManager.lock_)
     {
@@ -140,7 +155,7 @@ public class NetworkManager
     Debug.Log("Resolving Turn");
     ServerAttack serverAttack = new ServerAttack(id_);
 
-    socket_.Recv(serverAttack);
+    Recieve(ref serverAttack, IMessage.MessageType.ServerAttack);
 
     lock (GameManager.lock_)
     {
@@ -159,7 +174,6 @@ public class NetworkManager
     try
     {
       socket_.Recv(msg);
-
       if (msg.header_.messageType_ != expectedType)
       {
         UnexpectedMessage(msg, expectedType);
@@ -168,11 +182,20 @@ public class NetworkManager
     catch (Exception e)
     {
       Debug.LogError(e.Message);
-      lock (GameManager.lock_)
+      if (e.Message == "Unreacheable host")
       {
-        GameManager.Instance().ErrorMessage = $"Conection unreacheable ({ip}:{port})";
-        GameManager.Instance().ConectionErrorExit = true;
+        lock (GameManager.lock_)
+        {
+          GameManager.Instance().ErrorMessage = $"Conection unreacheable ({ip}:{port})";
+          GameManager.Instance().ConectionErrorExit = true;
+        }
       }
+      else if (msg.header_.messageType_ != expectedType)
+      {
+        UnexpectedMessage(msg, expectedType);
+      }
+      else
+        throw e;
     }
   }
 
@@ -182,7 +205,10 @@ public class NetworkManager
     {
       lock (GameManager.lock_)
       {
-        GameManager.Instance().potentialFleets_.Add((msg as ClientExit).name);
+        ClientExit exit = new ClientExit(id_, "");
+        exit.FromBin(msg.GetData());
+        //GameManager.Instance().potentialFleets_.Add(exit.name);
+        GameManager.Instance().fleetExit.Enqueue(exit.name);
       }
     }
   }

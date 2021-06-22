@@ -86,7 +86,7 @@ namespace server
       else if (val == 0)
         return false;
       else
-        throw new Exception("Error recv with socket. Error code");
+        throw new Exception("Unreacheable host");
     }
 
     public bool Recv(byte[] buffer, int size)
@@ -98,7 +98,7 @@ namespace server
       else if (val == 0)
         return false;
       else
-        throw new Exception("Error recv with socket. Error code");
+        throw new Exception("Unreacheable host");
     }
 
     public bool Recv(ISerializable serializable, out Socket other)

@@ -16,15 +16,15 @@ public class MenuManager : MonoBehaviour
 
   public void Start()
   {
-    mainGroup.SetActive(true);
-    onlineGroup.SetActive(true);
-    aiGroup.SetActive(true);
+    //mainGroup.SetActive(true);
+    //onlineGroup.SetActive(true);
+    //aiGroup.SetActive(true);
 
-    Button[] buttons = FindObjectsOfType<Button>();
-    foreach (Button b in buttons)
-    {
-      b.onClick.AddListener(Click);
-    }
+    //Button[] buttons = FindObjectsOfType<Button>();
+    //foreach (Button b in buttons)
+    //{
+    //  b.onClick.AddListener(Click);
+    //}
     
     Back();
   }

@@ -57,7 +57,7 @@ public class BattleShipViewer : MonoBehaviour
         btShip_ = new BattleShip(size);
     }
 
-    private void RotateShip()
+    public void RotateShip()
     {
         btShip_.horizontal = !btShip_.horizontal;
 
