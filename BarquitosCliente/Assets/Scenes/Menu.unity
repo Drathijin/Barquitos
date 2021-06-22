@@ -1753,18 +1753,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 232635088200527066, guid: a079a23ad7f61a34894993b6ab32fbd3, type: 3}
-      propertyPath: effectSource
-      value: 
-      objectReference: {fileID: 1408394647}
-    - target: {fileID: 232635088200527066, guid: a079a23ad7f61a34894993b6ab32fbd3, type: 3}
-      propertyPath: effectClips.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 232635088200527066, guid: a079a23ad7f61a34894993b6ab32fbd3, type: 3}
-      propertyPath: effectClips.Array.data[0]
-      value: 
-      objectReference: {fileID: 8300000, guid: 889aed4be0c9df94b8904cdaf6abb7ef, type: 3}
     - target: {fileID: 4016670821868359329, guid: a079a23ad7f61a34894993b6ab32fbd3, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -3444,11 +3432,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1374292681}
   m_CullTransparentMesh: 1
---- !u!82 &1408394647 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 2392241421183847774, guid: a079a23ad7f61a34894993b6ab32fbd3, type: 3}
-  m_PrefabInstance: {fileID: 467110426}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1519592311
 GameObject:
   m_ObjectHideFlags: 0
