@@ -26,14 +26,14 @@ public class AudioManager : MonoBehaviour
   [SerializeField]
   List<List<AudioClip>> musicClips;
 
-  private void Awake()
+  private void Start()
   {
-    GameManager.Instance().SetAudioManager(this);
     musicClips = new List<List<AudioClip>>();
     musicClips.Add(winMusic);
     musicClips.Add(looseMusic);
     musicClips.Add(menuMusic);
     musicClips.Add(gameMusic);
+    GameManager.Instance().SetAudioManager(this);
   }
   public void PlayEffect(Effecs ef)
   {

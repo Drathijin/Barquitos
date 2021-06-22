@@ -602,6 +602,7 @@ public class GameManager : MonoBehaviour
       return;
     }
     audioManager_ = am;
+    audioManager_.PlayMusic(global::AudioManager.Music.Menu, true);
     DontDestroyOnLoad(am);
   }
 
