@@ -22,6 +22,7 @@ public class IMessage : ISerializable
     ServerAttack,   //Responde con el resultado de la última ronda de ataques
     ReadyTurn,      //Jugador está listo
     ClientExit,     //El jugador se desconecta
+    AcceptConnection,
     ErrorType
   }
 

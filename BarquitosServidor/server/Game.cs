@@ -175,7 +175,6 @@ namespace server
           {
             case IMessage.MessageType.ClientSetup:
               ClientSetup cs = current as ClientSetup;
-              // if(!playing_)
               SetPlayerPositions(cs);
               break;
             case IMessage.MessageType.ClientAttack:
@@ -200,17 +199,16 @@ namespace server
               }
               break;
             case IMessage.MessageType.ClientExit:
-              // ServerAttack sa = new ServerAttack(id_);
               ClientExit ce = current as ClientExit;
               foreach (Player p in players_)
-                if (p.name_ == ce.name)
-                  {
-                    p.targetName_ = ce.name;
-                    p.taretAttack_ = new BattleShip.Position(0,0);
-                    p.dead = true;
-                    p.ready = true;
-                  }
-                break;
+              {
+                if (p.name_ != ce.name)
+                {
+                  socket_.Send(ce,p.socket_);
+                }
+              }
+              players_.RemoveAll(x => x.name_ == ce.name);
+              break;
           }
         }
       }

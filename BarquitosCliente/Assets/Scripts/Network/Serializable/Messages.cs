@@ -287,3 +287,39 @@ public class ClientExit : IMessage
     return MessageType.ClientExit;
   }
 }
+
+public class AcceptConnection : IMessage
+{
+  private static int MAX_NAME_SIZE = 24;
+  public string name;
+
+  public AcceptConnection(System.Guid id, string name) : base(IMessage.MessageType.AcceptConnection, id)
+  {
+    this.name = name;
+  }
+
+  override public Byte[] ToBin()
+  {
+    base.ToBin();
+    int index = HEADER_SIZE;
+
+    var nameBin = Encoding.Unicode.GetBytes(name);
+    nameBin.CopyTo(data_, index);
+
+    return data_;
+  }
+  override public void FromBin(Byte[] data)
+  {
+    base.FromBin(data);
+
+    int index = HEADER_SIZE;
+
+    name = Encoding.Unicode.GetString(data_, index, MAX_NAME_SIZE);
+
+  }
+
+  public new static MessageType Type()
+  {
+    return MessageType.AcceptConnection;
+  }
+}

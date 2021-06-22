@@ -199,7 +199,8 @@ public class GameManager : MonoBehaviour
             netManager_ = new NetworkManager();
             playerName = networkSetup.playerName;
             ChangeState(GameState.WAITINGFORPLAYERS);
-            netManager_.Setup(networkSetup, ip, port);
+            if(!netManager_.Setup(networkSetup, ip, port))
+              SceneManager.LoadScene("Menu");
             break;
           }
       }

@@ -17,27 +17,18 @@ public class NetworkManager
 
   Thread th_;
 
-  public void Setup(NetworkData setup, string ip, string port)
+private bool conected_ = false;
+
+  public bool Setup(NetworkData setup, string ip, string port)
   {
     Socket.InitSockets();
     networkData_ = setup;
     this.ip = ip;
     this.port = port;
 
-    th_ = new Thread(SetupThread);
-    th_.Start();
-  }
-
-  private void SetupThread()
-  {
-    // MANDAR EL PLAYER AL SERVER O ALGO ----- MIRALO LUEGO
-
-    Debug.Log("Comienza el Setup");
-
     try
     {
       socket_ = new Socket("83.41.58.21", "8080");
-      //socket_ = new Socket(ip, port);
     }
     catch (Exception e)
     {
@@ -50,6 +41,19 @@ public class NetworkManager
 
     socket_.Send(networkData_, socket_);
 
+    AcceptConnection ac = new AcceptConnection(Guid.Empty, "");
+    socket_.Recv(ac);
+    if(ac.name == "\0\0\0\0\0\0\0\0\0\0\0\0")
+      return false;
+
+    conected_ = true;
+    th_ = new Thread(SetupThread);
+    th_.Start();
+    return true;
+  }
+
+  private void SetupThread()
+  {
     ServerSetup conection = new ServerSetup(System.Guid.Empty, new List<string>());
     socket_.Recv(conection);
 
@@ -118,7 +122,7 @@ public class NetworkManager
   {
     Debug.Log("Waiting for ready");
     ReadyGame ready = new ReadyGame(id_);
-    socket_.Recv(ready);
+    Recieve<ReadyGame>(ref ready, IMessage.MessageType.ReadyTurn);
     Debug.Log("We ready");
     lock (GameManager.lock_)
     {
@@ -168,7 +172,13 @@ public class NetworkManager
 
   private void UnexpectedMessage(IMessage msg, IMessage.MessageType expectedMessage)
   {
-
+    if(msg.header_.messageType_ ==  IMessage.MessageType.ClientExit)
+    {
+      lock(GameManager.lock_)
+      {
+        GameManager.Instance().potentialFleets_.Add((msg as ClientExit).name);
+      }
+    }
   }
 
   public void OnDestroy()
@@ -178,9 +188,11 @@ public class NetworkManager
       Debug.Log("Cerrando Thread");
       th_.Abort();
     }
-
-    ClientExit exit = new ClientExit(id_, GameManager.Instance().playerName);
-    socket_.Send(exit, socket_);
+    if(conected_)
+    {
+      ClientExit exit = new ClientExit(id_, GameManager.Instance().playerName);
+      socket_.Send(exit, socket_);
+    }
     socket_.Dispose();
     Socket.QuitSockets();
   }

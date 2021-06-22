@@ -3,6 +3,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace server
 {
@@ -23,6 +24,31 @@ namespace server
     public static Queue<Player> BattleRoyalePlayers_;
 
     public static Thread handler;
+
+  
+    //Juan
+    public static bool CheckName(string actual)
+    {
+      if(actual == "\0\0\0\0\0\0\0\0\0\0\0\0")
+        return false;
+      List<string> names = new List<string>();
+      lock (br_player_lock)
+      {
+        foreach (Player p in BattleRoyalePlayers_)
+          names.Add(p.name_);
+        lock(player_lock)
+        {
+          foreach (Player p in players_)
+            names.Add(p.name_);
+          foreach (string name in names)
+          {
+            if(name == actual)
+              return false;
+          }
+          return true;
+        }
+      }
+    }
 
     //Adds a single conection to the correct queue
     public static void ManageConection(NetworkData conectionMessage, Socket socket) //this should be casted to conectionMessage
@@ -117,7 +143,7 @@ namespace server
       Console.WriteLine($"Initialized server on {IP}:{PORT} successfully");
     }
 
-    public static void ProcessClientMessage<T>(IMessage message, T ClientMessage) where T : IMessage
+    public static T ProcessClientMessage<T>(IMessage message, T ClientMessage) where T : IMessage
     {
       ClientMessage.FromBin(message.GetData());
       if (games_.ContainsKey(ClientMessage.header_.gameID_))
@@ -126,10 +152,14 @@ namespace server
         lock (game.messages_lock_)
         {
           game.messages_.Add(ClientMessage);
+          return ClientMessage;
         }
       }
       else
+      {
         Console.WriteLine($"[Error]: Invalid game id - {ClientMessage.header_.gameID_}");
+        return ClientMessage;
+      }
     }
 
     public static void Server()
@@ -145,7 +175,16 @@ namespace server
           case IMessage.MessageType.ClientConection:
             NetworkData data = new NetworkData();
             data.FromBin(message.GetData());
-            ManageConection(data, other);
+            if(CheckName(data.playerName))
+            {
+              socket_.Send(new AcceptConnection(Guid.Empty, data.playerName), other);
+              ManageConection(data, other);
+            }
+            else
+            {
+              Console.WriteLine("EH EH, pa donde vah?");
+              socket_.Send(new AcceptConnection(Guid.Empty, ""), other);
+            }
             break;
           case IMessage.MessageType.ClientSetup:
             Console.WriteLine("Client Setup");
@@ -156,24 +195,21 @@ namespace server
             ProcessClientMessage<AttackData>(message, new AttackData());
             break;
           case IMessage.MessageType.ClientExit:
+          {
             Console.WriteLine("Client Exit");
-            ProcessClientMessage<ClientExit>(message, new ClientExit(Guid.Empty,""));
+            var current = ProcessClientMessage<ClientExit>(message, new ClientExit(Guid.Empty,""));
             if(message.header_.gameID_ == Guid.Empty)
             {
-              
+              lock(player_lock){
+                players_ = new Queue<Player>(players_.Where(x => x.name_ != current.name));
+              }
+              lock(br_player_lock)
+              {
+                BattleRoyalePlayers_ = new Queue<Player>(BattleRoyalePlayers_.Where(x => x.name_ != current.name));
+              }
             }
             break;
-          case IMessage.MessageType.ServerSetup:
-            ServerSetup ss = new ServerSetup(Guid.Empty, new List<string>());
-            ss.FromBin(message.GetData());
-            Console.Write($"Names: ");
-            foreach (string n in ss.names_)
-            {
-              Console.Write($" {n} ");
-            }
-            Console.WriteLine("");
-            break;
-
+          }
           default:
             break;
         }
