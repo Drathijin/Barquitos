@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System;
+using System.IO;
 using UnityEngine;
 using server;
 
 public class NetworkManager
 {
+  public static readonly string path = Application.persistentDataPath + "/lastConection.txt";
+
   private Socket socket_;
 
   private NetworkData networkData_;
@@ -17,34 +20,39 @@ public class NetworkManager
 
   Thread th_;
 
-private bool conected_ = false;
+  private bool conected_ = false;
 
   public bool Setup(NetworkData setup, string ip, string port)
   {
     Socket.InitSockets();
     networkData_ = setup;
+    Debug.Log(ip + ":" + port);
+    //this.ip = "83.41.58.21";
+    //this.port = "8080";
     this.ip = ip;
     this.port = port;
 
-    try
-    {
-      socket_ = new Socket("83.41.58.21", "8080");
-    }
-    catch (Exception e)
-    {
-      Debug.LogError(e.Message);
-      lock (GameManager.lock_)
-      {
-        GameManager.Instance().ConectionErrorExit = true;
-      }
-    }
+
+    //socket_ = new Socket("83.41.58.21", "8080");
+    socket_ = new Socket(this.ip, this.port);
 
     socket_.Send(networkData_, socket_);
 
     AcceptConnection ac = new AcceptConnection(Guid.Empty, "");
-    socket_.Recv(ac);
-    if(ac.name == "\0\0\0\0\0\0\0\0\0\0\0\0")
+    Recieve(ref ac, IMessage.MessageType.AcceptConnection);
+    if (ac.name == "\0\0\0\0\0\0\0\0\0\0\0\0")
+    {
+      GameManager.Instance().ErrorMessage = $"Name already in use \n{networkData_.playerName}";
       return false;
+    }
+
+    //File.WriteAllText(path, this.ip + "\n" + this.port);
+
+    StreamWriter writer = new StreamWriter(path);
+
+    writer.WriteLine(this.ip);
+    writer.WriteLine(this.port);
+    writer.Close();
 
     conected_ = true;
     th_ = new Thread(SetupThread);
@@ -55,9 +63,7 @@ private bool conected_ = false;
   private void SetupThread()
   {
     ServerSetup conection = new ServerSetup(System.Guid.Empty, new List<string>());
-    socket_.Recv(conection);
-
-
+    Recieve(ref conection, IMessage.MessageType.ServerSetup);
 
     // TODO EST� READY PAPA
     lock (GameManager.lock_)
@@ -155,7 +161,7 @@ private bool conected_ = false;
     {
       socket_.Recv(msg);
 
-      if(msg.header_.messageType_ != expectedType)
+      if (msg.header_.messageType_ != expectedType)
       {
         UnexpectedMessage(msg, expectedType);
       }
@@ -165,6 +171,7 @@ private bool conected_ = false;
       Debug.LogError(e.Message);
       lock (GameManager.lock_)
       {
+        GameManager.Instance().ErrorMessage = $"Conection unreacheable ({ip}:{port})";
         GameManager.Instance().ConectionErrorExit = true;
       }
     }
@@ -172,9 +179,9 @@ private bool conected_ = false;
 
   private void UnexpectedMessage(IMessage msg, IMessage.MessageType expectedMessage)
   {
-    if(msg.header_.messageType_ ==  IMessage.MessageType.ClientExit)
+    if (msg.header_.messageType_ == IMessage.MessageType.ClientExit)
     {
-      lock(GameManager.lock_)
+      lock (GameManager.lock_)
       {
         GameManager.Instance().potentialFleets_.Add((msg as ClientExit).name);
       }
@@ -188,7 +195,7 @@ private bool conected_ = false;
       Debug.Log("Cerrando Thread");
       th_.Abort();
     }
-    if(conected_)
+    if (conected_)
     {
       ClientExit exit = new ClientExit(id_, GameManager.Instance().playerName);
       socket_.Send(exit, socket_);

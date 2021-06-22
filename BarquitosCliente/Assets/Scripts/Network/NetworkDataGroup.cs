@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.IO;
 using System.Text;
 
 public class NetworkDataGroup : MonoBehaviour
@@ -10,12 +11,24 @@ public class NetworkDataGroup : MonoBehaviour
   public NetworkData data_;
   public string ip;
   public string port;
-  public bool wrongIp = false;
-  public bool wrongPort = false;
+  public bool wrongIp = true;
+  public bool wrongPort = true;
+
+  [SerializeField]
+  InputField ipField, portField;
 
   void Start()
   {
     data_ = new NetworkData();
+    if (File.Exists(NetworkManager.path))
+    {
+      StreamReader reader = new StreamReader(NetworkManager.path);
+      ip = reader.ReadLine();
+      port = reader.ReadLine();
+      ipField.text = ip;
+      portField.text = port;
+      reader.Close();
+    }
   }
 
   public void SetPlayerName(string name)

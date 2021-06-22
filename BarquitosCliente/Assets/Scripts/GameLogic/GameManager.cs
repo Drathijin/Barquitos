@@ -70,6 +70,8 @@ public class GameManager : MonoBehaviour
   public List<ServerAttack.AttackResult> attacks_ = new List<ServerAttack.AttackResult>();
 
   public bool ConectionErrorExit = false;
+
+  public string ErrorMessage = "";
   #endregion
 
   #region GameData
@@ -199,8 +201,8 @@ public class GameManager : MonoBehaviour
             netManager_ = new NetworkManager();
             playerName = networkSetup.playerName;
             ChangeState(GameState.WAITINGFORPLAYERS);
-            if(!netManager_.Setup(networkSetup, ip, port))
-              SceneManager.LoadScene("Menu");
+            if (!netManager_.Setup(networkSetup, ip, port))
+              SceneManager.LoadScene("Error");
             break;
           }
       }
@@ -223,7 +225,6 @@ public class GameManager : MonoBehaviour
       playerMng_.OnStateChanged(state);
 
     if (aiManager_)
-      //Invoke("DelayBorrar", 10f);
       aiManager_.OnStateChanged(state);
     else if (netManager_ != null)
       netManager_.OnStateChanged(state);
@@ -279,7 +280,6 @@ public class GameManager : MonoBehaviour
     {
       string plName = playerMng_.GetFleet().Name();
       ReadyCheck(plName, !fleetsReady_[plName]);
-      ReadyChange();
     }
   }
 

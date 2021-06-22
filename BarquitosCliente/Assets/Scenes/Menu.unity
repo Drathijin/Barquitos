@@ -1893,6 +1893,8 @@ MonoBehaviour:
   port: 
   wrongIp: 0
   wrongPort: 0
+  ipField: {fileID: 378386753}
+  portField: {fileID: 835963219}
 --- !u!1 &555273367
 GameObject:
   m_ObjectHideFlags: 0
@@ -3397,7 +3399,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: b99c1d711fe4eea4181107c533ca69e0, type: 3}
-    m_FontSize: 100
+    m_FontSize: 80
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -3408,7 +3410,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: br
+  m_Text: battleroyale
 --- !u!222 &1374292684
 CanvasRenderer:
   m_ObjectHideFlags: 0
