@@ -404,7 +404,7 @@ public class GameManager : MonoBehaviour
   public void FleetLost(string fleet)
   {
     fleets_.Remove(fleet);
-    if (fleets_.Count == 1)
+    if (fleets_.Count == 1 || fleet == playerName)
     {
       Debug.Log("GAME END");
       Debug.Log(fleets_.First().Key + " WINS");
